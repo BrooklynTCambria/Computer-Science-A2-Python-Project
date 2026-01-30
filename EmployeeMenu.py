@@ -33,14 +33,29 @@ def EmployeeMenu():
     
     # Main container frame
     main_frame = tk.Frame(root, bg="#f0f0f0")
-    main_frame.pack(fill="both", expand=True)
+    main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+    
+    # TOP FRAME for BACK button (top right)
+    top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_frame.pack(fill="x", pady=(0, 10))
+    
+    # BACK Button in top right corner
+    back_btn = tk.Button(top_frame, text="BACK", 
+                        font=("Helvetica", 12, "bold"),
+                        bg="#757575",
+                        fg="white",
+                        activebackground="#616161",
+                        width=10,
+                        height=1,
+                        command=lambda: [root.destroy(), open_login_window()])
+    back_btn.pack(side="right", padx=5, pady=5)
     
     # Title
     title_label = tk.Label(main_frame, text="EMPLOYEE MENU", 
                           font=("Helvetica", 28, "bold"),
                           fg="black",
                           bg="#f0f0f0")
-    title_label.pack(pady=40)
+    title_label.pack(pady=(0, 40))
     
     # Main frame for buttons
     button_frame = tk.Frame(main_frame, bg="#f0f0f0")
@@ -68,27 +83,14 @@ def EmployeeMenu():
                                  command=lambda: print("Opening Rental Create"))
     rental_create_btn.pack(pady=10)
     
-    # Bottom frame for back button
-    bottom_frame = tk.Frame(main_frame, bg="#f0f0f0")
-    bottom_frame.pack(side="bottom", pady=20)
-    
-    # Back Button
-    back_btn = tk.Button(bottom_frame, text="BACK", 
-                        font=("Helvetica", 14),
-                        bg="#757575",
-                        fg="white",
-                        activebackground="#616161",
-                        width=15,
-                        height=1,
-                        command=lambda: [root.destroy(), open_login_window()])
-    back_btn.pack()
-    
     # Hover effects
     def on_enter(e):
-        e.widget.config(bg=e.widget.hover_color)
+        if hasattr(e.widget, 'hover_color'):
+            e.widget.config(bg=e.widget.hover_color)
     
     def on_leave(e):
-        e.widget.config(bg=e.widget.normal_color)
+        if hasattr(e.widget, 'normal_color'):
+            e.widget.config(bg=e.widget.normal_color)
     
     # Set hover colors for buttons
     rental_view_btn.normal_color = "#8A8A8A"

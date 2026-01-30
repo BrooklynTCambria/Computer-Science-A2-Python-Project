@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import ttk
 
 def center_window(window, width=650, height=500):
     """Center the window on screen"""
@@ -16,35 +15,31 @@ def open_login_window():
     from Login import Login
     Login()
 
-def create_button(parent, text, command, row, col, width=20):
-    """Helper function to create styled buttons"""
-    btn = tk.Button(parent, text=text, 
-                   font=("Helvetica", 12),
-                   command=command,
-                   bg="#8A8A8A",
-                   fg="white",
-                   activebackground="#A3A3A3",
-                   width=width,
-                   height=2,
-                   relief=tk.RAISED,
-                   borderwidth=2)
-    btn.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
-    return btn
+def open_employee_add_window():
+    from EmployeeAdd import EmployeeAdd
+    # Hide the admin menu window
+    root.withdraw()
+    # Open the Employee Add window
+    EmployeeAdd(root)
+    
+def open_employee_view_window():
+    from EmployeeView import EmployeeView
+    # Hide the admin menu window
+    root.withdraw()
+    # Open the Employee View window
+    EmployeeView(root)
 
 def AdminMenu():
+    global root  # Make root accessible to other functions
+    
     root = tk.Tk()
     root.title("SPOTLIGHT AGENCY - Admin Menu")
     root.geometry("650x500")
     root.resizable(False, False)
     center_window(root, 650, 500)
     
-    # Configure grid weights
-    root.grid_columnconfigure(0, weight=1)
-    root.grid_columnconfigure(1, weight=1)
-    root.grid_rowconfigure(1, weight=1)
-    root.grid_rowconfigure(2, weight=1)
-    root.grid_rowconfigure(3, weight=1)
-    root.grid_rowconfigure(4, weight=1)
+    # Set background color
+    root.configure(bg="#f0f0f0")
     
     # Try to set icon
     try:
@@ -52,75 +47,97 @@ def AdminMenu():
     except:
         pass
     
-    # Title frame
-    title_frame = tk.Frame(root, height=80)
-    title_frame.grid(row=0, column=0, columnspan=2, sticky="nsew")
-    title_frame.grid_propagate(False)
+    # Main container frame
+    main_frame = tk.Frame(root, bg="#f0f0f0")
+    main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
-    title_label = tk.Label(title_frame, text="ADMIN MENU", 
-                          font=("Helvetica", 24, "bold"),
-                          fg="Black",)
-    title_label.pack(expand=True)
+    # TOP FRAME for BACK button (top right)
+    top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_frame.pack(fill="x", pady=(0, 10))
     
-    # Main content frame
-    main_frame = tk.Frame(root, bg="#ECF0F1")
-    main_frame.grid(row=1, column=0, columnspan=2, rowspan=4, sticky="nsew", padx=20, pady=20)
+    # BACK Button in top right corner
+    back_btn = tk.Button(top_frame, text="BACK", 
+                        font=("Helvetica", 12, "bold"),
+                        bg="#757575",
+                        fg="white",
+                        activebackground="#616161",
+                        width=10,
+                        height=1,
+                        command=lambda: [root.destroy(), open_login_window()])
+    back_btn.pack(side="right", padx=5, pady=5)
     
-    # Configure main frame grid
-    for i in range(4):
-        main_frame.grid_rowconfigure(i, weight=1)
-    for i in range(2):
-        main_frame.grid_columnconfigure(i, weight=1)
+    # Title - SPOTLIGHT AGENCY
+    agency_label = tk.Label(main_frame, text="SPOTLIGHT AGENCY", 
+                           font=("Helvetica", 18, "bold"),
+                           fg="black",
+                           bg="#f0f0f0")
+    agency_label.pack(pady=(0, 5))
     
-    # Create buttons in grid layout (4 rows x 2 columns)
-    buttons = [
+    # Subtitle - ADMIN MENU
+    subtitle_label = tk.Label(main_frame, text="ADMIN MENU", 
+                             font=("Helvetica", 16, "bold"),
+                             fg="#333333",
+                             bg="#f0f0f0")
+    subtitle_label.pack(pady=(0, 30))
+    
+    # Frame for grid of buttons (2 columns)
+    grid_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    grid_frame.pack(pady=10, padx=10)
+    
+    # List of buttons in order (left column then right column)
+    button_configs = [
+        # (text, command, row, column)
         ("RENTAL VIEW", lambda: print("Opening Rental View"), 0, 0),
-        ("RENTAL CREATE", lambda: print("Opening Rental Create"), 0, 1),
-        ("EMPLOYEE VIEW", lambda: print("Opening Employee View"), 1, 0),
-        ("EMPLOYEE ADD", lambda: print("Opening Employee Add"), 1, 1),
-        ("STOCK VIEW", lambda: print("Opening Stock View"), 2, 0),
-        ("STOCK ADD", lambda: print("Opening Stock Add"), 2, 1),
-        ("CUSTOMER VIEW", lambda: print("Opening Customer View"), 3, 0),
+        ("STOCK VIEW", lambda: print("Opening Stock View"), 0, 1),
+        ("RENTAL CREATE", lambda: print("Opening Rental Create"), 1, 0),
+        ("STOCK ADD", lambda: print("Opening Stock Add"), 1, 1),
+        ("EMPLOYEE VIEW", open_employee_view_window, 2, 0),
+        ("CUSTOMER VIEW", lambda: print("Opening Customer View"), 2, 1),
+        ("EMPLOYEE ADD", open_employee_add_window, 3, 0),
         ("REVENUE", lambda: print("Opening Revenue"), 3, 1),
     ]
     
-    for text, command, row, col in buttons:
-        create_button(main_frame, text, command, row, col, width=22)
+    # Store all buttons for hover effects
+    all_buttons = []
     
-    # Bottom frame for back button
-    bottom_frame = tk.Frame(root, bg="#ECF0F1", height=60)
-    bottom_frame.grid(row=5, column=0, columnspan=2, sticky="nsew", pady=(0, 10))
-    bottom_frame.grid_propagate(False)
+    # Create buttons in grid
+    for text, command, row, col in button_configs:
+        btn = tk.Button(grid_frame, text=text,
+                       font=("Helvetica", 13, "bold"),  # Slightly smaller font for better fit
+                       bg="#8A8A8A",
+                       fg="white",
+                       activebackground="#A3A3A3",
+                       width=18,  # Slightly smaller width
+                       height=2,
+                       command=command)
+        btn.grid(row=row, column=col, padx=8, pady=8, sticky="nsew")
+        all_buttons.append(btn)
     
-    # Back button
-    back_btn = tk.Button(bottom_frame, text="BACK", 
-                        command=lambda: [root.destroy(), open_login_window()], 
-                        font=("Helvetica", 12, "bold"),
-                        height=2,
-                        width=20,
-                        bg="#A3A3A3",
-                        fg="white",
-                        activebackground="#8A8A8A",
-                        relief=tk.RAISED,
-                        borderwidth=2)
-    back_btn.pack(pady=10)
+    # Configure grid weights for equal spacing
+    grid_frame.grid_columnconfigure(0, weight=1)
+    grid_frame.grid_columnconfigure(1, weight=1)
+    for i in range(4):  # 4 rows
+        grid_frame.grid_rowconfigure(i, weight=1)
     
-    # Hover effect function
+    # Hover effects function
     def on_enter(e):
-        e.widget.config(bg="#8A8A8A")
+        if hasattr(e.widget, 'hover_color'):
+            e.widget.config(bg=e.widget.hover_color)
     
     def on_leave(e):
-        if e.widget.cget("text") != "BACK":
-            e.widget.config(bg="#8A8A8A")
-        else:
-            e.widget.config(bg="#A3A3A3")
+        if hasattr(e.widget, 'normal_color'):
+            e.widget.config(bg=e.widget.normal_color)
     
-    # Apply hover effects to all buttons
-    for child in main_frame.winfo_children():
-        if isinstance(child, tk.Button):
-            child.bind("<Enter>", on_enter)
-            child.bind("<Leave>", on_leave)
+    # Set hover colors for all grid buttons
+    for btn in all_buttons:
+        btn.normal_color = "#8A8A8A"
+        btn.hover_color = "#A3A3A3"
+        btn.bind("<Enter>", on_enter)
+        btn.bind("<Leave>", on_leave)
     
+    # Set hover colors for BACK button
+    back_btn.normal_color = "#757575"
+    back_btn.hover_color = "#616161"
     back_btn.bind("<Enter>", on_enter)
     back_btn.bind("<Leave>", on_leave)
     
