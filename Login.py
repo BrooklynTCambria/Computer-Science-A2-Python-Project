@@ -20,18 +20,37 @@ def load_users():
             return {}
     return {}
 
-def create_default_admin():
+def create_default_accounts():
     users = load_users()
-    if not users:
-        users = {
-            "admin": {
-                "password_hash": hash_password("admin123"),  # Default admin password
-                "role": "admin"
-            }
+    updated = False
+    
+    # Always ensure admin account exists
+    if "admin" not in users:
+        users["admin"] = {
+            "password_hash": hash_password("admin123"),
+            "role": "admin"
         }
+        updated = True
+        print("Admin account created/updated")
+    
+    # Always ensure employee account exists
+    if "employee" not in users:
+        users["employee"] = {
+            "password_hash": hash_password("emp123"),
+            "role": "employee"
+        }
+        updated = True
+        print("Employee account created/updated")
+    
+    # Save if any updates were made
+    if updated:
         with open(PASS_HASHED, 'wb') as f:
             pickle.dump(users, f)
-        print("Default admin account created. Username: admin, Password: admin123")
+        print("Default accounts:")
+        print("- Admin: admin / admin123")
+        print("- Employee: employee / emp123")
+    else:
+        print("Default accounts already exist")
 
 def authenticate_user(username, password):
     users = load_users()
@@ -69,8 +88,12 @@ def Login():
     except:
         pass
     
-    # Create default admin account if needed
-    create_default_admin()
+    # Create/update default accounts (always runs)
+    create_default_accounts()
+    
+    # Load current users for debugging
+    users = load_users()
+    print(f"Current users in database: {list(users.keys())}")
     
     # Main container frame
     main_frame = tk.Frame(root, bg="white")
@@ -82,17 +105,15 @@ def Login():
     
     # Load and display image
     try:
-        # Try to load the image
-        img = Image.open("logo.png")  # Replace with your image file
-        img = img.resize((180, 180), Image.Resampling.LANCZOS)  # Resize for 650x500
+        img = Image.open("logo.png")
+        img = img.resize((180, 180), Image.Resampling.LANCZOS)
         photo = ImageTk.PhotoImage(img)
         
         image_label = tk.Label(image_frame, image=photo, bg="white")
-        image_label.image = photo  # Keep a reference
+        image_label.image = photo
         image_label.pack()
         
     except Exception as e:
-        # If image not found, show text only
         print(f"Image not found: {e}")
         label = tk.Label(image_frame, text="SPOTLIGHT AGENCY", font=("Helvetica", 24, "bold"), bg="white")
         label.pack()
@@ -157,31 +178,49 @@ def Login():
             error_label.config(text="Please enter password")
             return
         
+        # Debug: Show what's being checked
+        print(f"Attempting login with: {username}")
+        
         # Authenticate user
         success, result = authenticate_user(username, password)
         
         if success:
             print(f"Login successful - Username: {username}, Role: {result}")
-            root.destroy()  # Close login window
+            root.destroy()
             
-            # Import AdminMenu here to avoid circular import
+            # Import here to avoid circular imports
             from AdminMenu import AdminMenu
+            from EmployeeMenu import EmployeeMenu
             
             # Open appropriate menu based on role
             if result == "admin":
                 AdminMenu()
+            elif result == "employee":
+                EmployeeMenu()
             else:
-                # For regular users, you can create a different menu
-                AdminMenu()
+                error_label.config(text="Unknown role - contact administrator")
         else:
             error_label.config(text=result)
     
-    login_button = tk.Button(login_frame, text="LOGIN", font=("Helvetica", 14, "bold"), command=submit_login, bg="#8A8A8A", fg="white", width=25, height=2)
+    login_button = tk.Button(login_frame, text="LOGIN", font=("Helvetica", 14, "bold"), 
+                            command=submit_login, bg="#8A8A8A", fg="white", width=25, height=2)
     login_button.pack(pady=20)
     
-    # Instructions for default login
-    info_label = tk.Label(main_frame, text="Default login: admin / admin123", font=("Helvetica", 10), fg="gray", bg="white")
+    # Instructions for default logins
+    info_label = tk.Label(main_frame, 
+                         text="Default admin: admin / admin123\nDefault employee: employee / emp123", 
+                         font=("Helvetica", 10), fg="gray", bg="white", justify="center")
     info_label.pack(pady=5)
+    
+    # Hover effects for login button
+    def on_enter(e):
+        e.widget.config(bg="#A3A3A3")
+    
+    def on_leave(e):
+        e.widget.config(bg="#8A8A8A")
+    
+    login_button.bind("<Enter>", on_enter)
+    login_button.bind("<Leave>", on_leave)
     
     root.mainloop()
 
