@@ -6,24 +6,21 @@ import hashlib
 import os
 
 # User data file
-USER_DATA_FILE = "users.pkl"
+PASS_HASHED = "passHash.pkl"
 
 def hash_password(password):
-    """Hash password using SHA-256"""
     return hashlib.sha256(password.encode()).hexdigest()
 
 def load_users():
-    """Load users from pickle file"""
-    if os.path.exists(USER_DATA_FILE):
+    if os.path.exists(PASS_HASHED):
         try:
-            with open(USER_DATA_FILE, 'rb') as f:
+            with open(PASS_HASHED, 'rb') as f:
                 return pickle.load(f)
         except:
             return {}
     return {}
 
 def create_default_admin():
-    """Create default admin account if no users exist"""
     users = load_users()
     if not users:
         users = {
@@ -32,12 +29,11 @@ def create_default_admin():
                 "role": "admin"
             }
         }
-        with open(USER_DATA_FILE, 'wb') as f:
+        with open(PASS_HASHED, 'wb') as f:
             pickle.dump(users, f)
         print("Default admin account created. Username: admin, Password: admin123")
 
 def authenticate_user(username, password):
-    """Authenticate user credentials"""
     users = load_users()
     
     if username not in users:
@@ -52,7 +48,6 @@ def authenticate_user(username, password):
         return False, "Invalid username or password"
 
 def center_window(window, width=650, height=500):
-    """Center the window on screen"""
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
     
@@ -99,8 +94,7 @@ def Login():
     except Exception as e:
         # If image not found, show text only
         print(f"Image not found: {e}")
-        label = tk.Label(image_frame, text="SPOTLIGHT AGENCY", 
-                        font=("Helvetica", 24, "bold"), bg="white")
+        label = tk.Label(image_frame, text="SPOTLIGHT AGENCY", font=("Helvetica", 24, "bold"), bg="white")
         label.pack()
     
     # Login frame
@@ -143,8 +137,7 @@ def Login():
     passInput.pack(pady=15)
     
     # Error label (initially empty)
-    error_label = tk.Label(login_frame, text="", fg="red", 
-                          font=("Helvetica", 10), bg="white")
+    error_label = tk.Label(login_frame, text="", fg="red", font=("Helvetica", 10), bg="white")
     error_label.pack(pady=5)
     
     # Login button
@@ -183,21 +176,11 @@ def Login():
         else:
             error_label.config(text=result)
     
-    login_button = tk.Button(login_frame, text="LOGIN", 
-                            font=("Helvetica", 14, "bold"),
-                            command=submit_login,
-                            bg="#8A8A8A",
-                            fg="white",
-                            width=25,
-                            height=2)
+    login_button = tk.Button(login_frame, text="LOGIN", font=("Helvetica", 14, "bold"), command=submit_login, bg="#8A8A8A", fg="white", width=25, height=2)
     login_button.pack(pady=20)
     
     # Instructions for default login
-    info_label = tk.Label(main_frame, 
-                         text="Default login: admin / admin123",
-                         font=("Helvetica", 10),
-                         fg="gray",
-                         bg="white")
+    info_label = tk.Label(main_frame, text="Default login: admin / admin123", font=("Helvetica", 10), fg="gray", bg="white")
     info_label.pack(pady=5)
     
     root.mainloop()
