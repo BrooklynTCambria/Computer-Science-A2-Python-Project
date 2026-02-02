@@ -1,7 +1,6 @@
-# RentalView.py - Updated with fix for tag indexing
+# StockView.py
 import tkinter as tk
 from tkinter import ttk, messagebox
-from datetime import datetime
 import database_schema as db
 
 def center_window(window, width=650, height=500):
@@ -13,8 +12,8 @@ def center_window(window, width=650, height=500):
     
     window.geometry(f"{width}x{height}+{x}+{y}")
 
-def RentalView(parent_window=None):
-    """Main Rental View window"""
+def StockView(parent_window=None):
+    """Main Stock View window"""
     
     def setup_hover_effects():
         """Setup hover effects for buttons"""
@@ -26,170 +25,95 @@ def RentalView(parent_window=None):
             if hasattr(e.widget, 'normal_color'):
                 e.widget.config(bg=e.widget.normal_color)
         
-        buttons = [search_btn, delete_btn, view_btn, back_btn]
+        buttons = [search_btn, delete_btn, back_btn]
         for btn in buttons:
             btn.bind("<Enter>", on_enter)
             btn.bind("<Leave>", on_leave)
     
-    def load_rental_data():
-        """Load rental data from database"""
+    def load_stock_data():
+        """Load stock data from database"""
         # Clear existing data
         for item in tree.get_children():
             tree.delete(item)
         
-        # Load rentals
-        rentals = db.load_rentals()
-        customers = db.load_customers()
+        # Load items
+        items = db.load_items()
         
-        # Create customer lookup dictionary
-        customer_dict = {c.customer_id: c for c in customers}
+        # Sort by name (you can change this to other columns)
+        items.sort(key=lambda x: x.name.lower())
         
-        # Add rental data with tags
-        for rental in rentals:
-            customer = customer_dict.get(rental.customer_id)
-            if customer:
-                customer_name = f"{customer.surname}, {customer.firstname}"
-            else:
-                customer_name = f"Customer ID: {rental.customer_id}"
-            
-            date_range = f"{rental.start_date.strftime('%d/%m/%y')} - {rental.end_date.strftime('%d/%m/%y')}"
-            
-            # Insert with rental ID as tag
+        # Add item data with tags
+        for item in items:
+            # Insert with item ID as tag
             tree.insert("", "end", 
-                       values=(date_range, customer_name, f"£{rental.total_price:.2f}", rental.employee),
-                       tags=(str(rental.rental_id),))
+                       values=(item.name, item.type, f"£{item.price:.2f}", item.quantity),
+                       tags=(str(item.item_id),))
     
     def on_item_select(event):
         """Handle item selection"""
         selected = tree.selection()
         if selected:
             delete_btn.config(state="normal")
-            view_btn.config(state="normal")
             # Update selected count
             count_label.config(text=f"{len(selected)} SELECTED")
         else:
             delete_btn.config(state="disabled")
-            view_btn.config(state="disabled")
             count_label.config(text="0 SELECTED")
     
     def delete_selected():
-        """Delete selected reservation"""
+        """Delete selected stock item"""
         selected = tree.selection()
         if not selected:
-            messagebox.showwarning("No Selection", "Please select a reservation to delete.")
+            messagebox.showwarning("No Selection", "Please select a stock item to delete.")
             return
         
         item = tree.item(selected[0])
         
         # Check if item has tags
         if not item['tags']:
-            messagebox.showerror("Error", "Cannot delete this item - missing rental ID.")
+            messagebox.showerror("Error", "Cannot delete this item - missing item ID.")
             return
             
-        rental_id = int(item['tags'][0])
-        reservation_info = item['values'][0]
-        customer_name = item['values'][1]
+        item_id = int(item['tags'][0])
+        item_name = item['values'][0]
+        item_type = item['values'][1]
         
         confirm = messagebox.askyesno(
             "Confirm Delete",
-            f"Are you sure you want to delete reservation:\n\n{customer_name}\n{reservation_info}"
+            f"Are you sure you want to delete stock item:\n\n{item_name}\nType: {item_type}"
         )
         
         if confirm:
-            # Delete from database
+            # Check if item is used in any rentals
             rentals = db.load_rentals()
-            rentals = [r for r in rentals if r.rental_id != rental_id]
-            db.save_rentals(rentals)
+            item_in_use = False
+            for rental in rentals:
+                if item_id in rental.items:
+                    item_in_use = True
+                    break
+            
+            if item_in_use:
+                messagebox.showerror("Cannot Delete", 
+                    f"Cannot delete '{item_name}' because it is currently rented or has rental history.\n"
+                    f"Consider reducing quantity to 0 instead.")
+                return
+            
+            # Delete from database
+            items = db.load_items()
+            items = [i for i in items if i.item_id != item_id]
+            db.save_items(items)
             
             # Update treeview
             tree.delete(selected[0])
-            messagebox.showinfo("Success", "Reservation deleted successfully.")
+            messagebox.showinfo("Success", "Stock item deleted successfully.")
             delete_btn.config(state="disabled")
-            view_btn.config(state="disabled")
             count_label.config(text="0 SELECTED")
     
     def open_search_window():
         """Open Search window"""
         SearchWindow(root, apply_search_filter)
     
-    def view_selected_list():
-        """View details of selected reservation"""
-        selected = tree.selection()
-        if not selected:
-            messagebox.showwarning("No Selection", "Please select a reservation to view.")
-            return
-        
-        item = tree.item(selected[0])
-        
-        # Check if item has tags
-        if not item['tags']:
-            messagebox.showerror("Error", "Cannot view this item - missing rental ID.")
-            return
-            
-        rental_id = int(item['tags'][0])
-        
-        # Find rental details
-        rentals = db.load_rentals()
-        customers = db.load_customers()
-        items_db = db.load_items()
-        
-        rental = None
-        for r in rentals:
-            if r.rental_id == rental_id:
-                rental = r
-                break
-        
-        if not rental:
-            messagebox.showerror("Error", "Reservation not found!")
-            return
-        
-        # Find customer
-        customer = None
-        for c in customers:
-            if c.customer_id == rental.customer_id:
-                customer = c
-                break
-        
-        # Build details string
-        details = f"RESERVATION DETAILS\n\n"
-        details += f"Reservation ID: {rental.rental_id}\n"
-        if customer:
-            details += f"Customer: {customer.firstname} {customer.surname}\n"
-            details += f"Phone: {customer.phone}\n"
-        details += f"Employee: {rental.employee}\n"
-        
-        # Handle both datetime and date objects
-        start_date = rental.start_date
-        end_date = rental.end_date
-        
-        # Format dates
-        if hasattr(start_date, 'strftime'):
-            details += f"Start Date: {start_date.strftime('%d/%m/%Y')}\n"
-        else:
-            details += f"Start Date: {start_date}\n"
-            
-        if hasattr(end_date, 'strftime'):
-            details += f"End Date: {end_date.strftime('%d/%m/%Y')}\n"
-        else:
-            details += f"End Date: {end_date}\n"
-            
-        details += f"Total: £{rental.total_price:.2f}\n"
-        details += f"\nItems:\n"
-        
-        # Add items
-        if hasattr(rental, 'items') and rental.items:
-            for item_id, quantity in rental.items.items():
-                for item in items_db:
-                    if item.item_id == item_id:
-                        item_total = item.price * quantity
-                        details += f"- {item.name} x{quantity}: £{item_total:.2f} (£{item.price:.2f} each)\n"
-                        break
-        else:
-            details += "- No items found for this rental\n"
-        
-        messagebox.showinfo("Reservation Details", details)
-    
-    def apply_search_filter(firstname_filter, lastname_filter, date_filter, employee_filter):
+    def apply_search_filter(name_filter, type_filter, price_min_filter, price_max_filter):
         """Apply search filter to the treeview"""
         # Clear current selection
         tree.selection_remove(tree.selection())
@@ -199,7 +123,7 @@ def RentalView(parent_window=None):
             tree.reattach(child, '', 'end')
         
         # If no search criteria, show all
-        if not firstname_filter and not lastname_filter and not date_filter and not employee_filter:
+        if not name_filter and not type_filter and not price_min_filter and not price_max_filter:
             return
         
         # Hide non-matching items
@@ -208,47 +132,70 @@ def RentalView(parent_window=None):
             item_values = item['values']
             
             # Skip items without proper values
-            if len(item_values) < 2:
+            if len(item_values) < 4:
                 tree.detach(child)
                 continue
             
-            customer_info = str(item_values[1]).lower()
-            date_range = str(item_values[0]).lower()
-            employee_info = str(item_values[3]).lower() if len(item_values) > 3 else ""
+            item_name = str(item_values[0]).lower()
+            item_type = str(item_values[1]).lower()
+            item_price_str = str(item_values[2]).lower().replace('£', '').replace(' ', '')
             
             match = True
             
-            # Check customer name (format: "Last, First")
-            if firstname_filter:
-                # Extract first name from "Last, First" format
-                parts = customer_info.split(',')
-                if len(parts) > 1:
-                    customer_firstname = parts[1].strip()
-                    if firstname_filter.lower() not in customer_firstname:
-                        match = False
-                else:
-                    match = False
-            
-            if lastname_filter:
-                # Extract last name from "Last, First" format
-                parts = customer_info.split(',')
-                if len(parts) > 0:
-                    customer_lastname = parts[0].strip()
-                    if lastname_filter.lower() not in customer_lastname:
-                        match = False
-                else:
-                    match = False
-            
-            if date_filter:
-                date_str = date_filter.strip().lower()
-                if date_str and date_str not in date_range:
-                    match = False
-            
-            if employee_filter and employee_filter.lower() not in employee_info:
+            # Check item name
+            if name_filter and name_filter.lower() not in item_name:
                 match = False
+            
+            # Check item type
+            if type_filter and type_filter.lower() not in item_type:
+                match = False
+            
+            # Check price range
+            try:
+                item_price = float(item_price_str)
+                
+                if price_min_filter:
+                    try:
+                        min_price = float(price_min_filter)
+                        if item_price < min_price:
+                            match = False
+                    except ValueError:
+                        pass
+                
+                if price_max_filter:
+                    try:
+                        max_price = float(price_max_filter)
+                        if item_price > max_price:
+                            match = False
+                    except ValueError:
+                        pass
+            except ValueError:
+                # If price can't be parsed, show item anyway
+                pass
             
             if not match:
                 tree.detach(child)
+    
+    def sort_treeview(col, reverse):
+        """Sort treeview by column"""
+        data = [(tree.set(child, col), child) for child in tree.get_children()]
+        
+        # Determine if it's a price column (contains £)
+        if col == 2:  # Price column index
+            # Sort by numeric value
+            data.sort(key=lambda x: float(x[0].replace('£', '').replace(' ', '')), reverse=reverse)
+        elif col == 3:  # Quantity column
+            # Sort by numeric value
+            data.sort(key=lambda x: int(x[0]), reverse=reverse)
+        else:
+            # Sort alphabetically
+            data.sort(reverse=reverse)
+        
+        for index, (_, child) in enumerate(data):
+            tree.move(child, '', index)
+        
+        # Reverse sort direction for next time
+        tree.heading(col, command=lambda: sort_treeview(col, not reverse))
     
     def go_back():
         """Go back to previous window"""
@@ -258,7 +205,7 @@ def RentalView(parent_window=None):
     
     # Create the main window
     root = tk.Toplevel() if parent_window else tk.Tk()
-    root.title("SPOTLIGHT AGENCY - Reservation Search")
+    root.title("SPOTLIGHT AGENCY - Stock Search")
     root.geometry("800x500")  # Wider for more columns
     root.resizable(False, False)
     center_window(root, 650, 500)
@@ -292,13 +239,13 @@ def RentalView(parent_window=None):
     back_btn.pack(side="right", padx=5, pady=5)
     
     # Title
-    title_label = tk.Label(main_frame, text="RESERVATION SEARCH", 
+    title_label = tk.Label(main_frame, text="STOCK SEARCH", 
                           font=("Helvetica", 20, "bold"),
                           fg="black",
                           bg="#f0f0f0")
     title_label.pack(pady=(0, 20))
     
-    # Top button frame (Search, View Selected, Delete Selected)
+    # Top button frame (Search, Delete Selected)
     top_button_frame = tk.Frame(main_frame, bg="#f0f0f0")
     top_button_frame.pack(pady=(0, 15))
     
@@ -312,18 +259,6 @@ def RentalView(parent_window=None):
                           height=2,
                           command=open_search_window)
     search_btn.pack(side="left", padx=5)
-    
-    # View Selected List button
-    view_btn = tk.Button(top_button_frame, text="VIEW SELECTED LIST",
-                        font=("Helvetica", 11, "bold"),
-                        bg="#8A8A8A",
-                        fg="white",
-                        activebackground="#A3A3A3",
-                        width=15,
-                        height=2,
-                        state="disabled",
-                        command=view_selected_list)
-    view_btn.pack(side="left", padx=5)
     
     # Delete Selected button
     delete_btn = tk.Button(top_button_frame, text="DELETE SELECTED",
@@ -349,20 +284,24 @@ def RentalView(parent_window=None):
     tree_frame.pack(fill="both", expand=True, pady=(0, 10))
     
     # Create Treeview
-    columns = ("Date Range", "Customer", "Total", "Employee")
+    columns = ("Item Name", "Type", "Price", "Quantity")
     tree = ttk.Treeview(tree_frame, columns=columns, show="headings", height=15)
     
-    # Define headings
-    tree.heading("Date Range", text="Date Range")
-    tree.heading("Customer", text="Customer")
-    tree.heading("Total", text="Total")
-    tree.heading("Employee", text="Employee")
+    # Define headings with clickable sorting
+    tree.heading("Item Name", text="Item Name", 
+                 command=lambda: sort_treeview(0, False))
+    tree.heading("Type", text="Type", 
+                 command=lambda: sort_treeview(1, False))
+    tree.heading("Price", text="Price", 
+                 command=lambda: sort_treeview(2, False))
+    tree.heading("Quantity", text="Quantity", 
+                 command=lambda: sort_treeview(3, False))
     
     # Define columns
-    tree.column("Date Range", width=150, anchor="w")
-    tree.column("Customer", width=200, anchor="w")
-    tree.column("Total", width=100, anchor="w")
-    tree.column("Employee", width=100, anchor="w")
+    tree.column("Item Name", width=200, anchor="w")
+    tree.column("Type", width=150, anchor="w")
+    tree.column("Price", width=100, anchor="w")
+    tree.column("Quantity", width=100, anchor="center")
     
     # Add scrollbar
     scrollbar = ttk.Scrollbar(tree_frame, orient="vertical", command=tree.yview)
@@ -374,9 +313,6 @@ def RentalView(parent_window=None):
     # Set hover colors
     search_btn.normal_color = "#8A8A8A"
     search_btn.hover_color = "#A3A3A3"
-    
-    view_btn.normal_color = "#8A8A8A"
-    view_btn.hover_color = "#A3A3A3"
     
     delete_btn.normal_color = "#8A8A8A"
     delete_btn.hover_color = "#A3A3A3"
@@ -391,7 +327,7 @@ def RentalView(parent_window=None):
     tree.bind("<<TreeviewSelect>>", on_item_select)
     
     # Load initial data
-    load_rental_data()
+    load_stock_data()
     
     if not parent_window:
         root.mainloop()
@@ -401,13 +337,28 @@ def SearchWindow(parent_window, apply_callback):
     
     def perform_search():
         """Perform search and close window"""
-        firstname = firstname_entry.get().strip()
-        lastname = lastname_entry.get().strip()
-        date = date_entry.get().strip()
-        employee = employee_entry.get().strip()
+        name = name_entry.get().strip()
+        item_type = type_entry.get().strip()
+        price_min = price_min_entry.get().strip()
+        price_max = price_max_entry.get().strip()
+        
+        # Validate price inputs
+        if price_min:
+            try:
+                float(price_min)
+            except ValueError:
+                messagebox.showerror("Invalid Input", "Minimum price must be a number.")
+                return
+        
+        if price_max:
+            try:
+                float(price_max)
+            except ValueError:
+                messagebox.showerror("Invalid Input", "Maximum price must be a number.")
+                return
         
         # Apply search to main window
-        apply_callback(firstname, lastname, date, employee)
+        apply_callback(name, item_type, price_min, price_max)
         
         # Close search window
         search_root.destroy()
@@ -419,7 +370,7 @@ def SearchWindow(parent_window, apply_callback):
     
     # Create search window
     search_root = tk.Toplevel(parent_window)
-    search_root.title("SPOTLIGHT AGENCY - Search")
+    search_root.title("SPOTLIGHT AGENCY - Stock Search")
     search_root.geometry("650x500")
     search_root.resizable(False, False)
     center_window(search_root, 650, 500)
@@ -438,7 +389,7 @@ def SearchWindow(parent_window, apply_callback):
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
     # Title
-    title_label = tk.Label(main_frame, text="SEARCH", 
+    title_label = tk.Label(main_frame, text="STOCK SEARCH", 
                           font=("Helvetica", 24, "bold"),
                           fg="black",
                           bg="#f0f0f0")
@@ -465,33 +416,56 @@ def SearchWindow(parent_window, apply_callback):
         "highlightthickness": 1
     }
     
-    # First Name
-    firstname_label = tk.Label(criteria_frame, text="FIRST NAME", **label_style)
-    firstname_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
+    # Item Name
+    name_label = tk.Label(criteria_frame, text="ITEM NAME", **label_style)
+    name_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
     
-    firstname_entry = tk.Entry(criteria_frame, **entry_style)
-    firstname_entry.grid(row=1, column=0, pady=(0, 20), ipady=5)
+    name_entry = tk.Entry(criteria_frame, **entry_style)
+    name_entry.grid(row=1, column=0, pady=(0, 20), ipady=5)
     
-    # Last Name
-    lastname_label = tk.Label(criteria_frame, text="LAST NAME", **label_style)
-    lastname_label.grid(row=2, column=0, sticky="w", pady=(0, 5))
+    # Item Type
+    type_label = tk.Label(criteria_frame, text="ITEM TYPE", **label_style)
+    type_label.grid(row=2, column=0, sticky="w", pady=(0, 5))
     
-    lastname_entry = tk.Entry(criteria_frame, **entry_style)
-    lastname_entry.grid(row=3, column=0, pady=(0, 20), ipady=5)
+    type_entry = tk.Entry(criteria_frame, **entry_style)
+    type_entry.grid(row=3, column=0, pady=(0, 20), ipady=5)
     
-    # Date (format hint)
-    date_label = tk.Label(criteria_frame, text="DATE (dd/mm/yy)", **label_style)
-    date_label.grid(row=4, column=0, sticky="w", pady=(0, 5))
+    # Price Range Frame
+    price_frame = tk.Frame(criteria_frame, bg="#f0f0f0")
+    price_frame.grid(row=4, column=0, sticky="w", pady=(0, 5))
     
-    date_entry = tk.Entry(criteria_frame, **entry_style)
-    date_entry.grid(row=5, column=0, pady=(0, 20), ipady=5)
+    price_label = tk.Label(price_frame, text="PRICE RANGE", **label_style)
+    price_label.pack(anchor="w")
     
-    # Employee
-    employee_label = tk.Label(criteria_frame, text="EMPLOYEE", **label_style)
-    employee_label.grid(row=6, column=0, sticky="w", pady=(0, 5))
+    # Price inputs in one line
+    price_inputs_frame = tk.Frame(criteria_frame, bg="#f0f0f0")
+    price_inputs_frame.grid(row=5, column=0, sticky="w", pady=(0, 20))
     
-    employee_entry = tk.Entry(criteria_frame, **entry_style)
-    employee_entry.grid(row=7, column=0, pady=(0, 30), ipady=5)
+    price_min_label = tk.Label(price_inputs_frame, text="Min:", 
+                              font=("Helvetica", 11),
+                              bg="#f0f0f0")
+    price_min_label.pack(side="left", padx=(0, 5))
+    
+    price_min_entry = tk.Entry(price_inputs_frame, 
+                              font=("Helvetica", 12),
+                              width=12,
+                              bd=1,
+                              relief="solid",
+                              highlightthickness=1)
+    price_min_entry.pack(side="left", padx=(0, 15), ipady=5)
+    
+    price_max_label = tk.Label(price_inputs_frame, text="Max:", 
+                              font=("Helvetica", 11),
+                              bg="#f0f0f0")
+    price_max_label.pack(side="left", padx=(0, 5))
+    
+    price_max_entry = tk.Entry(price_inputs_frame, 
+                              font=("Helvetica", 12),
+                              width=12,
+                              bd=1,
+                              relief="solid",
+                              highlightthickness=1)
+    price_max_entry.pack(side="left", ipady=5)
     
     # Button frame
     button_frame = tk.Frame(main_frame, bg="#f0f0f0")
@@ -531,10 +505,10 @@ def SearchWindow(parent_window, apply_callback):
     clear_btn.bind("<Leave>", lambda e: clear_btn.config(bg="#8A8A8A"))
     
     # Bind Enter key to search
-    firstname_entry.bind('<Return>', lambda e: perform_search())
-    lastname_entry.bind('<Return>', lambda e: perform_search())
-    date_entry.bind('<Return>', lambda e: perform_search())
-    employee_entry.bind('<Return>', lambda e: perform_search())
+    name_entry.bind('<Return>', lambda e: perform_search())
+    type_entry.bind('<Return>', lambda e: perform_search())
+    price_min_entry.bind('<Return>', lambda e: perform_search())
+    price_max_entry.bind('<Return>', lambda e: perform_search())
     
     # Make window modal
     search_root.transient(parent_window)
@@ -542,8 +516,8 @@ def SearchWindow(parent_window, apply_callback):
     search_root.focus_set()
     
     # Focus on first entry
-    firstname_entry.focus_set()
+    name_entry.focus_set()
 
 # For testing directly
 if __name__ == "__main__":
-    RentalView()
+    StockView()
