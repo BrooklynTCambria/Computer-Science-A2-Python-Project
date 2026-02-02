@@ -14,8 +14,23 @@ def open_login_window():
     """Function to open login window"""
     from Login import Login
     Login()
-
+    
+def open_rental_view_window():
+    from RentalView import RentalView
+    # Hide the admin menu window
+    root.withdraw()
+    # Open the Rental View window
+    RentalView(root)
+    
+def open_rental_create_window():
+    from RentalCreate import RentalCreate
+    # Hide the admin menu window
+    root.withdraw()
+    # Open the Rental Create window
+    RentalCreate(root)
+    
 def EmployeeMenu():
+    global root  # Make root accessible to other functions
     root = tk.Tk()
     root.title("SPOTLIGHT AGENCY - Employee Menu")
     root.geometry("650x500")
@@ -69,7 +84,7 @@ def EmployeeMenu():
                                activebackground="#A3A3A3",
                                width=25,
                                height=2,
-                               command=lambda: print("Opening Rental View"))
+                               command=lambda: open_rental_view_window())
     rental_view_btn.pack(pady=10)
     
     # Rental Create Button
@@ -80,7 +95,7 @@ def EmployeeMenu():
                                  activebackground="#A3A3A3",
                                  width=25,
                                  height=2,
-                                 command=lambda: print("Opening Rental Create"))
+                                 command=lambda: open_rental_create_window())
     rental_create_btn.pack(pady=10)
     
     # Hover effects

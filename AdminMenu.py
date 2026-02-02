@@ -28,7 +28,28 @@ def open_employee_view_window():
     root.withdraw()
     # Open the Employee View window
     EmployeeView(root)
-
+    
+def open_rental_view_window():
+    from RentalView import RentalView
+    # Hide the admin menu window
+    root.withdraw()
+    # Open the Rental View window
+    RentalView(root)
+    
+def open_rental_create_window():
+    from RentalCreate import RentalCreate
+    # Hide the admin menu window
+    root.withdraw()
+    # Open the Rental Create window
+    RentalCreate(root)
+    
+def open_revenue_window():
+    from Revenue import Revenue
+    # Hide the admin menu window
+    root.withdraw()
+    # Open the Revenue window
+    Revenue(root)
+    
 def AdminMenu():
     global root  # Make root accessible to other functions
     
@@ -87,14 +108,14 @@ def AdminMenu():
     # List of buttons in order (left column then right column)
     button_configs = [
         # (text, command, row, column)
-        ("RENTAL VIEW", lambda: print("Opening Rental View"), 0, 0),
+        ("RENTAL VIEW", open_rental_view_window, 0, 0),
         ("STOCK VIEW", lambda: print("Opening Stock View"), 0, 1),
-        ("RENTAL CREATE", lambda: print("Opening Rental Create"), 1, 0),
+        ("RENTAL CREATE", open_rental_create_window, 1, 0),
         ("STOCK ADD", lambda: print("Opening Stock Add"), 1, 1),
         ("EMPLOYEE VIEW", open_employee_view_window, 2, 0),
         ("CUSTOMER VIEW", lambda: print("Opening Customer View"), 2, 1),
         ("EMPLOYEE ADD", open_employee_add_window, 3, 0),
-        ("REVENUE", lambda: print("Opening Revenue"), 3, 1),
+        ("REVENUE", open_revenue_window, 3, 1),
     ]
     
     # Store all buttons for hover effects
