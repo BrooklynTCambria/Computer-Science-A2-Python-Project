@@ -57,6 +57,13 @@ def open_stock_add_window():
     # Open the Stock View window
     StockAdd(root)
     
+def open_customer_view_window():
+    from CustomerView import CustomerView
+    # Hide the admin menu window
+    root.withdraw()
+    # Open the Stock View window
+    CustomerView(root)
+    
 def open_revenue_window():
     from Revenue import Revenue
     # Hide the admin menu window
@@ -127,7 +134,7 @@ def AdminMenu():
         ("RENTAL CREATE", open_rental_create_window, 1, 0),
         ("STOCK ADD", open_stock_add_window, 1, 1),
         ("EMPLOYEE VIEW", open_employee_view_window, 2, 0),
-        ("CUSTOMER VIEW", lambda: print("Opening Customer View"), 2, 1),
+        ("CUSTOMER VIEW", open_customer_view_window, 2, 1),
         ("EMPLOYEE ADD", open_employee_add_window, 3, 0),
         ("REVENUE", open_revenue_window, 3, 1),
     ]
