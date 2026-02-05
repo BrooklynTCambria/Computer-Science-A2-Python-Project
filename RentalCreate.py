@@ -166,7 +166,7 @@ class RentalCreate:
         self.back_btn.pack(side="right", padx=5, pady=5)
         
         # Title
-        title_label = tk.Label(main_frame, text="RESERVATION CREATION", 
+        title_label = tk.Label(main_frame, text="RENTAL CREATION", 
                               font=("Helvetica", 18, "bold"),
                               fg="black",
                               bg="#f0f0f0")
@@ -209,7 +209,7 @@ class RentalCreate:
                                    activebackground="#A3A3A3",
                                    width=15,
                                    height=2,
-                                   command=self.create_reservation)
+                                   command=self.create_rental)
         self.create_btn.pack(side="right")
         
         # Set hover colors
@@ -232,7 +232,7 @@ class RentalCreate:
         self.setup_hover_effects()
         
         # Bind Enter key to create reservation
-        self.root.bind('<Return>', lambda e: self.create_reservation())
+        self.root.bind('<Return>', lambda e: self.create_rental())
         
         # Focus on first entry
         self.firstname_entry.focus_set()
@@ -263,9 +263,6 @@ class RentalCreate:
         self.firstname_entry = tk.Entry(parent_frame, **entry_style)
         self.firstname_entry.pack(pady=(0, 15), ipady=5)
         
-        # Bind key release to enable/disable autofill
-        self.firstname_entry.bind("<KeyRelease>", self.on_name_change)
-        
         # Last Name
         lastname_label = tk.Label(parent_frame, text="LAST NAME", **label_style)
         lastname_label.pack(pady=(0, 5), anchor="w")
@@ -280,14 +277,13 @@ class RentalCreate:
         self.phone_entry = tk.Entry(parent_frame, **entry_style)
         self.phone_entry.pack(pady=(0, 20), ipady=5)
         
-        # AUTO FILL Button
+        # AUTO FILL Button - ALWAYS ENABLED
         self.autofill_btn = tk.Button(parent_frame, text="AUTO FILL",
                                      font=("Helvetica", 11, "bold"),
                                      bg="#8A8A8A",
                                      fg="white",
                                      width=15,
                                      height=1,
-                                     state="disabled",
                                      command=self.show_autofill)
         self.autofill_btn.pack(pady=(10, 0))
     
@@ -336,18 +332,22 @@ class RentalCreate:
                             bg="#f0f0f0")
         end_label.pack(side="left", padx=(0, 5))
         
-        # Create end date picker - initially disabled, will be set when start date is selected
+        # Create end date picker - set initial date to same as start date (today)
         self.end_date_entry = DateEntry(dates_frame,
                                        width=12,
                                        background='darkblue',
                                        foreground='white',
                                        borderwidth=2,
                                        date_pattern='dd/mm/yyyy',
-                                       state='disabled')
+                                       mindate=today)  # Set minimum to today
+        self.end_date_entry.set_date(today)  # Set to same date as start
         self.end_date_entry.pack(side="left")
         
-        # Bind start date selection to update end date minimum
+        # Bind start date selection to update end date minimum and set end date to same as start
         self.start_date_entry.bind("<<DateEntrySelected>>", self.on_start_date_selected)
+        
+        # Also bind to validate when user manually changes end date
+        self.end_date_entry.bind("<<DateEntrySelected>>", self.validate_end_date)
         
         # Stock label
         stock_label = tk.Label(parent_frame, text="STOCK",
@@ -426,33 +426,36 @@ class RentalCreate:
         self.remove_btn.pack()
     
     def on_start_date_selected(self, event=None):
-        """When start date is selected, update end date picker"""
+        """When start date is selected, update end date picker and set end date to same as start"""
         try:
             start_date = self.start_date_entry.get_date()
             
-            # Enable end date picker and set minimum date to start date
-            self.end_date_entry.config(state='normal', mindate=start_date)
+            # Set end date to the same as start date
+            self.end_date_entry.set_date(start_date)
             
-            # If end date is before start date, set it to start date
-            try:
-                end_date = self.end_date_entry.get_date()
-                if end_date < start_date:
-                    self.end_date_entry.set_date(start_date)
-            except:
-                # If no end date selected yet, set it to start date
-                self.end_date_entry.set_date(start_date)
+            # Set minimum date to start date
+            self.end_date_entry.config(mindate=start_date)
+            
+            # Update total in case days changed
+            self.update_total()
         except Exception as e:
             print(f"Error setting end date: {e}")
     
-    def on_name_change(self, event):
-        """Enable/disable autofill button based on input"""
-        firstname = self.firstname_entry.get().strip()
-        lastname = self.lastname_entry.get().strip()
-        
-        if firstname or lastname:
-            self.autofill_btn.config(state="normal")
-        else:
-            self.autofill_btn.config(state="disabled")
+    def validate_end_date(self, event=None):
+        """Validate that end date is not before start date"""
+        try:
+            start_date = self.start_date_entry.get_date()
+            end_date = self.end_date_entry.get_date()
+            
+            # If end date is before start date, show error and reset to start date
+            if end_date < start_date:
+                messagebox.showwarning("Invalid Date", "End date cannot be before start date!")
+                self.end_date_entry.set_date(start_date)
+            
+            # Update total in case days changed
+            self.update_total()
+        except Exception as e:
+            print(f"Error validating end date: {e}")
     
     def show_autofill(self):
         """Show autofill popup with matching customers"""
@@ -462,14 +465,51 @@ class RentalCreate:
         # Load all customers
         all_customers = db.load_customers()
         
-        # Filter customers based on partial match
-        matching_customers = []
-        for customer in all_customers:
-            firstname_match = not firstname or firstname in customer.firstname.lower()
-            lastname_match = not lastname or lastname in customer.surname.lower()
-            
-            if firstname_match or lastname_match:
-                matching_customers.append(customer)
+        # If no name is entered, show all customers
+        if not firstname and not lastname:
+            matching_customers = all_customers
+        else:
+            # Filter customers based on partial match in EITHER firstname OR lastname
+            # But also consider what fields are filled
+            matching_customers = []
+            for customer in all_customers:
+                customer_firstname = customer.firstname.lower()
+                customer_lastname = customer.surname.lower()
+                
+                # Initialize matches
+                firstname_match = False
+                lastname_match = False
+                
+                # Check firstname if user entered something in firstname field
+                if firstname:
+                    firstname_match = firstname in customer_firstname
+                else:
+                    # If firstname field is empty, consider it a match for filtering purposes
+                    firstname_match = True
+                
+                # Check lastname if user entered something in lastname field
+                if lastname:
+                    lastname_match = lastname in customer_lastname
+                else:
+                    # If lastname field is empty, consider it a match for filtering purposes
+                    lastname_match = True
+                
+                # If user entered both fields, show customers matching BOTH (intelligent filtering)
+                if firstname and lastname:
+                    # Show customers where firstname matches OR lastname matches
+                    if firstname_match or lastname_match:
+                        matching_customers.append(customer)
+                elif firstname and not lastname:
+                    # Only firstname entered - show if firstname matches
+                    if firstname_match:
+                        matching_customers.append(customer)
+                elif not firstname and lastname:
+                    # Only lastname entered - show if lastname matches
+                    if lastname_match:
+                        matching_customers.append(customer)
+                else:
+                    # Neither field entered - should show all (handled above)
+                    pass
         
         if not matching_customers:
             messagebox.showinfo("No Matches", "No matching customers found.")
@@ -582,8 +622,8 @@ class RentalCreate:
         
         self.total_label.config(text=f"TOTAL: £{total:.2f}")
     
-    def create_reservation(self):
-        """Create the reservation"""
+    def create_rental(self):
+        """Create the Rental"""
         # Get customer details
         firstname = self.firstname_entry.get().strip()
         lastname = self.lastname_entry.get().strip()
@@ -671,8 +711,8 @@ class RentalCreate:
         db.save_rentals(rentals)
         
         # Show confirmation
-        confirmation = f"Reservation Created Successfully!\n\n"
-        confirmation += f"Reservation ID: {rental_id}\n"
+        confirmation = f"Rental Created Successfully!\n\n"
+        confirmation += f"Rental ID: {rental_id}\n"
         confirmation += f"Customer: {firstname} {lastname}\n"
         confirmation += f"Phone: {phone}\n"
         confirmation += f"Dates: {start_date.strftime('%d/%m/%Y')} to {end_date.strftime('%d/%m/%Y')}\n"
@@ -696,15 +736,11 @@ class RentalCreate:
         self.lastname_entry.delete(0, tk.END)
         self.phone_entry.delete(0, tk.END)
         
-        # Set default dates (tomorrow to day after tomorrow)
-        tomorrow = datetime.now() + timedelta(days=1)
-        day_after = tomorrow + timedelta(days=1)
-        
-        self.start_date_entry.set_date(tomorrow)
-        self.end_date_entry.set_date(day_after)
-        
-        # Re-enable end date picker
-        self.end_date_entry.config(state='normal', mindate=tomorrow)
+        # Set default dates (today to today)
+        today = datetime.now()
+        self.start_date_entry.set_date(today)
+        self.end_date_entry.set_date(today)
+        self.end_date_entry.config(mindate=today)  # Reset minimum date
         
         # Clear selected items
         self.selected_items.clear()
@@ -715,9 +751,6 @@ class RentalCreate:
         
         # Update total
         self.total_label.config(text="TOTAL: £0.00")
-        
-        # Disable autofill
-        self.autofill_btn.config(state="disabled")
         
         # Focus on first name
         self.firstname_entry.focus_set()

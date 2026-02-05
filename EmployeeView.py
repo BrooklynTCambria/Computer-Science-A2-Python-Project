@@ -1,4 +1,4 @@
-# EmployeeView.py
+# EmployeeView.py - Consolidated version
 import tkinter as tk
 from tkinter import ttk, messagebox
 import hashlib
@@ -33,8 +33,11 @@ def center_window(window, width=650, height=500):
     
     window.geometry(f"{width}x{height}+{x}+{y}")
 
+# ============================================================================
+# Main Employee View Window
+# ============================================================================
 def EmployeeView(parent_window=None):
-    """Main Employee View window with popup child windows"""
+    """Main Employee View window"""
     
     # Variables for sorting
     sort_by_options = ["First Name", "Surname", "Username", "Password"]
@@ -361,6 +364,9 @@ def EmployeeView(parent_window=None):
     if not parent_window:
         root.mainloop()
 
+# ============================================================================
+# Search Window
+# ============================================================================
 def SearchWindow(parent_window, apply_callback):
     """Popup Search window - 650x500"""
     
@@ -380,6 +386,21 @@ def SearchWindow(parent_window, apply_callback):
         """Clear search and close window"""
         apply_callback("", "", "")  # Clear filter
         search_root.destroy()
+    
+    def setup_hover_effects():
+        """Setup hover effects for buttons"""
+        def on_enter(e):
+            if hasattr(e.widget, 'hover_color'):
+                e.widget.config(bg=e.widget.hover_color)
+        
+        def on_leave(e):
+            if hasattr(e.widget, 'normal_color'):
+                e.widget.config(bg=e.widget.normal_color)
+        
+        buttons = [search_btn, clear_btn]
+        for btn in buttons:
+            btn.bind("<Enter>", on_enter)
+            btn.bind("<Leave>", on_leave)
     
     # Create search window
     search_root = tk.Toplevel(parent_window)
@@ -482,10 +503,7 @@ def SearchWindow(parent_window, apply_callback):
     clear_btn.hover_color = "#A3A3A3"
     
     # Setup hover effects
-    search_btn.bind("<Enter>", lambda e: search_btn.config(bg="#A3A3A3"))
-    search_btn.bind("<Leave>", lambda e: search_btn.config(bg="#8A8A8A"))
-    clear_btn.bind("<Enter>", lambda e: clear_btn.config(bg="#A3A3A3"))
-    clear_btn.bind("<Leave>", lambda e: clear_btn.config(bg="#8A8A8A"))
+    setup_hover_effects()
     
     # Bind Enter key to search
     firstname_entry.bind('<Return>', lambda e: perform_search())
@@ -500,6 +518,9 @@ def SearchWindow(parent_window, apply_callback):
     # Focus on first entry
     firstname_entry.focus_set()
 
+# ============================================================================
+# Change Credentials Window
+# ============================================================================
 def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_callback):
     """Popup Change Credentials window - 650x500"""
     
@@ -658,9 +679,9 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
                          fg="#333333")
     info_label.pack(pady=(0, 30))
     
-    # Credentials frame
-    cred_main_frame = tk.Frame(main_frame, bg="#f0f0f0")
-    cred_main_frame.pack(pady=10)
+    # Two-column layout for username and password changes
+    columns_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    columns_frame.pack(fill="both", expand=True, pady=10)
     
     # Style for labels
     label_style = {
@@ -673,29 +694,35 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
     # Style for entries
     entry_style = {
         "font": ("Helvetica", 12),
-        "width": 25,
+        "width": 22,
         "bd": 1,
         "relief": "solid",
         "highlightthickness": 1
     }
     
-    # Username change section
-    user_frame = tk.Frame(cred_main_frame, bg="#f0f0f0")
-    user_frame.pack(pady=10)
+    # Left column - Username change
+    left_frame = tk.Frame(columns_frame, bg="#f0f0f0")
+    left_frame.pack(side="left", fill="both", expand=True, padx=20)
     
-    user_label = tk.Label(user_frame, text="New Username:", **label_style)
-    user_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
+    user_title = tk.Label(left_frame, text="Change Username",
+                         font=("Helvetica", 14, "bold"),
+                         bg="#f0f0f0",
+                         fg="#333333")
+    user_title.pack(pady=(0, 20))
     
-    new_user_entry1 = tk.Entry(user_frame, **entry_style)
-    new_user_entry1.grid(row=1, column=0, pady=(0, 15), ipady=5)
+    user_label1 = tk.Label(left_frame, text="New Username:", **label_style)
+    user_label1.pack(anchor="w", pady=(0, 5))
     
-    reuser_label = tk.Label(user_frame, text="Re-enter Username:", **label_style)
-    reuser_label.grid(row=2, column=0, sticky="w", pady=(0, 5))
+    new_user_entry1 = tk.Entry(left_frame, **entry_style)
+    new_user_entry1.pack(pady=(0, 15), ipady=5)
     
-    new_user_entry2 = tk.Entry(user_frame, **entry_style)
-    new_user_entry2.grid(row=3, column=0, pady=(0, 20), ipady=5)
+    user_label2 = tk.Label(left_frame, text="Re-enter Username:", **label_style)
+    user_label2.pack(anchor="w", pady=(0, 5))
     
-    change_user_btn = tk.Button(user_frame, text="CHANGE USER",
+    new_user_entry2 = tk.Entry(left_frame, **entry_style)
+    new_user_entry2.pack(pady=(0, 20), ipady=5)
+    
+    change_user_btn = tk.Button(left_frame, text="CHANGE USERNAME",
                                font=("Helvetica", 12, "bold"),
                                bg="#8A8A8A",
                                fg="white",
@@ -703,25 +730,31 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
                                width=20,
                                height=2,
                                command=change_username)
-    change_user_btn.grid(row=4, column=0, pady=10)
+    change_user_btn.pack(pady=10)
     
-    # Password change section
-    pass_frame = tk.Frame(cred_main_frame, bg="#f0f0f0")
-    pass_frame.pack(pady=10)
+    # Right column - Password change
+    right_frame = tk.Frame(columns_frame, bg="#f0f0f0")
+    right_frame.pack(side="right", fill="both", expand=True, padx=20)
     
-    pass_label = tk.Label(pass_frame, text="New Password:", **label_style)
-    pass_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
+    pass_title = tk.Label(right_frame, text="Change Password",
+                         font=("Helvetica", 14, "bold"),
+                         bg="#f0f0f0",
+                         fg="#333333")
+    pass_title.pack(pady=(0, 20))
     
-    new_pass_entry1 = tk.Entry(pass_frame, show="•", **entry_style)
-    new_pass_entry1.grid(row=1, column=0, pady=(0, 15), ipady=5)
+    pass_label1 = tk.Label(right_frame, text="New Password:", **label_style)
+    pass_label1.pack(anchor="w", pady=(0, 5))
     
-    repass_label = tk.Label(pass_frame, text="Re-enter Password:", **label_style)
-    repass_label.grid(row=2, column=0, sticky="w", pady=(0, 5))
+    new_pass_entry1 = tk.Entry(right_frame, show="•", **entry_style)
+    new_pass_entry1.pack(pady=(0, 15), ipady=5)
     
-    new_pass_entry2 = tk.Entry(pass_frame, show="•", **entry_style)
-    new_pass_entry2.grid(row=3, column=0, pady=(0, 20), ipady=5)
+    pass_label2 = tk.Label(right_frame, text="Re-enter Password:", **label_style)
+    pass_label2.pack(anchor="w", pady=(0, 5))
     
-    change_pass_btn = tk.Button(pass_frame, text="CHANGE PASS",
+    new_pass_entry2 = tk.Entry(right_frame, show="•", **entry_style)
+    new_pass_entry2.pack(pady=(0, 20), ipady=5)
+    
+    change_pass_btn = tk.Button(right_frame, text="CHANGE PASSWORD",
                                font=("Helvetica", 12, "bold"),
                                bg="#8A8A8A",
                                fg="white",
@@ -729,7 +762,7 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
                                width=20,
                                height=2,
                                command=change_password)
-    change_pass_btn.grid(row=4, column=0, pady=10)
+    change_pass_btn.pack(pady=10)
     
     # Set hover colors
     change_user_btn.normal_color = "#8A8A8A"
@@ -746,7 +779,7 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
     cred_root.grab_set()
     cred_root.focus_set()
     
-    # Bind Enter key to change username
+    # Bind Enter key to change username/password
     new_user_entry1.bind('<Return>', lambda e: change_username())
     new_user_entry2.bind('<Return>', lambda e: change_username())
     new_pass_entry1.bind('<Return>', lambda e: change_password())
@@ -755,6 +788,8 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
     # Focus on first entry
     new_user_entry1.focus_set()
 
+# ============================================================================
 # For testing directly
+# ============================================================================
 if __name__ == "__main__":
     EmployeeView()

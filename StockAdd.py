@@ -382,7 +382,7 @@ class AddItemWindow:
                               font=("Helvetica", 20, "bold"),
                               fg="black",
                               bg="#f0f0f0")
-        title_label.pack(pady=(0, 30))
+        title_label.pack(pady=(0, 15))
         
         # Form frame
         form_frame = tk.Frame(main_frame, bg="#f0f0f0")
@@ -407,32 +407,32 @@ class AddItemWindow:
         
         # ITEM NAME
         item_name_label = tk.Label(form_frame, text="ITEM NAME", **label_style)
-        item_name_label.grid(row=0, column=0, sticky="w", pady=(0, 10))
+        item_name_label.grid(row=0, column=0, sticky="w", pady=(0, 6))
         
         self.item_name_entry = tk.Entry(form_frame, **entry_style)
         self.item_name_entry.grid(row=1, column=0, pady=(0, 30), ipady=5)
         
         # RENT PRICE
         price_label = tk.Label(form_frame, text="RENT PRICE (£)", **label_style)
-        price_label.grid(row=2, column=0, sticky="w", pady=(0, 10))
+        price_label.grid(row=2, column=0, sticky="w", pady=(0, 6))
         
         self.price_entry = tk.Entry(form_frame, **entry_style)
         self.price_entry.grid(row=3, column=0, pady=(0, 30), ipady=5)
         
         # AMOUNT
         amount_label = tk.Label(form_frame, text="AMOUNT", **label_style)
-        amount_label.grid(row=4, column=0, sticky="w", pady=(0, 10))
+        amount_label.grid(row=4, column=0, sticky="w", pady=(0, 6))
         
         self.amount_entry = tk.Entry(form_frame, **entry_style)
         self.amount_entry.grid(row=5, column=0, pady=(0, 30), ipady=5)
         
         # ITEM TYPE (Optional but good to have)
-        type_label = tk.Label(form_frame, text="ITEM TYPE (Optional)", 
+        type_label = tk.Label(form_frame, text="ITEM TYPE", 
                              font=("Helvetica", 12, "bold"),
                              bg="#f0f0f0",
                              fg="black",
                              anchor="w")
-        type_label.grid(row=6, column=0, sticky="w", pady=(0, 10))
+        type_label.grid(row=6, column=0, sticky="w", pady=(0, 6))
         
         self.type_entry = tk.Entry(form_frame, 
                                   font=("Helvetica", 12),
@@ -440,7 +440,7 @@ class AddItemWindow:
                                   bd=1,
                                   relief="solid",
                                   highlightthickness=1)
-        self.type_entry.grid(row=7, column=0, pady=(0, 40), ipady=5)
+        self.type_entry.grid(row=7, column=0, pady=(0, 30), ipady=5)
         
         # Button frame
         button_frame = tk.Frame(main_frame, bg="#f0f0f0")
