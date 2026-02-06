@@ -139,7 +139,8 @@ class RentalCreate:
             if hasattr(e.widget, 'normal_color'):
                 e.widget.config(bg=e.widget.normal_color)
         
-        buttons = [self.back_btn, self.add_btn, self.remove_btn, self.create_btn, self.autofill_btn]
+        buttons = [self.back_btn, self.add_btn, self.remove_btn, self.create_btn, 
+                  self.autofill_btn, self.clear_btn]
         for btn in buttons:
             btn.bind("<Enter>", on_enter)
             btn.bind("<Leave>", on_leave)
@@ -190,16 +191,31 @@ class RentalCreate:
         # Setup right column (Items and dates)
         self.setup_items_column(right_column)
         
-        # Bottom frame for total and create button
+        # Bottom frame for buttons and total
         bottom_frame = tk.Frame(main_frame, bg="#f0f0f0")
         bottom_frame.pack(fill="x", pady=(10, 0))
         
+        # Left side - Clear button and Total label
+        left_bottom_frame = tk.Frame(bottom_frame, bg="#f0f0f0")
+        left_bottom_frame.pack(side="left", fill="x", expand=True)
+        
+        # Clear button
+        self.clear_btn = tk.Button(left_bottom_frame, text="CLEAR ALL ITEMS",
+                                  font=("Helvetica", 10, "bold"),
+                                  bg="#8A8A8A",
+                                  fg="white",
+                                  activebackground="#A3A3A3",
+                                  width=15,
+                                  height=1,
+                                  command=self.clear_items)
+        self.clear_btn.pack(side="left", padx=(0, 20))
+        
         # Total label
-        self.total_label = tk.Label(bottom_frame, text="TOTAL: £0.00",
+        self.total_label = tk.Label(left_bottom_frame, text="TOTAL: £0.00",
                                    font=("Helvetica", 14, "bold"),
                                    bg="#f0f0f0",
                                    fg="black")
-        self.total_label.pack(side="left", padx=10)
+        self.total_label.pack(side="left")
         
         # Create button
         self.create_btn = tk.Button(bottom_frame, text="CREATE",
@@ -209,7 +225,7 @@ class RentalCreate:
                                    activebackground="#A3A3A3",
                                    width=15,
                                    height=2,
-                                   command=self.create_rental)
+                                   command=self.confirm_create_rental)
         self.create_btn.pack(side="right")
         
         # Set hover colors
@@ -228,11 +244,14 @@ class RentalCreate:
         self.autofill_btn.normal_color = "#8A8A8A"
         self.autofill_btn.hover_color = "#A3A3A3"
         
+        self.clear_btn.normal_color = "#8A8A8A"
+        self.clear_btn.hover_color = "#A3A3A3"
+        
         # Setup hover effects
         self.setup_hover_effects()
         
-        # Bind Enter key to create reservation
-        self.root.bind('<Return>', lambda e: self.create_rental())
+        # Bind Enter key to create confirmation
+        self.root.bind('<Return>', lambda e: self.confirm_create_rental())
         
         # Focus on first entry
         self.firstname_entry.focus_set()
@@ -599,6 +618,21 @@ class RentalCreate:
         self.selected_listbox.delete(index)
         self.update_total()
     
+    def clear_items(self):
+        """Clear all items from the rental"""
+        if not self.selected_items:
+            messagebox.showinfo("No Items", "There are no items to clear.")
+            return
+        
+        confirm = messagebox.askyesno("Clear Items", 
+                                     "Are you sure you want to clear all items from this rental?")
+        
+        if confirm:
+            self.selected_items.clear()
+            self.selected_listbox.delete(0, tk.END)
+            self.update_total()
+            messagebox.showinfo("Items Cleared", "All items have been removed from the rental.")
+    
     def update_total(self):
         """Update the total price"""
         total = 0.0
@@ -622,14 +656,14 @@ class RentalCreate:
         
         self.total_label.config(text=f"TOTAL: £{total:.2f}")
     
-    def create_rental(self):
-        """Create the Rental"""
+    def confirm_create_rental(self):
+        """Show confirmation dialog before creating rental"""
         # Get customer details
         firstname = self.firstname_entry.get().strip()
         lastname = self.lastname_entry.get().strip()
         phone = self.phone_entry.get().strip()
         
-        # Validation
+        # Basic validation
         if not firstname:
             self.show_error("First name is required!")
             self.firstname_entry.focus_set()
@@ -663,6 +697,45 @@ class RentalCreate:
         except Exception as e:
             self.show_error(f"Invalid date: {str(e)}")
             return
+        
+        # Calculate total for display
+        total = 0.0
+        item_details = []
+        
+        for item_id, quantity in self.selected_items.items():
+            for item in self.items:
+                if item.item_id == item_id:
+                    item_total = item.price * quantity * days
+                    total += item_total
+                    item_details.append(f"  • {item.name} x{quantity}: £{item_total:.2f}")
+                    break
+        
+        # Create confirmation message
+        confirmation = f"CREATE RENTAL WITH:\n\n"
+        confirmation += f"Customer: {firstname} {lastname}\n"
+        confirmation += f"Phone: {phone}\n"
+        confirmation += f"Dates: {start_date.strftime('%d/%m/%Y')} to {end_date.strftime('%d/%m/%Y')}\n"
+        confirmation += f"Duration: {days} day{'s' if days != 1 else ''}\n"
+        confirmation += f"Total: £{total:.2f}\n\n"
+        confirmation += "Items:\n" + "\n".join(item_details)
+        
+        # Show confirmation dialog
+        confirm = messagebox.askyesno("Confirm Rental Creation", confirmation)
+        
+        if confirm:
+            self.create_rental()
+    
+    def create_rental(self):
+        """Create the Rental (called after confirmation)"""
+        # Get customer details
+        firstname = self.firstname_entry.get().strip()
+        lastname = self.lastname_entry.get().strip()
+        phone = self.phone_entry.get().strip()
+        
+        # Get dates
+        start_date = self.start_date_entry.get_date()
+        end_date = self.end_date_entry.get_date()
+        days = (end_date - start_date).days + 1
         
         # Check if customer exists, if not create new
         customers = db.load_customers()
@@ -710,17 +783,17 @@ class RentalCreate:
         rentals.append(rental)
         db.save_rentals(rentals)
         
-        # Show confirmation
-        confirmation = f"Rental Created Successfully!\n\n"
-        confirmation += f"Rental ID: {rental_id}\n"
-        confirmation += f"Customer: {firstname} {lastname}\n"
-        confirmation += f"Phone: {phone}\n"
-        confirmation += f"Dates: {start_date.strftime('%d/%m/%Y')} to {end_date.strftime('%d/%m/%Y')}\n"
-        confirmation += f"Duration: {days} day{'s' if days != 1 else ''}\n"
-        confirmation += f"Total: £{total:.2f}\n\n"
-        confirmation += "Items:\n" + "\n".join(item_details)
+        # Show success message
+        success_msg = f"Rental Created Successfully!\n\n"
+        success_msg += f"Rental ID: {rental_id}\n"
+        success_msg += f"Customer: {firstname} {lastname}\n"
+        success_msg += f"Phone: {phone}\n"
+        success_msg += f"Dates: {start_date.strftime('%d/%m/%Y')} to {end_date.strftime('%d/%m/%Y')}\n"
+        success_msg += f"Duration: {days} day{'s' if days != 1 else ''}\n"
+        success_msg += f"Total: £{total:.2f}\n\n"
+        success_msg += "Items:\n" + "\n".join(item_details)
         
-        messagebox.showinfo("Success", confirmation)
+        messagebox.showinfo("Success", success_msg)
         
         # Clear form for next entry
         self.clear_form()

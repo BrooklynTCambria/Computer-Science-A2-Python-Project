@@ -1,8 +1,10 @@
-# RentalView.py - Updated with fix for tag indexing
+# RentalView.py - Updated with Edit button and Search Back button
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
 import database_schema as db
+# Import RentalCreate to use for editing
+import RentalCreate
 
 def center_window(window, width=650, height=500):
     screen_width = window.winfo_screenwidth()
@@ -26,7 +28,7 @@ def RentalView(parent_window=None):
             if hasattr(e.widget, 'normal_color'):
                 e.widget.config(bg=e.widget.normal_color)
         
-        buttons = [search_btn, delete_btn, view_btn, back_btn]
+        buttons = [search_btn, delete_btn, view_btn, edit_btn, back_btn]
         for btn in buttons:
             btn.bind("<Enter>", on_enter)
             btn.bind("<Leave>", on_leave)
@@ -65,11 +67,13 @@ def RentalView(parent_window=None):
         if selected:
             delete_btn.config(state="normal")
             view_btn.config(state="normal")
+            edit_btn.config(state="normal")
             # Update selected count
             count_label.config(text=f"{len(selected)} SELECTED")
         else:
             delete_btn.config(state="disabled")
             view_btn.config(state="disabled")
+            edit_btn.config(state="disabled")
             count_label.config(text="0 SELECTED")
     
     def delete_selected():
@@ -106,7 +110,54 @@ def RentalView(parent_window=None):
             messagebox.showinfo("Success", "Reservation deleted successfully.")
             delete_btn.config(state="disabled")
             view_btn.config(state="disabled")
+            edit_btn.config(state="disabled")
             count_label.config(text="0 SELECTED")
+    
+    def edit_selected():
+        """Edit selected reservation"""
+        selected = tree.selection()
+        if not selected:
+            messagebox.showwarning("No Selection", "Please select a reservation to edit.")
+            return
+        
+        item = tree.item(selected[0])
+        
+        # Check if item has tags
+        if not item['tags']:
+            messagebox.showerror("Error", "Cannot edit this item - missing rental ID.")
+            return
+            
+        rental_id = int(item['tags'][0])
+        
+        # Find rental details
+        rentals = db.load_rentals()
+        customers = db.load_customers()
+        items_db = db.load_items()
+        
+        rental = None
+        for r in rentals:
+            if r.rental_id == rental_id:
+                rental = r
+                break
+        
+        if not rental:
+            messagebox.showerror("Error", "Reservation not found!")
+            return
+        
+        # Find customer
+        customer = None
+        for c in customers:
+            if c.customer_id == rental.customer_id:
+                customer = c
+                break
+        
+        if not customer:
+            messagebox.showerror("Error", "Customer not found!")
+            return
+        
+        # Create edit window (using RentalCreate but with pre-filled data)
+        # We need to pass the rental data to a modified version of RentalCreate
+        edit_window = EditRentalWindow(root, rental, customer, items_db)
     
     def open_search_window():
         """Open Search window"""
@@ -261,7 +312,7 @@ def RentalView(parent_window=None):
     root.title("SPOTLIGHT AGENCY - Reservation Search")
     root.geometry("800x500")  # Wider for more columns
     root.resizable(False, False)
-    center_window(root, 650, 500)
+    center_window(root, 800, 550)  # Slightly taller for additional button
     
     # Set icon
     try:
@@ -298,13 +349,13 @@ def RentalView(parent_window=None):
                           bg="#f0f0f0")
     title_label.pack(pady=(0, 20))
     
-    # Top button frame (Search, View Selected, Delete Selected)
+    # Top button frame (Search, View Selected, Edit, Delete Selected)
     top_button_frame = tk.Frame(main_frame, bg="#f0f0f0")
     top_button_frame.pack(pady=(0, 15))
     
     # Search button
     search_btn = tk.Button(top_button_frame, text="SEARCH",
-                          font=("Helvetica", 12, "bold"),
+                          font=("Helvetica", 11, "bold"),
                           bg="#8A8A8A",
                           fg="white",
                           activebackground="#A3A3A3",
@@ -324,6 +375,18 @@ def RentalView(parent_window=None):
                         state="disabled",
                         command=view_selected_list)
     view_btn.pack(side="left", padx=5)
+    
+    # Edit Selected button
+    edit_btn = tk.Button(top_button_frame, text="EDIT SELECTED",
+                        font=("Helvetica", 11, "bold"),
+                        bg="#8A8A8A",
+                        fg="white",
+                        activebackground="#A3A3A3",
+                        width=15,
+                        height=2,
+                        state="disabled",
+                        command=edit_selected)
+    edit_btn.pack(side="left", padx=5)
     
     # Delete Selected button
     delete_btn = tk.Button(top_button_frame, text="DELETE SELECTED",
@@ -378,6 +441,9 @@ def RentalView(parent_window=None):
     view_btn.normal_color = "#8A8A8A"
     view_btn.hover_color = "#A3A3A3"
     
+    edit_btn.normal_color = "#8A8A8A"
+    edit_btn.hover_color = "#A3A3A3"
+    
     delete_btn.normal_color = "#8A8A8A"
     delete_btn.hover_color = "#A3A3A3"
     
@@ -397,7 +463,7 @@ def RentalView(parent_window=None):
         root.mainloop()
 
 def SearchWindow(parent_window, apply_callback):
-    """Popup Search window - 650x500"""
+    """Popup Search window - 650x500 with BACK button"""
     
     def perform_search():
         """Perform search and close window"""
@@ -415,6 +481,10 @@ def SearchWindow(parent_window, apply_callback):
     def clear_and_close():
         """Clear search and close window"""
         apply_callback("", "", "", "")  # Clear filter
+        search_root.destroy()
+    
+    def go_back():
+        """Go back to main window"""
         search_root.destroy()
     
     # Create search window
@@ -437,12 +507,27 @@ def SearchWindow(parent_window, apply_callback):
     main_frame = tk.Frame(search_root, bg="#f0f0f0")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
+    # TOP FRAME for BACK button (top right)
+    top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_frame.pack(fill="x", pady=(0, 10))
+    
+    # BACK Button in top right corner
+    back_btn = tk.Button(top_frame, text="BACK", 
+                        font=("Helvetica", 12, "bold"),
+                        bg="#757575",
+                        fg="white",
+                        activebackground="#616161",
+                        width=10,
+                        height=1,
+                        command=go_back)
+    back_btn.pack(side="right", padx=5, pady=5)
+    
     # Title
     title_label = tk.Label(main_frame, text="SEARCH", 
                           font=("Helvetica", 24, "bold"),
                           fg="black",
                           bg="#f0f0f0")
-    title_label.pack(pady=(0, 30))
+    title_label.pack(pady=(0, 8))
     
     # Search criteria frame
     criteria_frame = tk.Frame(main_frame, bg="#f0f0f0")
@@ -524,11 +609,16 @@ def SearchWindow(parent_window, apply_callback):
     clear_btn.normal_color = "#8A8A8A"
     clear_btn.hover_color = "#A3A3A3"
     
+    back_btn.normal_color = "#757575"
+    back_btn.hover_color = "#616161"
+    
     # Setup hover effects
     search_btn.bind("<Enter>", lambda e: search_btn.config(bg="#A3A3A3"))
     search_btn.bind("<Leave>", lambda e: search_btn.config(bg="#8A8A8A"))
     clear_btn.bind("<Enter>", lambda e: clear_btn.config(bg="#A3A3A3"))
     clear_btn.bind("<Leave>", lambda e: clear_btn.config(bg="#8A8A8A"))
+    back_btn.bind("<Enter>", lambda e: back_btn.config(bg="#616161"))
+    back_btn.bind("<Leave>", lambda e: back_btn.config(bg="#757575"))
     
     # Bind Enter key to search
     firstname_entry.bind('<Return>', lambda e: perform_search())
@@ -543,6 +633,569 @@ def SearchWindow(parent_window, apply_callback):
     
     # Focus on first entry
     firstname_entry.focus_set()
+
+class EditRentalWindow:
+    """Window for editing an existing reservation"""
+    def __init__(self, parent_window, rental, customer, all_items):
+        self.parent_window = parent_window
+        self.rental = rental
+        self.customer = customer
+        self.all_items = all_items
+        self.original_rental = rental  # Keep original for reference
+        self.selected_items = rental.items.copy() if hasattr(rental, 'items') else {}
+        self.root = None
+        self.create_window()
+    
+    def create_window(self):
+        """Create the Edit Rental window"""
+        # Create the window
+        self.root = tk.Toplevel(self.parent_window)
+        self.root.title("SPOTLIGHT AGENCY - Edit Reservation")
+        self.root.geometry("650x500")
+        self.root.resizable(False, False)
+        center_window(self.root, 650, 500)
+        
+        # Set icon
+        try:
+            self.root.iconphoto(False, tk.PhotoImage(file="icon.png"))
+        except:
+            pass
+        
+        # Set background color
+        self.root.configure(bg="#f0f0f0")
+        
+        self.setup_ui()
+    
+    def setup_hover_effects(self):
+        """Setup hover effects for buttons"""
+        def on_enter(e):
+            if hasattr(e.widget, 'hover_color'):
+                e.widget.config(bg=e.widget.hover_color)
+        
+        def on_leave(e):
+            if hasattr(e.widget, 'normal_color'):
+                e.widget.config(bg=e.widget.normal_color)
+        
+        buttons = [self.back_btn, self.add_btn, self.remove_btn, self.update_btn]
+        for btn in buttons:
+            btn.bind("<Enter>", on_enter)
+            btn.bind("<Leave>", on_leave)
+    
+    def setup_ui(self):
+        """Setup the user interface"""
+        # Main container frame
+        main_frame = tk.Frame(self.root, bg="#f0f0f0")
+        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        
+        # TOP FRAME for BACK button (top right)
+        top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        top_frame.pack(fill="x", pady=(0, 10))
+        
+        # BACK Button in top right corner
+        self.back_btn = tk.Button(top_frame, text="BACK", 
+                                font=("Helvetica", 12, "bold"),
+                                bg="#757575",
+                                fg="white",
+                                activebackground="#616161",
+                                width=10,
+                                height=1,
+                                command=self.go_back)
+        self.back_btn.pack(side="right", padx=5, pady=5)
+        
+        # Title
+        title_label = tk.Label(main_frame, text="EDIT RESERVATION", 
+                              font=("Helvetica", 18, "bold"),
+                              fg="black",
+                              bg="#f0f0f0")
+        title_label.pack(pady=(0, 15))
+        
+        # Create two columns for the form
+        columns_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        columns_frame.pack(fill="both", expand=True)
+        
+        # Left column - Customer details
+        left_column = tk.Frame(columns_frame, bg="#f0f0f0")
+        left_column.pack(side="left", fill="both", expand=True, padx=(0, 10))
+        
+        # Right column - Items and dates
+        right_column = tk.Frame(columns_frame, bg="#f0f0f0")
+        right_column.pack(side="right", fill="both", expand=True, padx=(10, 0))
+        
+        # Setup left column (Customer details)
+        self.setup_customer_column(left_column)
+        
+        # Setup right column (Items and dates)
+        self.setup_items_column(right_column)
+        
+        # Bottom frame for total and update button
+        bottom_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        bottom_frame.pack(fill="x", pady=(10, 0))
+        
+        # Rental ID label
+        rental_id_label = tk.Label(bottom_frame, text=f"Rental ID: {self.rental.rental_id}",
+                                   font=("Helvetica", 11),
+                                   bg="#f0f0f0",
+                                   fg="black")
+        rental_id_label.pack(side="left", padx=10)
+        
+        # Total label
+        self.total_label = tk.Label(bottom_frame, text="TOTAL: £0.00",
+                                   font=("Helvetica", 14, "bold"),
+                                   bg="#f0f0f0",
+                                   fg="black")
+        self.total_label.pack(side="left", padx=10, expand=True)
+        
+        # Update button
+        self.update_btn = tk.Button(bottom_frame, text="UPDATE",
+                                   font=("Helvetica", 12, "bold"),
+                                   bg="#8A8A8A",
+                                   fg="white",
+                                   activebackground="#A3A3A3",
+                                   width=15,
+                                   height=2,
+                                   command=self.update_rental)
+        self.update_btn.pack(side="right")
+        
+        # Set hover colors
+        self.back_btn.normal_color = "#757575"
+        self.back_btn.hover_color = "#616161"
+        
+        self.add_btn.normal_color = "#8A8A8A"
+        self.add_btn.hover_color = "#A3A3A3"
+        
+        self.remove_btn.normal_color = "#8A8A8A"
+        self.remove_btn.hover_color = "#A3A3A3"
+        
+        self.update_btn.normal_color = "#8A8A8A"
+        self.update_btn.hover_color = "#A3A3A3"
+        
+        # Setup hover effects
+        self.setup_hover_effects()
+        
+        # Bind Enter key to update reservation
+        self.root.bind('<Return>', lambda e: self.update_rental())
+        
+        # Update total initially
+        self.update_total()
+        
+        # Focus on first entry
+        self.firstname_entry.focus_set()
+    
+    def setup_customer_column(self, parent_frame):
+        """Setup customer details column"""
+        # Style for labels
+        label_style = {
+            "font": ("Helvetica", 11),
+            "bg": "#f0f0f0",
+            "fg": "black",
+            "anchor": "w"
+        }
+        
+        # Style for entries
+        entry_style = {
+            "font": ("Helvetica", 11),
+            "width": 25,
+            "bd": 1,
+            "relief": "solid",
+            "highlightthickness": 1
+        }
+        
+        # First Name
+        firstname_label = tk.Label(parent_frame, text="FIRST NAME", **label_style)
+        firstname_label.pack(pady=(0, 5), anchor="w")
+        
+        self.firstname_entry = tk.Entry(parent_frame, **entry_style)
+        self.firstname_entry.insert(0, self.customer.firstname)
+        self.firstname_entry.pack(pady=(0, 15), ipady=5)
+        
+        # Last Name
+        lastname_label = tk.Label(parent_frame, text="LAST NAME", **label_style)
+        lastname_label.pack(pady=(0, 5), anchor="w")
+        
+        self.lastname_entry = tk.Entry(parent_frame, **entry_style)
+        self.lastname_entry.insert(0, self.customer.surname)
+        self.lastname_entry.pack(pady=(0, 15), ipady=5)
+        
+        # Phone Number
+        phone_label = tk.Label(parent_frame, text="PHONE NUMBER", **label_style)
+        phone_label.pack(pady=(0, 5), anchor="w")
+        
+        self.phone_entry = tk.Entry(parent_frame, **entry_style)
+        self.phone_entry.insert(0, self.customer.phone)
+        self.phone_entry.pack(pady=(0, 20), ipady=5)
+        
+        # Note: Auto fill button not needed for edit
+    
+    def setup_items_column(self, parent_frame):
+        """Setup items and dates column"""
+        # Style for labels
+        label_style = {
+            "font": ("Helvetica", 11),
+            "bg": "#f0f0f0",
+            "fg": "black",
+            "anchor": "w"
+        }
+        
+        # Date selection frame
+        date_frame = tk.Frame(parent_frame, bg="#f0f0f0")
+        date_frame.pack(pady=(0, 20), fill="x")
+        
+        # Date label
+        date_label = tk.Label(date_frame, text="DATE", **label_style)
+        date_label.pack(pady=(0, 5), anchor="w")
+        
+        # Start and End date in one line
+        dates_frame = tk.Frame(date_frame, bg="#f0f0f0")
+        dates_frame.pack(fill="x")
+        
+        # Start Date
+        start_label = tk.Label(dates_frame, text="From:",
+                              font=("Helvetica", 10),
+                              bg="#f0f0f0")
+        start_label.pack(side="left", padx=(0, 5))
+        
+        # Create start date picker
+        from datetime import datetime
+        today = datetime.now()
+        self.start_date_entry = DateEntry(dates_frame, 
+                                         width=12,
+                                         background='darkblue',
+                                         foreground='white',
+                                         borderwidth=2,
+                                         date_pattern='dd/mm/yyyy',
+                                         mindate=today)
+        # Set to rental start date
+        self.start_date_entry.set_date(self.rental.start_date)
+        self.start_date_entry.pack(side="left", padx=(0, 15))
+        
+        # End Date
+        end_label = tk.Label(dates_frame, text="To:",
+                            font=("Helvetica", 10),
+                            bg="#f0f0f0")
+        end_label.pack(side="left", padx=(0, 5))
+        
+        # Create end date picker
+        self.end_date_entry = DateEntry(dates_frame,
+                                       width=12,
+                                       background='darkblue',
+                                       foreground='white',
+                                       borderwidth=2,
+                                       date_pattern='dd/mm/yyyy',
+                                       mindate=self.rental.start_date)
+        # Set to rental end date
+        self.end_date_entry.set_date(self.rental.end_date)
+        self.end_date_entry.pack(side="left")
+        
+        # Bind date selection
+        self.start_date_entry.bind("<<DateEntrySelected>>", self.on_start_date_selected)
+        self.end_date_entry.bind("<<DateEntrySelected>>", self.validate_end_date)
+        
+        # Stock label
+        stock_label = tk.Label(parent_frame, text="STOCK",
+                              font=("Helvetica", 11, "bold"),
+                              bg="#f0f0f0",
+                              fg="black",
+                              anchor="w")
+        stock_label.pack(pady=(0, 10), anchor="w")
+        
+        # Item selection frame
+        item_frame = tk.Frame(parent_frame, bg="#f0f0f0")
+        item_frame.pack(fill="x", pady=(0, 10))
+        
+        # Item dropdown - include available quantities
+        item_names = []
+        for item in self.all_items:
+            # Adjust available quantity if item is already in rental
+            adjusted_qty = item.quantity
+            if item.item_id in self.original_rental.items:
+                adjusted_qty += self.original_rental.items[item.item_id]
+            
+            item_names.append(f"{item.name} - £{item.price:.2f} ({adjusted_qty} available)")
+        
+        self.item_var = tk.StringVar()
+        self.item_dropdown = ttk.Combobox(item_frame,
+                                         textvariable=self.item_var,
+                                         values=item_names,
+                                         state="readonly",
+                                         width=30)
+        self.item_dropdown.pack(side="left", padx=(0, 10))
+        
+        # Quantity
+        self.quantity_var = tk.StringVar(value="1")
+        self.quantity_spin = tk.Spinbox(item_frame,
+                                       from_=1,
+                                       to=10,
+                                       textvariable=self.quantity_var,
+                                       width=5,
+                                       font=("Helvetica", 10))
+        self.quantity_spin.pack(side="left", padx=(0, 10))
+        
+        # Add button
+        self.add_btn = tk.Button(item_frame, text="ADD",
+                                font=("Helvetica", 10, "bold"),
+                                bg="#8A8A8A",
+                                fg="white",
+                                width=8,
+                                command=self.add_item)
+        self.add_btn.pack(side="left")
+        
+        # Selected items listbox
+        selected_frame = tk.Frame(parent_frame, bg="#f0f0f0")
+        selected_frame.pack(fill="both", expand=True, pady=(0, 10))
+        
+        selected_label = tk.Label(selected_frame, text="Selected Items:",
+                                 font=("Helvetica", 10),
+                                 bg="#f0f0f0")
+        selected_label.pack(anchor="w")
+        
+        # Selected items listbox
+        self.selected_listbox = tk.Listbox(selected_frame,
+                                          height=6,
+                                          width=35,
+                                          selectmode="single",
+                                          font=("Helvetica", 10))
+        self.selected_listbox.pack(fill="both", expand=True, pady=(5, 10))
+        
+        # Add scrollbar for selected items
+        selected_scrollbar = tk.Scrollbar(self.selected_listbox)
+        selected_scrollbar.pack(side="right", fill="y")
+        self.selected_listbox.config(yscrollcommand=selected_scrollbar.set)
+        selected_scrollbar.config(command=self.selected_listbox.yview)
+        
+        # Populate with existing items
+        for item_id, quantity in self.selected_items.items():
+            for item in self.all_items:
+                if item.item_id == item_id:
+                    display_text = f"{item.name} x{quantity} - £{item.price * quantity:.2f}"
+                    self.selected_listbox.insert(tk.END, display_text)
+                    break
+        
+        # Remove button
+        self.remove_btn = tk.Button(parent_frame, text="REMOVE SELECTED",
+                                   font=("Helvetica", 10, "bold"),
+                                   bg="#8A8A8A",
+                                   fg="white",
+                                   width=20,
+                                   command=self.remove_item)
+        self.remove_btn.pack()
+    
+    def on_start_date_selected(self, event=None):
+        """When start date is selected, update end date picker"""
+        try:
+            start_date = self.start_date_entry.get_date()
+            self.end_date_entry.config(mindate=start_date)
+            self.update_total()
+        except Exception as e:
+            print(f"Error setting end date: {e}")
+    
+    def validate_end_date(self, event=None):
+        """Validate that end date is not before start date"""
+        try:
+            start_date = self.start_date_entry.get_date()
+            end_date = self.end_date_entry.get_date()
+            
+            if end_date < start_date:
+                messagebox.showwarning("Invalid Date", "End date cannot be before start date!")
+                self.end_date_entry.set_date(start_date)
+            
+            self.update_total()
+        except Exception as e:
+            print(f"Error validating end date: {e}")
+    
+    def add_item(self):
+        """Add selected item to cart"""
+        selected_index = self.item_dropdown.current()
+        if selected_index == -1:
+            messagebox.showwarning("No Selection", "Please select an item from the dropdown.")
+            return
+        
+        # Get selected item
+        selected_item = self.all_items[selected_index]
+        quantity = int(self.quantity_var.get())
+        
+        # Calculate available quantity (original + what was in rental)
+        available_qty = selected_item.quantity
+        if selected_item.item_id in self.original_rental.items:
+            available_qty += self.original_rental.items[selected_item.item_id]
+        
+        # Check availability
+        if quantity > available_qty:
+            messagebox.showerror("Insufficient Stock", 
+                               f"Only {available_qty} {selected_item.name} available.")
+            return
+        
+        # Add to selected items
+        if selected_item.item_id in self.selected_items:
+            self.selected_items[selected_item.item_id] += quantity
+            
+            # Update display
+            for i in range(self.selected_listbox.size()):
+                item_text = self.selected_listbox.get(i)
+                if selected_item.name in item_text:
+                    if "x" in item_text:
+                        parts = item_text.split("x")
+                        current_qty = int(parts[1].split()[0])
+                        new_qty = current_qty + quantity
+                        new_text = f"{selected_item.name} x{new_qty} - £{selected_item.price * new_qty:.2f}"
+                        self.selected_listbox.delete(i)
+                        self.selected_listbox.insert(i, new_text)
+                    break
+        else:
+            self.selected_items[selected_item.item_id] = quantity
+            display_text = f"{selected_item.name} x{quantity} - £{selected_item.price * quantity:.2f}"
+            self.selected_listbox.insert(tk.END, display_text)
+        
+        self.update_total()
+        self.quantity_var.set("1")
+    
+    def remove_item(self):
+        """Remove selected item from cart"""
+        selection = self.selected_listbox.curselection()
+        if not selection:
+            messagebox.showwarning("No Selection", "Please select an item to remove.")
+            return
+        
+        index = selection[0]
+        item_text = self.selected_listbox.get(index)
+        
+        # Find which item this is
+        for item in self.all_items:
+            if item.name in item_text:
+                if item.item_id in self.selected_items:
+                    del self.selected_items[item.item_id]
+                    break
+        
+        self.selected_listbox.delete(index)
+        self.update_total()
+    
+    def update_total(self):
+        """Update the total price"""
+        total = 0.0
+        
+        for item_id, quantity in self.selected_items.items():
+            for item in self.all_items:
+                if item.item_id == item_id:
+                    total += item.price * quantity
+                    break
+        
+        # Calculate days
+        try:
+            start_date = self.start_date_entry.get_date()
+            end_date = self.end_date_entry.get_date()
+            days = (end_date - start_date).days + 1
+            if days < 1:
+                days = 1
+            total *= days
+        except:
+            days = 1
+        
+        self.total_label.config(text=f"TOTAL: £{total:.2f}")
+    
+    def update_rental(self):
+        """Update the rental in database"""
+        # Get customer details
+        firstname = self.firstname_entry.get().strip()
+        lastname = self.lastname_entry.get().strip()
+        phone = self.phone_entry.get().strip()
+        
+        # Validation
+        if not firstname or not lastname or not phone:
+            messagebox.showerror("Error", "All customer fields are required!")
+            return
+        
+        if not self.selected_items:
+            messagebox.showerror("Error", "Please add at least one item!")
+            return
+        
+        # Get dates
+        try:
+            start_date = self.start_date_entry.get_date()
+            end_date = self.end_date_entry.get_date()
+            
+            if end_date < start_date:
+                messagebox.showerror("Error", "End date must be after start date!")
+                return
+        except Exception as e:
+            messagebox.showerror("Error", f"Invalid date: {str(e)}")
+            return
+        
+        # Calculate total
+        total = 0.0
+        days = (end_date - start_date).days + 1
+        
+        # First, return original items to stock
+        for item_id, quantity in self.original_rental.items.items():
+            for item in self.all_items:
+                if item.item_id == item_id:
+                    item.quantity += quantity
+                    break
+        
+        # Now deduct new items from stock and calculate total
+        for item_id, quantity in self.selected_items.items():
+            for item in self.all_items:
+                if item.item_id == item_id:
+                    # Check if enough stock
+                    if quantity > item.quantity:
+                        messagebox.showerror("Insufficient Stock", 
+                                           f"Not enough {item.name} in stock!")
+                        # Restore original items
+                        for orig_id, orig_qty in self.original_rental.items.items():
+                            for orig_item in self.all_items:
+                                if orig_item.item_id == orig_id:
+                                    orig_item.quantity -= orig_qty
+                                    break
+                        return
+                    
+                    item_total = item.price * quantity * days
+                    total += item_total
+                    item.quantity -= quantity
+                    break
+        
+        # Update customer info if changed
+        customers = db.load_customers()
+        customer_updated = False
+        for customer in customers:
+            if customer.customer_id == self.customer.customer_id:
+                if (customer.firstname != firstname or 
+                    customer.surname != lastname or 
+                    customer.phone != phone):
+                    customer.firstname = firstname
+                    customer.surname = lastname
+                    customer.phone = phone
+                    customer_updated = True
+                break
+        
+        if customer_updated:
+            db.save_customers(customers)
+        
+        # Update rental
+        rentals = db.load_rentals()
+        for rental in rentals:
+            if rental.rental_id == self.rental.rental_id:
+                rental.customer_id = self.customer.customer_id
+                rental.start_date = start_date
+                rental.end_date = end_date
+                rental.items = self.selected_items.copy()
+                rental.total_price = total
+                break
+        
+        # Save all changes
+        db.save_items(self.all_items)
+        db.save_rentals(rentals)
+        
+        messagebox.showinfo("Success", "Reservation updated successfully!")
+        self.root.destroy()
+        
+        # Refresh the main view if needed
+        if hasattr(self.parent_window, 'load_rental_data'):
+            self.parent_window.load_rental_data()
+    
+    def go_back(self):
+        """Go back to main window"""
+        self.root.destroy()
+
+# For DateEntry import
+from tkcalendar import DateEntry
 
 # For testing directly
 if __name__ == "__main__":
