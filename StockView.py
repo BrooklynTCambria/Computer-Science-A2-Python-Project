@@ -217,14 +217,14 @@ def StockView(parent_window=None):
         pass
     
     # Set background color
-    root.configure(bg="#f0f0f0")
+    root.configure(bg="#152e41")
     
     # Main container frame
-    main_frame = tk.Frame(root, bg="#f0f0f0")
+    main_frame = tk.Frame(root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
     # TOP FRAME for BACK button (top right)
-    top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_frame = tk.Frame(main_frame, bg="#152e41")
     top_frame.pack(fill="x", pady=(0, 10))
     
     # BACK Button in top right corner
@@ -241,12 +241,12 @@ def StockView(parent_window=None):
     # Title
     title_label = tk.Label(main_frame, text="STOCK SEARCH", 
                           font=("Helvetica", 20, "bold"),
-                          fg="black",
-                          bg="#f0f0f0")
+                          fg="white",
+                          bg="#152e41")
     title_label.pack(pady=(0, 20))
     
     # Top button frame (Search, Delete Selected)
-    top_button_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_button_frame = tk.Frame(main_frame, bg="#152e41")
     top_button_frame.pack(pady=(0, 15))
     
     # Search button
@@ -275,12 +275,12 @@ def StockView(parent_window=None):
     # Selected count label
     count_label = tk.Label(top_button_frame, text="0 SELECTED",
                           font=("Helvetica", 12, "bold"),
-                          bg="#f0f0f0",
-                          fg="black")
+                          bg="#152e41",
+                          fg="white")
     count_label.pack(side="right", padx=20)
     
     # Treeview frame with scrollbar
-    tree_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    tree_frame = tk.Frame(main_frame, bg="#152e41")
     tree_frame.pack(fill="both", expand=True, pady=(0, 10))
     
     # Create Treeview
@@ -382,21 +382,21 @@ def SearchWindow(parent_window, apply_callback):
         pass
     
     # Set background color
-    search_root.configure(bg="#f0f0f0")
+    search_root.configure(bg="#152e41")
     
     # Main container frame
-    main_frame = tk.Frame(search_root, bg="#f0f0f0")
+    main_frame = tk.Frame(search_root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
     # Title
     title_label = tk.Label(main_frame, text="STOCK SEARCH", 
                           font=("Helvetica", 24, "bold"),
-                          fg="black",
-                          bg="#f0f0f0")
+                          fg="white",
+                          bg="#152e41")
     title_label.pack(pady=(0, 30))
     
     # Search criteria frame
-    criteria_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    criteria_frame = tk.Frame(main_frame, bg="#152e41")
     criteria_frame.pack(pady=20)
     
     # Style for labels
@@ -431,19 +431,19 @@ def SearchWindow(parent_window, apply_callback):
     type_entry.grid(row=3, column=0, pady=(0, 20), ipady=5)
     
     # Price Range Frame
-    price_frame = tk.Frame(criteria_frame, bg="#f0f0f0")
+    price_frame = tk.Frame(criteria_frame, bg="#152e41")
     price_frame.grid(row=4, column=0, sticky="w", pady=(0, 5))
     
     price_label = tk.Label(price_frame, text="PRICE RANGE", **label_style)
     price_label.pack(anchor="w")
     
     # Price inputs in one line
-    price_inputs_frame = tk.Frame(criteria_frame, bg="#f0f0f0")
+    price_inputs_frame = tk.Frame(criteria_frame, bg="#152e41")
     price_inputs_frame.grid(row=5, column=0, sticky="w", pady=(0, 20))
     
     price_min_label = tk.Label(price_inputs_frame, text="Min:", 
                               font=("Helvetica", 11),
-                              bg="#f0f0f0")
+                              bg="#152e41")
     price_min_label.pack(side="left", padx=(0, 5))
     
     price_min_entry = tk.Entry(price_inputs_frame, 
@@ -456,7 +456,7 @@ def SearchWindow(parent_window, apply_callback):
     
     price_max_label = tk.Label(price_inputs_frame, text="Max:", 
                               font=("Helvetica", 11),
-                              bg="#f0f0f0")
+                              bg="#152e41")
     price_max_label.pack(side="left", padx=(0, 5))
     
     price_max_entry = tk.Entry(price_inputs_frame, 
@@ -468,7 +468,7 @@ def SearchWindow(parent_window, apply_callback):
     price_max_entry.pack(side="left", ipady=5)
     
     # Button frame
-    button_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    button_frame = tk.Frame(main_frame, bg="#152e41")
     button_frame.pack(pady=20)
     
     search_btn = tk.Button(button_frame, text="SEARCH",

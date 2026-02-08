@@ -321,14 +321,14 @@ def RentalView(parent_window=None):
         pass
     
     # Set background color
-    root.configure(bg="#f0f0f0")
+    root.configure(bg="#152e41")
     
     # Main container frame
-    main_frame = tk.Frame(root, bg="#f0f0f0")
+    main_frame = tk.Frame(root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
     # TOP FRAME for BACK button (top right)
-    top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_frame = tk.Frame(main_frame, bg="#152e41")
     top_frame.pack(fill="x", pady=(0, 10))
     
     # BACK Button in top right corner
@@ -345,12 +345,12 @@ def RentalView(parent_window=None):
     # Title
     title_label = tk.Label(main_frame, text="RESERVATION SEARCH", 
                           font=("Helvetica", 20, "bold"),
-                          fg="black",
-                          bg="#f0f0f0")
+                          fg="white",
+                          bg="#152e41")
     title_label.pack(pady=(0, 20))
     
     # Top button frame (Search, View Selected, Edit, Delete Selected)
-    top_button_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_button_frame = tk.Frame(main_frame, bg="#152e41")
     top_button_frame.pack(pady=(0, 15))
     
     # Search button
@@ -403,12 +403,12 @@ def RentalView(parent_window=None):
     # Selected count label
     count_label = tk.Label(top_button_frame, text="0 SELECTED",
                           font=("Helvetica", 12, "bold"),
-                          bg="#f0f0f0",
-                          fg="black")
+                          bg="#152e41",
+                          fg="white")
     count_label.pack(side="right", padx=20)
     
     # Treeview frame with scrollbar
-    tree_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    tree_frame = tk.Frame(main_frame, bg="#152e41")
     tree_frame.pack(fill="both", expand=True, pady=(0, 10))
     
     # Create Treeview
@@ -501,14 +501,14 @@ def SearchWindow(parent_window, apply_callback):
         pass
     
     # Set background color
-    search_root.configure(bg="#f0f0f0")
+    search_root.configure(bg="#152e41")
     
     # Main container frame
-    main_frame = tk.Frame(search_root, bg="#f0f0f0")
+    main_frame = tk.Frame(search_root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
     # TOP FRAME for BACK button (top right)
-    top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_frame = tk.Frame(main_frame, bg="#152e41")
     top_frame.pack(fill="x", pady=(0, 10))
     
     # BACK Button in top right corner
@@ -525,12 +525,12 @@ def SearchWindow(parent_window, apply_callback):
     # Title
     title_label = tk.Label(main_frame, text="SEARCH", 
                           font=("Helvetica", 24, "bold"),
-                          fg="black",
-                          bg="#f0f0f0")
+                          fg="white",
+                          bg="#152e41")
     title_label.pack(pady=(0, 8))
     
     # Search criteria frame
-    criteria_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    criteria_frame = tk.Frame(main_frame, bg="#152e41")
     criteria_frame.pack(pady=20)
     
     # Style for labels
@@ -579,7 +579,7 @@ def SearchWindow(parent_window, apply_callback):
     employee_entry.grid(row=7, column=0, pady=(0, 30), ipady=5)
     
     # Button frame
-    button_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    button_frame = tk.Frame(main_frame, bg="#152e41")
     button_frame.pack(pady=20)
     
     search_btn = tk.Button(button_frame, text="SEARCH",
@@ -662,7 +662,7 @@ class EditRentalWindow:
             pass
         
         # Set background color
-        self.root.configure(bg="#f0f0f0")
+        self.root.configure(bg="#152e41")
         
         self.setup_ui()
     
@@ -684,11 +684,11 @@ class EditRentalWindow:
     def setup_ui(self):
         """Setup the user interface"""
         # Main container frame
-        main_frame = tk.Frame(self.root, bg="#f0f0f0")
+        main_frame = tk.Frame(self.root, bg="#152e41")
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
         # TOP FRAME for BACK button (top right)
-        top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        top_frame = tk.Frame(main_frame, bg="#152e41")
         top_frame.pack(fill="x", pady=(0, 10))
         
         # BACK Button in top right corner
@@ -705,20 +705,20 @@ class EditRentalWindow:
         # Title
         title_label = tk.Label(main_frame, text="EDIT RESERVATION", 
                               font=("Helvetica", 18, "bold"),
-                              fg="black",
-                              bg="#f0f0f0")
+                              fg="white",
+                              bg="#152e41")
         title_label.pack(pady=(0, 15))
         
         # Create two columns for the form
-        columns_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        columns_frame = tk.Frame(main_frame, bg="#152e41")
         columns_frame.pack(fill="both", expand=True)
         
         # Left column - Customer details
-        left_column = tk.Frame(columns_frame, bg="#f0f0f0")
+        left_column = tk.Frame(columns_frame, bg="#152e41")
         left_column.pack(side="left", fill="both", expand=True, padx=(0, 10))
         
         # Right column - Items and dates
-        right_column = tk.Frame(columns_frame, bg="#f0f0f0")
+        right_column = tk.Frame(columns_frame, bg="#152e41")
         right_column.pack(side="right", fill="both", expand=True, padx=(10, 0))
         
         # Setup left column (Customer details)
@@ -728,21 +728,21 @@ class EditRentalWindow:
         self.setup_items_column(right_column)
         
         # Bottom frame for total and update button
-        bottom_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        bottom_frame = tk.Frame(main_frame, bg="#152e41")
         bottom_frame.pack(fill="x", pady=(10, 0))
         
         # Rental ID label
         rental_id_label = tk.Label(bottom_frame, text=f"Rental ID: {self.rental.rental_id}",
                                    font=("Helvetica", 11),
-                                   bg="#f0f0f0",
-                                   fg="black")
+                                   bg="#152e41",
+                                   fg="white")
         rental_id_label.pack(side="left", padx=10)
         
         # Total label
         self.total_label = tk.Label(bottom_frame, text="TOTAL: £0.00",
                                    font=("Helvetica", 14, "bold"),
-                                   bg="#f0f0f0",
-                                   fg="black")
+                                   bg="#152e41",
+                                   fg="white")
         self.total_label.pack(side="left", padx=10, expand=True)
         
         # Update button
@@ -837,7 +837,7 @@ class EditRentalWindow:
         }
         
         # Date selection frame
-        date_frame = tk.Frame(parent_frame, bg="#f0f0f0")
+        date_frame = tk.Frame(parent_frame, bg="#152e41")
         date_frame.pack(pady=(0, 20), fill="x")
         
         # Date label
@@ -845,13 +845,13 @@ class EditRentalWindow:
         date_label.pack(pady=(0, 5), anchor="w")
         
         # Start and End date in one line
-        dates_frame = tk.Frame(date_frame, bg="#f0f0f0")
+        dates_frame = tk.Frame(date_frame, bg="#152e41")
         dates_frame.pack(fill="x")
         
         # Start Date
         start_label = tk.Label(dates_frame, text="From:",
                               font=("Helvetica", 10),
-                              bg="#f0f0f0")
+                              bg="#152e41")
         start_label.pack(side="left", padx=(0, 5))
         
         # Create start date picker
@@ -871,7 +871,7 @@ class EditRentalWindow:
         # End Date
         end_label = tk.Label(dates_frame, text="To:",
                             font=("Helvetica", 10),
-                            bg="#f0f0f0")
+                            bg="#152e41")
         end_label.pack(side="left", padx=(0, 5))
         
         # Create end date picker
@@ -893,13 +893,13 @@ class EditRentalWindow:
         # Stock label
         stock_label = tk.Label(parent_frame, text="STOCK",
                               font=("Helvetica", 11, "bold"),
-                              bg="#f0f0f0",
-                              fg="black",
+                              bg="#152e41",
+                              fg="white",
                               anchor="w")
         stock_label.pack(pady=(0, 10), anchor="w")
         
         # Item selection frame
-        item_frame = tk.Frame(parent_frame, bg="#f0f0f0")
+        item_frame = tk.Frame(parent_frame, bg="#152e41")
         item_frame.pack(fill="x", pady=(0, 10))
         
         # Item dropdown - include available quantities
@@ -940,12 +940,12 @@ class EditRentalWindow:
         self.add_btn.pack(side="left")
         
         # Selected items listbox
-        selected_frame = tk.Frame(parent_frame, bg="#f0f0f0")
+        selected_frame = tk.Frame(parent_frame, bg="#152e41")
         selected_frame.pack(fill="both", expand=True, pady=(0, 10))
         
         selected_label = tk.Label(selected_frame, text="Selected Items:",
                                  font=("Helvetica", 10),
-                                 bg="#f0f0f0")
+                                 bg="#152e41")
         selected_label.pack(anchor="w")
         
         # Selected items listbox

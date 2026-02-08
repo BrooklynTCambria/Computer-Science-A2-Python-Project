@@ -1,7 +1,6 @@
 import tkinter as tk
 
 def center_window(window, width=650, height=500):
-    """Center the window on screen"""
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
     
@@ -11,7 +10,6 @@ def center_window(window, width=650, height=500):
     window.geometry(f"{width}x{height}+{x}+{y}")
 
 def open_login_window():
-    """Function to open login window"""
     from Login import Login
     Login()
     
@@ -36,9 +34,7 @@ def EmployeeMenu():
     root.geometry("650x500")
     root.resizable(False, False)
     center_window(root, 650, 500)
-    
-    # Set background color
-    root.configure(bg="#f0f0f0")
+    root.configure(bg="#152e41")
     
     # Try to set icon
     try:
@@ -47,11 +43,11 @@ def EmployeeMenu():
         pass
     
     # Main container frame
-    main_frame = tk.Frame(root, bg="#f0f0f0")
+    main_frame = tk.Frame(root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
     # TOP FRAME for BACK button (top right)
-    top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_frame = tk.Frame(main_frame, bg="#152e41")
     top_frame.pack(fill="x", pady=(0, 10))
     
     # BACK Button in top right corner
@@ -68,12 +64,12 @@ def EmployeeMenu():
     # Title
     title_label = tk.Label(main_frame, text="EMPLOYEE MENU", 
                           font=("Helvetica", 28, "bold"),
-                          fg="black",
-                          bg="#f0f0f0")
+                          fg="white",
+                          bg="#152e41")
     title_label.pack(pady=(0, 40))
     
     # Main frame for buttons
-    button_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    button_frame = tk.Frame(main_frame, bg="#152e41")
     button_frame.pack(pady=20)
     
     # Rental View Button

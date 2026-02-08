@@ -81,7 +81,7 @@ def AdminMenu():
     center_window(root, 650, 500)
     
     # Set background color
-    root.configure(bg="#f0f0f0")
+    root.configure(bg="#152e41")
     
     # Try to set icon
     try:
@@ -90,11 +90,11 @@ def AdminMenu():
         pass
     
     # Main container frame
-    main_frame = tk.Frame(root, bg="#f0f0f0")
+    main_frame = tk.Frame(root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
     # TOP FRAME for BACK button (top right)
-    top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_frame = tk.Frame(main_frame, bg="#152e41")
     top_frame.pack(fill="x", pady=(0, 10))
     
     # BACK Button in top right corner
@@ -109,21 +109,14 @@ def AdminMenu():
     back_btn.pack(side="right", padx=5, pady=5)
     
     # Title - SPOTLIGHT AGENCY
-    agency_label = tk.Label(main_frame, text="SPOTLIGHT AGENCY", 
+    agency_label = tk.Label(main_frame, text="ADMIN MENU", 
                            font=("Helvetica", 18, "bold"),
-                           fg="black",
-                           bg="#f0f0f0")
+                           fg="white",
+                           bg="#152e41")
     agency_label.pack(pady=(0, 5))
     
-    # Subtitle - ADMIN MENU
-    subtitle_label = tk.Label(main_frame, text="ADMIN MENU", 
-                             font=("Helvetica", 16, "bold"),
-                             fg="#333333",
-                             bg="#f0f0f0")
-    subtitle_label.pack(pady=(0, 30))
-    
     # Frame for grid of buttons (2 columns)
-    grid_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    grid_frame = tk.Frame(main_frame, bg="#152e41")
     grid_frame.pack(pady=10, padx=10)
     
     # List of buttons in order (left column then right column)

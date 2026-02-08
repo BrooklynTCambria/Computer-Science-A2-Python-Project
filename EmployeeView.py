@@ -33,9 +33,6 @@ def center_window(window, width=650, height=500):
     
     window.geometry(f"{width}x{height}+{x}+{y}")
 
-# ============================================================================
-# Main Employee View Window
-# ============================================================================
 def EmployeeView(parent_window=None):
     """Main Employee View window"""
     
@@ -220,14 +217,14 @@ def EmployeeView(parent_window=None):
         pass
     
     # Set background color
-    root.configure(bg="#f0f0f0")
+    root.configure(bg="#152e41")
     
     # Main container frame
-    main_frame = tk.Frame(root, bg="#f0f0f0")
+    main_frame = tk.Frame(root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
     # TOP FRAME for BACK button (top right)
-    top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_frame = tk.Frame(main_frame, bg="#152e41")
     top_frame.pack(fill="x", pady=(0, 10))
     
     # BACK Button in top right corner
@@ -244,12 +241,12 @@ def EmployeeView(parent_window=None):
     # Title
     title_label = tk.Label(main_frame, text="EMPLOYEE SEARCH", 
                           font=("Helvetica", 24, "bold"),
-                          fg="black",
-                          bg="#f0f0f0")
+                          fg="white",
+                          bg="#152e41")
     title_label.pack(pady=(0, 20))
     
     # Top button frame (Search, Delete, Change Credentials)
-    top_button_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_button_frame = tk.Frame(main_frame, bg="#152e41")
     top_button_frame.pack(pady=(0, 15))
     
     # Search button
@@ -288,12 +285,12 @@ def EmployeeView(parent_window=None):
     credentials_btn.pack(side="left", padx=5)
     
     # Sort frame (below buttons)
-    sort_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    sort_frame = tk.Frame(main_frame, bg="#152e41")
     sort_frame.pack(pady=(0, 15))
     
     sort_label = tk.Label(sort_frame, text="Sort by:",
                          font=("Helvetica", 12),
-                         bg="#f0f0f0")
+                         bg="#152e41")
     sort_label.pack(side="left", padx=(0, 10))
     
     sort_dropdown = ttk.Combobox(sort_frame, 
@@ -315,7 +312,7 @@ def EmployeeView(parent_window=None):
     sort_order_btn.pack(side="left")
     
     # Treeview frame with scrollbar
-    tree_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    tree_frame = tk.Frame(main_frame, bg="#152e41")
     tree_frame.pack(fill="both", expand=True, pady=(0, 10))
     
     # Create Treeview
@@ -416,21 +413,21 @@ def SearchWindow(parent_window, apply_callback):
         pass
     
     # Set background color
-    search_root.configure(bg="#f0f0f0")
+    search_root.configure(bg="#152e41")
     
     # Main container frame
-    main_frame = tk.Frame(search_root, bg="#f0f0f0")
+    main_frame = tk.Frame(search_root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
     # Title
     title_label = tk.Label(main_frame, text="EMPLOYEE SEARCH", 
                           font=("Helvetica", 24, "bold"),
-                          fg="black",
-                          bg="#f0f0f0")
+                          fg="white",
+                          bg="#152e41")
     title_label.pack(pady=(0, 30))
     
     # Search criteria frame
-    criteria_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    criteria_frame = tk.Frame(main_frame, bg="#152e41")
     criteria_frame.pack(pady=20)
     
     # Style for labels
@@ -472,7 +469,7 @@ def SearchWindow(parent_window, apply_callback):
     username_entry.grid(row=5, column=0, pady=(0, 30), ipady=5)
     
     # Button frame
-    button_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    button_frame = tk.Frame(main_frame, bg="#152e41")
     button_frame.pack(pady=20)
     
     search_btn = tk.Button(button_frame, text="SEARCH",
@@ -658,29 +655,29 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
         pass
     
     # Set background color
-    cred_root.configure(bg="#f0f0f0")
+    cred_root.configure(bg="#152e41")
     
     # Main container frame
-    main_frame = tk.Frame(cred_root, bg="#f0f0f0")
+    main_frame = tk.Frame(cred_root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
     # Title
     title_label = tk.Label(main_frame, text="CHANGE CREDENTIALS", 
                           font=("Helvetica", 24, "bold"),
-                          fg="black",
-                          bg="#f0f0f0")
+                          fg="white",
+                          bg="#152e41")
     title_label.pack(pady=(0, 20))
     
     # Current employee info
     info_label = tk.Label(main_frame, 
                          text=f"Employee: {firstname} {surname}\nUsername: {username_container['value']}",
                          font=("Helvetica", 14, "bold"),
-                         bg="#f0f0f0",
+                         bg="#152e41",
                          fg="#333333")
     info_label.pack(pady=(0, 30))
     
     # Two-column layout for username and password changes
-    columns_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    columns_frame = tk.Frame(main_frame, bg="#152e41")
     columns_frame.pack(fill="both", expand=True, pady=10)
     
     # Style for labels
@@ -701,12 +698,12 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
     }
     
     # Left column - Username change
-    left_frame = tk.Frame(columns_frame, bg="#f0f0f0")
+    left_frame = tk.Frame(columns_frame, bg="#152e41")
     left_frame.pack(side="left", fill="both", expand=True, padx=20)
     
     user_title = tk.Label(left_frame, text="Change Username",
                          font=("Helvetica", 14, "bold"),
-                         bg="#f0f0f0",
+                         bg="#152e41",
                          fg="#333333")
     user_title.pack(pady=(0, 20))
     
@@ -733,12 +730,12 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
     change_user_btn.pack(pady=10)
     
     # Right column - Password change
-    right_frame = tk.Frame(columns_frame, bg="#f0f0f0")
+    right_frame = tk.Frame(columns_frame, bg="#152e41")
     right_frame.pack(side="right", fill="both", expand=True, padx=20)
     
     pass_title = tk.Label(right_frame, text="Change Password",
                          font=("Helvetica", 14, "bold"),
-                         bg="#f0f0f0",
+                         bg="#152e41",
                          fg="#333333")
     pass_title.pack(pady=(0, 20))
     

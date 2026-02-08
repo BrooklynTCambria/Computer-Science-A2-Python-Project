@@ -36,7 +36,7 @@ class StockAdd:
             pass
         
         # Set background color
-        self.root.configure(bg="#f0f0f0")
+        self.root.configure(bg="#152e41")
         
         self.setup_ui()
         
@@ -61,11 +61,11 @@ class StockAdd:
     def setup_ui(self):
         """Setup the user interface"""
         # Main container frame
-        main_frame = tk.Frame(self.root, bg="#f0f0f0")
+        main_frame = tk.Frame(self.root, bg="#152e41")
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
         # TOP FRAME for BACK button (top right)
-        top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        top_frame = tk.Frame(main_frame, bg="#152e41")
         top_frame.pack(fill="x", pady=(0, 10))
         
         # BACK Button in top right corner
@@ -82,19 +82,19 @@ class StockAdd:
         # Title
         title_label = tk.Label(main_frame, text="STOCK ADD", 
                               font=("Helvetica", 20, "bold"),
-                              fg="black",
-                              bg="#f0f0f0")
+                              fg="white",
+                              bg="#152e41")
         title_label.pack(pady=(0, 30))
         
         # STOCK ITEM Frame
-        stock_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        stock_frame = tk.Frame(main_frame, bg="#152e41")
         stock_frame.pack(pady=(0, 30))
         
         # STOCK ITEM label
         stock_label = tk.Label(stock_frame, text="STOCK ITEM", 
                               font=("Helvetica", 16, "bold"),
-                              fg="black",
-                              bg="#f0f0f0")
+                              fg="white",
+                              bg="#152e41")
         stock_label.pack(pady=(0, 10))
         
         # Item dropdown
@@ -116,14 +116,14 @@ class StockAdd:
         self.item_dropdown.bind("<<ComboboxSelected>>", self.on_item_selected)
         
         # AMOUNT Frame
-        amount_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        amount_frame = tk.Frame(main_frame, bg="#152e41")
         amount_frame.pack(pady=(0, 30))
         
         # AMOUNT label
         amount_label = tk.Label(amount_frame, text="AMOUNT", 
                                font=("Helvetica", 16, "bold"),
-                               fg="black",
-                               bg="#f0f0f0")
+                               fg="white",
+                               bg="#152e41")
         amount_label.pack(pady=(0, 10))
         
         # Amount entry
@@ -150,7 +150,7 @@ class StockAdd:
         self.restock_btn.pack(pady=(10, 0))
         
         # Bottom button frame
-        bottom_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        bottom_frame = tk.Frame(main_frame, bg="#152e41")
         bottom_frame.pack(fill="x", pady=(20, 0))
         
         # DELETE ITEM button (left side)
@@ -359,7 +359,7 @@ class AddItemWindow:
         self.window = tk.Toplevel(parent)
         self.window.title("SPOTLIGHT AGENCY - Add New Item")
         self.window.geometry("650x500")
-        self.window.configure(bg="#f0f0f0")
+        self.window.configure(bg="#152e41")
         self.window.resizable(False, False)
         center_window(self.window, 650, 500)
         
@@ -374,18 +374,18 @@ class AddItemWindow:
     def setup_ui(self):
         """Setup the user interface"""
         # Main container frame
-        main_frame = tk.Frame(self.window, bg="#f0f0f0")
+        main_frame = tk.Frame(self.window, bg="#152e41")
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
         # Title
         title_label = tk.Label(main_frame, text="ADD NEW ITEM", 
                               font=("Helvetica", 20, "bold"),
-                              fg="black",
-                              bg="#f0f0f0")
+                              fg="white",
+                              bg="#152e41")
         title_label.pack(pady=(0, 15))
         
         # Form frame
-        form_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        form_frame = tk.Frame(main_frame, bg="#152e41")
         form_frame.pack(pady=20)
         
         # Style for labels
@@ -429,8 +429,8 @@ class AddItemWindow:
         # ITEM TYPE (Optional but good to have)
         type_label = tk.Label(form_frame, text="ITEM TYPE", 
                              font=("Helvetica", 12, "bold"),
-                             bg="#f0f0f0",
-                             fg="black",
+                             bg="#152e41",
+                             fg="white",
                              anchor="w")
         type_label.grid(row=6, column=0, sticky="w", pady=(0, 6))
         
@@ -443,7 +443,7 @@ class AddItemWindow:
         self.type_entry.grid(row=7, column=0, pady=(0, 30), ipady=5)
         
         # Button frame
-        button_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        button_frame = tk.Frame(main_frame, bg="#152e41")
         button_frame.pack(pady=20)
         
         # ADD button

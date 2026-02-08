@@ -86,14 +86,14 @@ def Revenue(parent_window=None):
         pass
     
     # Set background color
-    root.configure(bg="#f0f0f0")
+    root.configure(bg="#152e41")
     
     # Main container frame
-    main_frame = tk.Frame(root, bg="#f0f0f0")
+    main_frame = tk.Frame(root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
     # TOP FRAME for BACK button (top right)
-    top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_frame = tk.Frame(main_frame, bg="#152e41")
     top_frame.pack(fill="x", pady=(0, 10))
     
     # BACK Button in top right corner
@@ -110,15 +110,15 @@ def Revenue(parent_window=None):
     # Title - SPOTLIGHT AGENCY
     agency_label = tk.Label(main_frame, text="SPOTLIGHT AGENCY", 
                            font=("Helvetica", 18, "bold"),
-                           fg="black",
-                           bg="#f0f0f0")
+                           fg="white",
+                           bg="#152e41")
     agency_label.pack(pady=(20, 10))
     
     # Subtitle - REVENUE
     subtitle_label = tk.Label(main_frame, text="REVENUE", 
                              font=("Helvetica", 16, "bold"),
                              fg="#333333",
-                             bg="#f0f0f0")
+                             bg="#152e41")
     subtitle_label.pack(pady=(0, 50))
     
     # Today's date display
@@ -126,12 +126,12 @@ def Revenue(parent_window=None):
     date_label = tk.Label(main_frame, 
                          text=f"Today: {today.strftime('%A, %d %B %Y')}",
                          font=("Helvetica", 12),
-                         bg="#f0f0f0",
+                         bg="#152e41",
                          fg="#555555")
     date_label.pack(pady=(0, 30))
     
     # Main statistics display frame
-    stats_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    stats_frame = tk.Frame(main_frame, bg="#152e41")
     stats_frame.pack(fill="both", expand=True, pady=20)
     
     # Style for labels
@@ -151,7 +151,7 @@ def Revenue(parent_window=None):
     }
     
     # Total Revenue Section
-    revenue_frame = tk.Frame(stats_frame, bg="#f0f0f0")
+    revenue_frame = tk.Frame(stats_frame, bg="#152e41")
     revenue_frame.pack(pady=20)
     
     revenue_text = tk.Label(revenue_frame, text="TOTAL REVENUE:", **label_style)
@@ -161,7 +161,7 @@ def Revenue(parent_window=None):
     total_revenue_label.pack(pady=10)
     
     # Total Rentals Section
-    rentals_frame = tk.Frame(stats_frame, bg="#f0f0f0")
+    rentals_frame = tk.Frame(stats_frame, bg="#152e41")
     rentals_frame.pack(pady=20)
     
     rentals_text = tk.Label(rentals_frame, text="TOTAL RENTALS:", **label_style)
@@ -171,7 +171,7 @@ def Revenue(parent_window=None):
     total_rentals_label.pack(pady=10)
     
     # Update button to refresh statistics
-    update_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    update_frame = tk.Frame(main_frame, bg="#152e41")
     update_frame.pack(pady=20)
     
     update_btn = tk.Button(update_frame, text="REFRESH",

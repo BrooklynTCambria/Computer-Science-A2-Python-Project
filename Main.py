@@ -1,3 +1,5 @@
+# open this script to start the program
+
 import sys
 
 def main():
@@ -6,4 +8,4 @@ def main():
     Login()
 
 if __name__ == "__main__":
-    main()
+    main()    

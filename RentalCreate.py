@@ -25,7 +25,7 @@ class AutofillWindow:
         self.window = tk.Toplevel(parent)
         self.window.title("Select Customer")
         self.window.geometry("400x300")
-        self.window.configure(bg="#f0f0f0")
+        self.window.configure(bg="#152e41")
         self.window.resizable(False, False)
         
         # Center window
@@ -37,7 +37,7 @@ class AutofillWindow:
         # Title
         title_label = tk.Label(self.window, text="Select Customer",
                               font=("Helvetica", 14, "bold"),
-                              bg="#f0f0f0")
+                              bg="#152e41")
         title_label.pack(pady=10)
         
         # Listbox for customers
@@ -55,7 +55,7 @@ class AutofillWindow:
             self.listbox.insert(tk.END, f"{customer.fullname} - {customer.phone}")
         
         # Button frame
-        button_frame = tk.Frame(self.window, bg="#f0f0f0")
+        button_frame = tk.Frame(self.window, bg="#152e41")
         button_frame.pack(pady=10)
         
         # Select button
@@ -122,7 +122,7 @@ class RentalCreate:
             pass
         
         # Set background color
-        self.root.configure(bg="#f0f0f0")
+        self.root.configure(bg="#152e41")
         
         self.setup_ui()
         
@@ -148,11 +148,11 @@ class RentalCreate:
     def setup_ui(self):
         """Setup the user interface"""
         # Main container frame
-        main_frame = tk.Frame(self.root, bg="#f0f0f0")
+        main_frame = tk.Frame(self.root, bg="#152e41")
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
         # TOP FRAME for BACK button (top right)
-        top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        top_frame = tk.Frame(main_frame, bg="#152e41")
         top_frame.pack(fill="x", pady=(0, 10))
         
         # BACK Button in top right corner
@@ -169,20 +169,20 @@ class RentalCreate:
         # Title
         title_label = tk.Label(main_frame, text="RENTAL CREATION", 
                               font=("Helvetica", 18, "bold"),
-                              fg="black",
-                              bg="#f0f0f0")
+                              fg="white",
+                              bg="#152e41")
         title_label.pack(pady=(0, 15))
         
         # Create two columns for the form
-        columns_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        columns_frame = tk.Frame(main_frame, bg="#152e41")
         columns_frame.pack(fill="both", expand=True)
         
         # Left column - Customer details
-        left_column = tk.Frame(columns_frame, bg="#f0f0f0")
+        left_column = tk.Frame(columns_frame, bg="#152e41")
         left_column.pack(side="left", fill="both", expand=True, padx=(0, 10))
         
         # Right column - Items and dates
-        right_column = tk.Frame(columns_frame, bg="#f0f0f0")
+        right_column = tk.Frame(columns_frame, bg="#152e41")
         right_column.pack(side="right", fill="both", expand=True, padx=(10, 0))
         
         # Setup left column (Customer details)
@@ -192,11 +192,11 @@ class RentalCreate:
         self.setup_items_column(right_column)
         
         # Bottom frame for buttons and total
-        bottom_frame = tk.Frame(main_frame, bg="#f0f0f0")
+        bottom_frame = tk.Frame(main_frame, bg="#152e41")
         bottom_frame.pack(fill="x", pady=(10, 0))
         
         # Left side - Clear button and Total label
-        left_bottom_frame = tk.Frame(bottom_frame, bg="#f0f0f0")
+        left_bottom_frame = tk.Frame(bottom_frame, bg="#152e41")
         left_bottom_frame.pack(side="left", fill="x", expand=True)
         
         # Clear button
@@ -213,8 +213,8 @@ class RentalCreate:
         # Total label
         self.total_label = tk.Label(left_bottom_frame, text="TOTAL: £0.00",
                                    font=("Helvetica", 14, "bold"),
-                                   bg="#f0f0f0",
-                                   fg="black")
+                                   bg="#152e41",
+                                   fg="white")
         self.total_label.pack(side="left")
         
         # Create button
@@ -257,12 +257,12 @@ class RentalCreate:
         self.firstname_entry.focus_set()
     
     def setup_customer_column(self, parent_frame):
-        """Setup customer details column"""
+
         # Style for labels
         label_style = {
             "font": ("Helvetica", 11),
-            "bg": "#f0f0f0",
-            "fg": "black",
+            "bg": "#152e41",
+            "fg": "white",
             "anchor": "w"
         }
         
@@ -270,7 +270,8 @@ class RentalCreate:
         entry_style = {
             "font": ("Helvetica", 11),
             "width": 25,
-            "bd": 1,
+            "bd": 0,
+            "bg": "#dcffff",
             "relief": "solid",
             "highlightthickness": 1
         }
@@ -307,17 +308,17 @@ class RentalCreate:
         self.autofill_btn.pack(pady=(10, 0))
     
     def setup_items_column(self, parent_frame):
-        """Setup items and dates column"""
+
         # Style for labels
         label_style = {
             "font": ("Helvetica", 11),
-            "bg": "#f0f0f0",
-            "fg": "black",
+            "bg": "#152e41",
+            "fg": "white",
             "anchor": "w"
         }
         
         # Date selection frame
-        date_frame = tk.Frame(parent_frame, bg="#f0f0f0")
+        date_frame = tk.Frame(parent_frame, bg="#152e41")
         date_frame.pack(pady=(0, 20), fill="x")
         
         # Date label
@@ -325,13 +326,14 @@ class RentalCreate:
         date_label.pack(pady=(0, 5), anchor="w")
         
         # Start and End date in one line
-        dates_frame = tk.Frame(date_frame, bg="#f0f0f0")
+        dates_frame = tk.Frame(date_frame, bg="#152e41")
         dates_frame.pack(fill="x")
         
         # Start Date
         start_label = tk.Label(dates_frame, text="From:",
                               font=("Helvetica", 10),
-                              bg="#f0f0f0")
+                              fg="white",
+                              bg="#152e41")
         start_label.pack(side="left", padx=(0, 5))
         
         # Create start date picker - cannot select dates before today
@@ -348,7 +350,8 @@ class RentalCreate:
         # End Date
         end_label = tk.Label(dates_frame, text="To:",
                             font=("Helvetica", 10),
-                            bg="#f0f0f0")
+                            fg="white",
+                            bg="#152e41")
         end_label.pack(side="left", padx=(0, 5))
         
         # Create end date picker - set initial date to same as start date (today)
@@ -371,13 +374,13 @@ class RentalCreate:
         # Stock label
         stock_label = tk.Label(parent_frame, text="STOCK",
                               font=("Helvetica", 11, "bold"),
-                              bg="#f0f0f0",
-                              fg="black",
+                              bg="#152e41",
+                              fg="white",
                               anchor="w")
         stock_label.pack(pady=(0, 10), anchor="w")
         
         # Item selection frame
-        item_frame = tk.Frame(parent_frame, bg="#f0f0f0")
+        item_frame = tk.Frame(parent_frame, bg="#152e41")
         item_frame.pack(fill="x", pady=(0, 10))
         
         # Item dropdown
@@ -413,12 +416,13 @@ class RentalCreate:
         self.add_btn.pack(side="left")
         
         # Selected items listbox
-        selected_frame = tk.Frame(parent_frame, bg="#f0f0f0")
+        selected_frame = tk.Frame(parent_frame, bg="#152e41")
         selected_frame.pack(fill="both", expand=True, pady=(0, 10))
         
         selected_label = tk.Label(selected_frame, text="Selected Items:",
                                  font=("Helvetica", 10),
-                                 bg="#f0f0f0")
+                                 fg="white",
+                                 bg="#152e41")
         selected_label.pack(anchor="w")
         
         # Selected items listbox

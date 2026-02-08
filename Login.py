@@ -79,6 +79,7 @@ def Login():
     root = tk.Tk()
     root.title("SPOTLIGHT AGENCY")
     root.geometry("650x500")
+    root.configure(bg="#152e41")
     root.resizable(False, False)
     center_window(root, 650, 500)
     
@@ -88,7 +89,7 @@ def Login():
     except:
         pass
     
-    # Create/update default accounts (always runs)
+    # Create and update default accounts
     create_default_accounts()
     
     # Load current users for debugging
@@ -96,11 +97,11 @@ def Login():
     print(f"Current users in database: {list(users.keys())}")
     
     # Main container frame
-    main_frame = tk.Frame(root, bg="white")
+    main_frame = tk.Frame(root, bg="#152e41")
     main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
     
     # Create a frame for the image
-    image_frame = tk.Frame(main_frame, bg="white")
+    image_frame = tk.Frame(main_frame, bg="#152e41")
     image_frame.pack(pady=(20, 10))
     
     # Load and display image
@@ -109,25 +110,25 @@ def Login():
         img = img.resize((180, 180), Image.Resampling.LANCZOS)
         photo = ImageTk.PhotoImage(img)
         
-        image_label = tk.Label(image_frame, image=photo, bg="white")
+        image_label = tk.Label(image_frame, image=photo, bg="#152e41")
         image_label.image = photo
         image_label.pack()
         
     except Exception as e:
         print(f"Image not found: {e}")
-        label = tk.Label(image_frame, text="SPOTLIGHT AGENCY", font=("Helvetica", 24, "bold"), bg="white")
+        label = tk.Label(image_frame, text="SPOTLIGHT AGENCY", font=("Helvetica", 24, "bold"), bg="#152e41")
         label.pack()
     
     # Login frame
-    login_frame = tk.Frame(main_frame, bg="white")
+    login_frame = tk.Frame(main_frame, bg="#152e41")
     login_frame.pack(pady=10, padx=50, fill=tk.BOTH, expand=True)
     
     # Username entry with initial placeholder
-    userInput = tk.Entry(login_frame, font=("Helvetica", 14), fg="grey", width=30)
+    userInput = tk.Entry(login_frame, font=("Helvetica", 14), fg="grey", width=30, bg="#dcffff")
     userInput.insert(0, "USERNAME")
     
     # Password entry with initial placeholder
-    passInput = tk.Entry(login_frame, font=("Helvetica", 14), fg="grey", width=30)
+    passInput = tk.Entry(login_frame, font=("Helvetica", 14), fg="grey", width=30, bg="#dcffff")
     passInput.insert(0, "PASSWORD")
     
     def on_focus_in(event):
@@ -158,7 +159,7 @@ def Login():
     passInput.pack(pady=15)
     
     # Error label (initially empty)
-    error_label = tk.Label(login_frame, text="", fg="red", font=("Helvetica", 10), bg="white")
+    error_label = tk.Label(login_frame, text="", fg="red", font=("Helvetica", 10), bg="#152e41")
     error_label.pack(pady=5)
     
     # Login button
@@ -203,21 +204,21 @@ def Login():
             error_label.config(text=result)
     
     login_button = tk.Button(login_frame, text="LOGIN", font=("Helvetica", 14, "bold"), 
-                            command=submit_login, bg="#8A8A8A", fg="white", width=25, height=2)
+                            command=submit_login, bg="#8acbcb", fg="white", width=25, height=2)
     login_button.pack(pady=20)
     
     # Instructions for default logins
     info_label = tk.Label(main_frame, 
                          text="Default admin: admin / admin123\nDefault employee: employee / emp123", 
-                         font=("Helvetica", 10), fg="gray", bg="white", justify="center")
+                         font=("Helvetica", 10), fg="gray", bg="#152e41", justify="center")
     info_label.pack(pady=5)
     
     # Hover effects for login button
     def on_enter(e):
-        e.widget.config(bg="#A3A3A3")
+        e.widget.config(bg="#7db6b6")
     
     def on_leave(e):
-        e.widget.config(bg="#8A8A8A")
+        e.widget.config(bg="#8acbcb")
     
     login_button.bind("<Enter>", on_enter)
     login_button.bind("<Leave>", on_leave)

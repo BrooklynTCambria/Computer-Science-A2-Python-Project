@@ -119,7 +119,7 @@ def EmployeeAdd(parent_window=None):
         popup.title("Employee Credentials")
         popup.geometry("300x400")
         popup.resizable(False, False)
-        popup.configure(bg="#f0f0f0")
+        popup.configure(bg="#152e41")
         
         # Center the popup
         popup.update_idletasks()
@@ -136,46 +136,46 @@ def EmployeeAdd(parent_window=None):
         # Title
         title_label = tk.Label(popup, text="EMPLOYEE CREDENTIALS", 
                               font=("Helvetica", 16, "bold"),
-                              fg="black",
-                              bg="#f0f0f0")
+                              fg="white",
+                              bg="#152e41")
         title_label.pack(pady=20)
         
         # Employee info
-        info_frame = tk.Frame(popup, bg="#f0f0f0")
+        info_frame = tk.Frame(popup, bg="#152e41")
         info_frame.pack(pady=10, padx=20, fill="both")
         
         # Employee name
         name_label = tk.Label(info_frame, 
                              text=f"{firstname} {surname}",
                              font=("Helvetica", 14, "bold"),
-                             bg="#f0f0f0")
+                             bg="#152e41")
         name_label.pack(pady=5)
         
         # Generated credentials
-        cred_frame = tk.Frame(info_frame, bg="white", highlightbackground="#8A8A8A", 
+        cred_frame = tk.Frame(info_frame, bg="#152e41", highlightbackground="#8A8A8A", 
                              highlightthickness=2, highlightcolor="#8A8A8A")
         cred_frame.pack(pady=20, padx=10, fill="both")
         
         # Username
         username_label = tk.Label(cred_frame, text="Username:", 
                                  font=("Helvetica", 12),
-                                 bg="white", fg="#333333")
+                                 bg="#152e41", fg="#333333")
         username_label.pack(pady=(15, 5))
         
         username_value = tk.Label(cred_frame, text=username,
                                  font=("Helvetica", 12, "bold"),
-                                 bg="white", fg="black")
+                                 bg="#152e41", fg="white")
         username_value.pack(pady=(0, 10))
         
         # Password
         password_label = tk.Label(cred_frame, text="Password:", 
                                  font=("Helvetica", 12),
-                                 bg="white", fg="#333333")
+                                 bg="#152e41", fg="#333333")
         password_label.pack(pady=(5, 5))
         
         password_value = tk.Label(cred_frame, text=password,
                                  font=("Helvetica", 12, "bold"),
-                                 bg="white", fg="black")
+                                 bg="#152e41", fg="white")
         password_value.pack(pady=(0, 15))
         
         # OK Button
@@ -242,14 +242,14 @@ def EmployeeAdd(parent_window=None):
         pass
     
     # Set background color
-    root.configure(bg="#f0f0f0")
+    root.configure(bg="#152e41")
     
     # Main container frame
-    main_frame = tk.Frame(root, bg="#f0f0f0")
+    main_frame = tk.Frame(root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
     # TOP FRAME for BACK button (top right) - ALWAYS show
-    top_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    top_frame = tk.Frame(main_frame, bg="#152e41")
     top_frame.pack(fill="x", pady=(0, 10))
     
     # BACK Button in top right corner
@@ -264,28 +264,21 @@ def EmployeeAdd(parent_window=None):
     back_btn.pack(side="right", padx=5, pady=5)
     
     # Title - SPOTLIGHT AGENCY
-    agency_label = tk.Label(main_frame, text="SPOTLIGHT AGENCY", 
+    agency_label = tk.Label(main_frame, text="EMPLOYEE ADD", 
                            font=("Helvetica", 18, "bold"),
-                           fg="black",
-                           bg="#f0f0f0")
-    agency_label.pack(pady=(0, 5))
-    
-    # Subtitle - EMPLOYEE ADD
-    subtitle_label = tk.Label(main_frame, text="EMPLOYEE ADD", 
-                             font=("Helvetica", 16, "bold"),
-                             fg="#333333",
-                             bg="#f0f0f0")
-    subtitle_label.pack(pady=(0, 30))
+                           fg="white",
+                           bg="#152e41")
+    agency_label.pack(pady=(0, 30))
     
     # Input fields frame
-    input_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    input_frame = tk.Frame(main_frame, bg="#152e41")
     input_frame.pack(pady=10)
     
     # Style for labels
     label_style = {
-        "font": ("Helvetica", 12),
-        "bg": "#f0f0f0",
-        "fg": "black",
+        "font": ("Helvetica", 11),
+        "bg": "#152e41",
+        "fg": "white",
         "anchor": "w"
     }
     
@@ -313,7 +306,7 @@ def EmployeeAdd(parent_window=None):
     surname_entry.grid(row=3, column=0, pady=(0, 30), ipady=5)
     
     # Button frame for ADD button
-    button_frame = tk.Frame(main_frame, bg="#f0f0f0")
+    button_frame = tk.Frame(main_frame, bg="#152e41")
     button_frame.pack(pady=20)
     
     # Add Button
