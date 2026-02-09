@@ -1,4 +1,3 @@
-# EmployeeView.py - Consolidated version
 import tkinter as tk
 from tkinter import ttk, messagebox
 import hashlib
@@ -772,8 +771,5 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
     # Focus on first entry
     new_user_entry1.focus_set()
 
-# ============================================================================
-# For testing directly
-# ============================================================================
 if __name__ == "__main__":
     EmployeeView()
