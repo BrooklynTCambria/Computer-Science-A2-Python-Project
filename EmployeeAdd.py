@@ -44,21 +44,17 @@ def center_window(window, width=650, height=500):
     window.geometry(f"{width}x{height}+{x}+{y}")
 
 def generate_username():
-    """Generate username in format 'USER' + 4 random digits"""
     random_num = random.randint(1000, 9999)
     return f"USER{random_num}"
 
 def generate_password():
-    """Generate password as random noun + 3 random numbers"""
     random_noun = random.choice(RANDOM_NOUNS)
     random_nums = random.randint(100, 999)
     return f"{random_noun}{random_nums}"
 
 def EmployeeAdd(parent_window=None):
-    """Function to open Employee Add window"""
     
     def setup_hover_effects():
-        """Setup hover effects for buttons"""
         def on_enter(e):
             if hasattr(e.widget, 'hover_color'):
                 e.widget.config(bg=e.widget.hover_color)
@@ -82,7 +78,6 @@ def EmployeeAdd(parent_window=None):
         back_btn.bind("<Leave>", on_leave)
     
     def add_employee():
-        """Add employee to the system"""
         # Get values
         firstname = firstname_entry.get().strip()
         surname = surname_entry.get().strip()
@@ -113,7 +108,6 @@ def EmployeeAdd(parent_window=None):
         show_credentials_popup(firstname, surname, username, password, users)
     
     def show_credentials_popup(firstname, surname, username, password, users):
-        """Show popup with generated credentials"""
         # Create popup window
         popup = tk.Toplevel(root)
         popup.title("Employee Credentials")
@@ -222,7 +216,6 @@ def EmployeeAdd(parent_window=None):
         ok_button.bind("<Leave>", lambda e: e.widget.config(bg="#8acbcb"))
     
     def go_back():
-        """Go back to previous window"""
         root.destroy()
         if parent_window:
             # Bring focus back to parent window

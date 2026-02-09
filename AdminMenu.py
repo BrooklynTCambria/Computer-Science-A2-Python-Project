@@ -1,7 +1,6 @@
 import tkinter as tk
 
 def center_window(window, width=650, height=500):
-    """Center the window on screen"""
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
     
@@ -11,7 +10,6 @@ def center_window(window, width=650, height=500):
     window.geometry(f"{width}x{height}+{x}+{y}")
 
 def open_login_window():
-    """Function to open login window"""
     from Login import Login
     Login()
 

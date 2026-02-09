@@ -18,7 +18,6 @@ def center_window(window, width=650, height=500):
 def RentalView(parent_window=None):
     
     def setup_hover_effects():
-        """Setup hover effects for buttons"""
         def on_enter(e):
             if hasattr(e.widget, 'hover_color'):
                 e.widget.config(bg=e.widget.hover_color)
@@ -33,7 +32,6 @@ def RentalView(parent_window=None):
             btn.bind("<Leave>", on_leave)
     
     def load_rental_data():
-        """Load rental data from database"""
         # Clear existing data
         for item in tree.get_children():
             tree.delete(item)
@@ -111,7 +109,6 @@ def RentalView(parent_window=None):
             count_label.config(text="0 SELECTED")
     
     def edit_selected():
-        """Edit selected rental"""
         selected = tree.selection()
         if not selected:
             messagebox.showwarning("No Selection", "Please select a rental to edit.")

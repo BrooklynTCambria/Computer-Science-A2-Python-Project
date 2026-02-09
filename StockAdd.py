@@ -43,7 +43,6 @@ class StockAdd:
             self.root.mainloop()
     
     def setup_hover_effects(self):
-        """Setup hover effects for buttons"""
         def on_enter(e):
             if hasattr(e.widget, 'hover_color'):
                 e.widget.config(bg=e.widget.hover_color)
@@ -58,7 +57,6 @@ class StockAdd:
             btn.bind("<Leave>", on_leave)
     
     def setup_ui(self):
-        """Setup the user interface"""
         # Main container frame
         main_frame = tk.Frame(self.root, bg="#152e41")
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
@@ -201,13 +199,11 @@ class StockAdd:
             self.on_item_selected()
     
     def on_item_selected(self, event=None):
-        """Handle item selection from dropdown"""
         selected_index = self.item_dropdown.current()
         if selected_index != -1 and selected_index < len(self.items):
             self.current_item_id = self.items[selected_index].item_id
     
     def restock_item(self):
-        """Add stock to selected item"""
         if self.current_item_id is None:
             messagebox.showwarning("No Selection", "Please select a stock item first.")
             return
@@ -261,7 +257,6 @@ class StockAdd:
                 break
     
     def delete_item(self):
-        """Delete selected item"""
         if self.current_item_id is None:
             messagebox.showwarning("No Selection", "Please select a stock item to delete.")
             return
@@ -322,7 +317,6 @@ class StockAdd:
         AddItemWindow(self.root, self.on_new_item_added)
     
     def on_new_item_added(self, new_item):
-        """Callback when a new item is added"""
         # Reload items
         self.items = db.load_items()
         self.items.sort(key=lambda x: x.name.lower())
@@ -340,11 +334,9 @@ class StockAdd:
                 break
     
     def show_error(self, message):
-        """Show error message"""
         messagebox.showerror("Error", message)
     
     def go_back(self):
-        """Go back to previous window"""
         self.root.destroy()
         if self.parent_window:
             self.parent_window.deiconify()
@@ -581,11 +573,9 @@ class AddItemWindow:
         self.window.destroy()
     
     def show_error(self, message):
-        """Show error message"""
         messagebox.showerror("Error", message)
 
 def StockAddWindow(parent_window=None):
-    """Wrapper function to create StockAdd instance"""
     return StockAdd(parent_window)
 
 # For testing directly

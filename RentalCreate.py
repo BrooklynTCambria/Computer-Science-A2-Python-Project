@@ -15,7 +15,6 @@ def center_window(window, width=650, height=500):
     window.geometry(f"{width}x{height}+{x}+{y}")
 
 class AutofillWindow:
-    """Popup window for customer autofill"""
     def __init__(self, parent, customers, callback):
         self.parent = parent
         self.customers = customers
@@ -91,7 +90,6 @@ class AutofillWindow:
             self.listbox.selection_set(0)
     
     def select_customer(self):
-        """Select customer and return to parent"""
         selection = self.listbox.curselection()
         if selection:
             selected_customer = self.customers[selection[0]]
@@ -107,7 +105,6 @@ class RentalCreate:
         self.create_window()
     
     def create_window(self):
-        """Create the Rental Creation window"""
         # Create the window
         self.root = tk.Toplevel() if self.parent_window else tk.Tk()
         self.root.title("SPOTLIGHT AGENCY - Rental Creation")
@@ -130,7 +127,6 @@ class RentalCreate:
             self.root.mainloop()
     
     def setup_hover_effects(self):
-        """Setup hover effects for buttons"""
         def on_enter(e):
             if hasattr(e.widget, 'hover_color'):
                 e.widget.config(bg=e.widget.hover_color)
@@ -146,7 +142,6 @@ class RentalCreate:
             btn.bind("<Leave>", on_leave)
     
     def setup_ui(self):
-        """Setup the user interface"""
         # Main container frame
         main_frame = tk.Frame(self.root, bg="#152e41")
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
@@ -449,7 +444,6 @@ class RentalCreate:
         self.remove_btn.pack()
     
     def on_start_date_selected(self, event=None):
-        """When start date is selected, update end date picker and set end date to same as start"""
         try:
             start_date = self.start_date_entry.get_date()
             
@@ -465,7 +459,6 @@ class RentalCreate:
             print(f"Error setting end date: {e}")
     
     def validate_end_date(self, event=None):
-        """Validate that end date is not before start date"""
         try:
             start_date = self.start_date_entry.get_date()
             end_date = self.end_date_entry.get_date()
@@ -481,7 +474,6 @@ class RentalCreate:
             print(f"Error validating end date: {e}")
     
     def show_autofill(self):
-        """Show autofill popup with matching customers"""
         firstname = self.firstname_entry.get().strip().lower()
         lastname = self.lastname_entry.get().strip().lower()
         
@@ -542,7 +534,6 @@ class RentalCreate:
         AutofillWindow(self.root, matching_customers, self.autofill_customer)
     
     def autofill_customer(self, customer):
-        """Autofill customer information"""
         self.firstname_entry.delete(0, tk.END)
         self.firstname_entry.insert(0, customer.firstname)
         
@@ -556,7 +547,6 @@ class RentalCreate:
         self.item_dropdown.focus_set()
     
     def add_item(self):
-        """Add selected item to cart"""
         selected_index = self.item_dropdown.current()
         if selected_index == -1:
             messagebox.showwarning("No Selection", "Please select an item from the dropdown.")
@@ -603,7 +593,7 @@ class RentalCreate:
         self.quantity_var.set("1")
     
     def remove_item(self):
-        """Remove selected item from cart"""
+
         selection = self.selected_listbox.curselection()
         if not selection:
             messagebox.showwarning("No Selection", "Please select an item to remove.")
@@ -623,7 +613,6 @@ class RentalCreate:
         self.update_total()
     
     def clear_items(self):
-        """Clear all items from the rental"""
         if not self.selected_items:
             messagebox.showinfo("No Items", "There are no items to clear.")
             return
@@ -638,7 +627,6 @@ class RentalCreate:
             messagebox.showinfo("Items Cleared", "All items have been removed from the rental.")
     
     def update_total(self):
-        """Update the total price"""
         total = 0.0
         
         for item_id, quantity in self.selected_items.items():
@@ -661,7 +649,6 @@ class RentalCreate:
         self.total_label.config(text=f"TOTAL: £{total:.2f}")
     
     def confirm_create_rental(self):
-        """Show confirmation dialog before creating rental"""
         # Get customer details
         firstname = self.firstname_entry.get().strip()
         lastname = self.lastname_entry.get().strip()
@@ -730,7 +717,6 @@ class RentalCreate:
             self.create_rental()
     
     def create_rental(self):
-        """Create the Rental (called after confirmation)"""
         # Get customer details
         firstname = self.firstname_entry.get().strip()
         lastname = self.lastname_entry.get().strip()
@@ -803,11 +789,9 @@ class RentalCreate:
         self.clear_form()
     
     def show_error(self, message):
-        """Show error message"""
         messagebox.showerror("Error", message)
     
     def clear_form(self):
-        """Clear the form for next entry"""
         # Clear customer details
         self.firstname_entry.delete(0, tk.END)
         self.lastname_entry.delete(0, tk.END)
@@ -842,13 +826,11 @@ class RentalCreate:
         self.item_dropdown.set('')
     
     def go_back(self):
-        """Go back to previous window"""
         self.root.destroy()
         if self.parent_window:
             self.parent_window.deiconify()
 
 def RentalCreation(parent_window=None, employee="admin"):
-    """Wrapper function to create RentalCreate instance"""
     return RentalCreate(parent_window, employee)
 
 # For testing directly

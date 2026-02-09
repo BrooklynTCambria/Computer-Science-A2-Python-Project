@@ -14,10 +14,8 @@ def center_window(window, width=650, height=500):
     window.geometry(f"{width}x{height}+{x}+{y}")
 
 def Revenue(parent_window=None):
-    """Revenue display window - shows today's totals only"""
     
     def setup_hover_effects():
-        """Setup hover effects for buttons"""
         def on_enter(e):
             if hasattr(e.widget, 'hover_color'):
                 e.widget.config(bg=e.widget.hover_color)
@@ -30,7 +28,6 @@ def Revenue(parent_window=None):
         back_btn.bind("<Leave>", on_leave)
     
     def calculate_today_revenue():
-        """Calculate today's revenue and rental count"""
         rentals = db.load_rentals()
         today = date.today()
         
@@ -54,7 +51,6 @@ def Revenue(parent_window=None):
         return today_revenue, today_rentals
     
     def update_statistics():
-        """Update the statistics display"""
         try:
             today_revenue, today_rentals = calculate_today_revenue()
             
@@ -67,7 +63,6 @@ def Revenue(parent_window=None):
             total_rentals_label.config(text="0")
     
     def go_back():
-        """Go back to previous window"""
         root.destroy()
         if parent_window:
             parent_window.deiconify()

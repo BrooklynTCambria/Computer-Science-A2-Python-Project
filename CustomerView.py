@@ -13,10 +13,8 @@ def center_window(window, width=650, height=500):
     window.geometry(f"{width}x{height}+{x}+{y}")
 
 def CustomerView(parent_window=None):
-    """Main Customer View window"""
-    
+     
     def setup_hover_effects():
-        """Setup hover effects for buttons"""
         def on_enter(e):
             if hasattr(e.widget, 'hover_color'):
                 e.widget.config(bg=e.widget.hover_color)
@@ -31,7 +29,6 @@ def CustomerView(parent_window=None):
             btn.bind("<Leave>", on_leave)
     
     def load_customer_data():
-        """Load customer data from database"""
         # Clear existing data
         for item in tree.get_children():
             tree.delete(item)
@@ -50,7 +47,6 @@ def CustomerView(parent_window=None):
                        tags=(str(customer.customer_id),))
     
     def on_item_select(event):
-        """Handle item selection"""
         selected = tree.selection()
         if selected:
             delete_btn.config(state="normal")
@@ -63,7 +59,6 @@ def CustomerView(parent_window=None):
             count_label.config(text="0 SELECTED")
     
     def delete_selected():
-        """Delete selected customer"""
         selected = tree.selection()
         if not selected:
             messagebox.showwarning("No Selection", "Please select a customer to delete.")
@@ -122,11 +117,9 @@ def CustomerView(parent_window=None):
         count_label.config(text="0 SELECTED")
     
     def open_search_window():
-        """Open Search window"""
         SearchWindow(root, apply_search_filter)
     
     def view_selected_customer():
-        """View details of selected customer"""
         selected = tree.selection()
         if not selected:
             messagebox.showwarning("No Selection", "Please select a customer to view.")
@@ -188,7 +181,6 @@ def CustomerView(parent_window=None):
         messagebox.showinfo("Customer Details", details)
     
     def apply_search_filter(firstname_filter, surname_filter, phone_filter):
-        """Apply search filter to the treeview"""
         # Clear current selection
         tree.selection_remove(tree.selection())
         
@@ -235,7 +227,6 @@ def CustomerView(parent_window=None):
                 tree.detach(child)
     
     def sort_treeview(col, reverse):
-        """Sort treeview by column"""
         data = [(tree.set(child, col), child) for child in tree.get_children()]
         
         # Sort alphabetically
@@ -248,7 +239,6 @@ def CustomerView(parent_window=None):
         tree.heading(col, command=lambda: sort_treeview(col, not reverse))
     
     def go_back():
-        """Go back to previous window"""
         root.destroy()
         if parent_window:
             parent_window.deiconify()
@@ -395,10 +385,8 @@ def CustomerView(parent_window=None):
         root.mainloop()
 
 def SearchWindow(parent_window, apply_callback):
-    """Popup Search window - 650x500"""
     
     def perform_search():
-        """Perform search and close window"""
         firstname = firstname_entry.get().strip()
         surname = surname_entry.get().strip()
         phone = phone_entry.get().strip()
@@ -410,7 +398,6 @@ def SearchWindow(parent_window, apply_callback):
         search_root.destroy()
     
     def clear_and_close():
-        """Clear search and close window"""
         apply_callback("", "", "")  # Clear filter
         search_root.destroy()
     

@@ -170,7 +170,6 @@ def StockView(parent_window=None):
                 tree.detach(child)
     
     def sort_treeview(col, reverse):
-        """Sort treeview by column"""
         data = [(tree.set(child, col), child) for child in tree.get_children()]
         
         # Determine if it's a price column (contains £)
@@ -325,10 +324,8 @@ def StockView(parent_window=None):
         root.mainloop()
 
 def SearchWindow(parent_window, apply_callback):
-    """Popup Search window - 650x500"""
     
     def perform_search():
-        """Perform search and close window"""
         name = name_entry.get().strip()
         item_type = type_entry.get().strip()
         price_min = price_min_entry.get().strip()

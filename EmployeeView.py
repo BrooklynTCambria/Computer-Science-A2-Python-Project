@@ -34,7 +34,6 @@ def center_window(window, width=650, height=500):
     window.geometry(f"{width}x{height}+{x}+{y}")
 
 def EmployeeView(parent_window=None):
-    """Main Employee View window"""
     
     # Variables for sorting
     sort_by_options = ["First Name", "Surname", "Username", "Password"]
@@ -42,7 +41,7 @@ def EmployeeView(parent_window=None):
     sort_order = tk.BooleanVar(value=False)  # False = ascending, True = descending
     
     def setup_hover_effects():
-        """Setup hover effects for buttons"""
+
         def on_enter(e):
             if hasattr(e.widget, 'hover_color'):
                 e.widget.config(bg=e.widget.hover_color)
@@ -57,7 +56,7 @@ def EmployeeView(parent_window=None):
             btn.bind("<Leave>", on_leave)
     
     def load_employee_data():
-        """Load and display employee data (excluding admins)"""
+
         users = load_users()
         
         # Clear existing data
@@ -93,7 +92,7 @@ def EmployeeView(parent_window=None):
             tree.insert("", "end", values=(emp["firstname"], emp["surname"], emp["username"], emp["password"]))
     
     def on_item_select(event):
-        """Handle item selection"""
+
         selected = tree.selection()
         if selected:
             delete_btn.config(state="normal")
@@ -103,7 +102,7 @@ def EmployeeView(parent_window=None):
             credentials_btn.config(state="disabled")
     
     def delete_selected():
-        """Delete selected employee"""
+
         selected = tree.selection()
         if not selected:
             messagebox.showwarning("No Selection", "Please select an employee to delete.")
@@ -357,10 +356,10 @@ def EmployeeView(parent_window=None):
         root.mainloop()
 
 def SearchWindow(parent_window, apply_callback):
-    """Popup Search window - 650x500"""
+
     
     def perform_search():
-        """Perform search and close window"""
+
         firstname = firstname_entry.get().strip()
         surname = surname_entry.get().strip()
         username = username_entry.get().strip()
@@ -372,12 +371,12 @@ def SearchWindow(parent_window, apply_callback):
         search_root.destroy()
     
     def clear_and_close():
-        """Clear search and close window"""
+
         apply_callback("", "", "")  # Clear filter
         search_root.destroy()
     
     def setup_hover_effects():
-        """Setup hover effects for buttons"""
+
         def on_enter(e):
             if hasattr(e.widget, 'hover_color'):
                 e.widget.config(bg=e.widget.hover_color)
@@ -508,13 +507,12 @@ def SearchWindow(parent_window, apply_callback):
     firstname_entry.focus_set()
 
 def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_callback):
-    """Popup Change Credentials window - 650x500"""
     
     # Use a mutable container for username
     username_container = {"value": username}
     
     def setup_hover_effects():
-        """Setup hover effects for buttons"""
+
         def on_enter(e):
             if hasattr(e.widget, 'hover_color'):
                 e.widget.config(bg=e.widget.hover_color)
@@ -529,7 +527,7 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
             btn.bind("<Leave>", on_leave)
     
     def change_username():
-        """Change username for selected employee"""
+
         new_user1 = new_user_entry1.get().strip()
         new_user2 = new_user_entry2.get().strip()
         
@@ -591,7 +589,7 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
             reload_callback()
     
     def change_password():
-        """Change password for selected employee"""
+
         new_pass1 = new_pass_entry1.get().strip()
         new_pass2 = new_pass_entry2.get().strip()
         
