@@ -61,7 +61,7 @@ class AutofillWindow:
         # Select button
         select_btn = tk.Button(button_frame, text="SELECT",
                               font=("Helvetica", 10, "bold"),
-                              bg="#8A8A8A",
+                              bg="#8acbcb",
                               fg="white",
                               width=10,
                               command=self.select_customer)
@@ -70,7 +70,7 @@ class AutofillWindow:
         # Cancel button
         cancel_btn = tk.Button(button_frame, text="CANCEL",
                               font=("Helvetica", 10, "bold"),
-                              bg="#8A8A8A",
+                              bg="#8acbcb",
                               fg="white",
                               width=10,
                               command=self.window.destroy)
@@ -158,9 +158,9 @@ class RentalCreate:
         # BACK Button in top right corner
         self.back_btn = tk.Button(top_frame, text="BACK", 
                                 font=("Helvetica", 12, "bold"),
-                                bg="#757575",
+                                bg="#8acbcb",
                                 fg="white",
-                                activebackground="#616161",
+                                activebackground="#7db6b6",
                                 width=10,
                                 height=1,
                                 command=self.go_back)
@@ -202,9 +202,9 @@ class RentalCreate:
         # Clear button
         self.clear_btn = tk.Button(left_bottom_frame, text="CLEAR ALL ITEMS",
                                   font=("Helvetica", 10, "bold"),
-                                  bg="#8A8A8A",
+                                  bg="#8acbcb",
                                   fg="white",
-                                  activebackground="#A3A3A3",
+                                  activebackground="#7db6b6",
                                   width=15,
                                   height=1,
                                   command=self.clear_items)
@@ -220,32 +220,32 @@ class RentalCreate:
         # Create button
         self.create_btn = tk.Button(bottom_frame, text="CREATE",
                                    font=("Helvetica", 12, "bold"),
-                                   bg="#8A8A8A",
+                                   bg="#8acbcb",
                                    fg="white",
-                                   activebackground="#A3A3A3",
+                                   activebackground="#7db6b6",
                                    width=15,
                                    height=2,
                                    command=self.confirm_create_rental)
         self.create_btn.pack(side="right")
         
         # Set hover colors
-        self.back_btn.normal_color = "#757575"
-        self.back_btn.hover_color = "#616161"
+        self.back_btn.normal_color = "#8acbcb"
+        self.back_btn.hover_color = "#7db6b6"
         
-        self.add_btn.normal_color = "#8A8A8A"
-        self.add_btn.hover_color = "#A3A3A3"
+        self.add_btn.normal_color = "#8acbcb"
+        self.add_btn.hover_color = "#7db6b6"
         
-        self.remove_btn.normal_color = "#8A8A8A"
-        self.remove_btn.hover_color = "#A3A3A3"
+        self.remove_btn.normal_color = "#8acbcb"
+        self.remove_btn.hover_color = "#7db6b6"
         
-        self.create_btn.normal_color = "#8A8A8A"
-        self.create_btn.hover_color = "#A3A3A3"
+        self.create_btn.normal_color = "#8acbcb"
+        self.create_btn.hover_color = "#7db6b6"
         
-        self.autofill_btn.normal_color = "#8A8A8A"
-        self.autofill_btn.hover_color = "#A3A3A3"
+        self.autofill_btn.normal_color = "#8acbcb"
+        self.autofill_btn.hover_color = "#7db6b6"
         
-        self.clear_btn.normal_color = "#8A8A8A"
-        self.clear_btn.hover_color = "#A3A3A3"
+        self.clear_btn.normal_color = "#8acbcb"
+        self.clear_btn.hover_color = "#7db6b6"
         
         # Setup hover effects
         self.setup_hover_effects()
@@ -273,7 +273,7 @@ class RentalCreate:
             "bd": 0,
             "bg": "#dcffff",
             "relief": "solid",
-            "highlightthickness": 1
+            "highlightthickness": 0
         }
         
         # First Name
@@ -300,7 +300,7 @@ class RentalCreate:
         # AUTO FILL Button - ALWAYS ENABLED
         self.autofill_btn = tk.Button(parent_frame, text="AUTO FILL",
                                      font=("Helvetica", 11, "bold"),
-                                     bg="#8A8A8A",
+                                     bg="#8acbcb",
                                      fg="white",
                                      width=15,
                                      height=1,
@@ -409,7 +409,7 @@ class RentalCreate:
         # Add button
         self.add_btn = tk.Button(item_frame, text="ADD",
                                 font=("Helvetica", 10, "bold"),
-                                bg="#8A8A8A",
+                                bg="#8acbcb",
                                 fg="white",
                                 width=8,
                                 command=self.add_item)
@@ -442,7 +442,7 @@ class RentalCreate:
         # Remove button
         self.remove_btn = tk.Button(parent_frame, text="REMOVE SELECTED",
                                    font=("Helvetica", 10, "bold"),
-                                   bg="#8A8A8A",
+                                   bg="#8acbcb",
                                    fg="white",
                                    width=20,
                                    command=self.remove_item)

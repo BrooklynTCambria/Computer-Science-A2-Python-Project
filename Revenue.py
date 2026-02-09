@@ -99,27 +99,20 @@ def Revenue(parent_window=None):
     # BACK Button in top right corner
     back_btn = tk.Button(top_frame, text="BACK", 
                         font=("Helvetica", 12, "bold"),
-                        bg="#757575",
+                        bg="#8acbcb",
                         fg="white",
-                        activebackground="#616161",
+                        activebackground="#7db6b6",
                         width=10,
                         height=1,
                         command=go_back)
     back_btn.pack(side="right", padx=5, pady=5)
     
     # Title - SPOTLIGHT AGENCY
-    agency_label = tk.Label(main_frame, text="SPOTLIGHT AGENCY", 
+    agency_label = tk.Label(main_frame, text="REVENUE", 
                            font=("Helvetica", 18, "bold"),
                            fg="white",
                            bg="#152e41")
-    agency_label.pack(pady=(20, 10))
-    
-    # Subtitle - REVENUE
-    subtitle_label = tk.Label(main_frame, text="REVENUE", 
-                             font=("Helvetica", 16, "bold"),
-                             fg="#333333",
-                             bg="#152e41")
-    subtitle_label.pack(pady=(0, 50))
+    agency_label.pack(pady=(0, 30))
     
     # Today's date display
     today = date.today()
@@ -127,7 +120,7 @@ def Revenue(parent_window=None):
                          text=f"Today: {today.strftime('%A, %d %B %Y')}",
                          font=("Helvetica", 12),
                          bg="#152e41",
-                         fg="#555555")
+                         fg="white")
     date_label.pack(pady=(0, 30))
     
     # Main statistics display frame
@@ -137,35 +130,35 @@ def Revenue(parent_window=None):
     # Style for labels
     label_style = {
         "font": ("Helvetica", 14),
-        "bg": "#f0f0f0",
-        "fg": "black",
+        "bg": "#152e41",
+        "fg": "white",
         "anchor": "center"
     }
     
     # Style for values
     value_style = {
         "font": ("Helvetica", 36, "bold"),
-        "bg": "#f0f0f0",
-        "fg": "black",
+        "bg": "#152e41",
+        "fg": "white",
         "anchor": "center"
     }
     
     # Total Revenue Section
     revenue_frame = tk.Frame(stats_frame, bg="#152e41")
-    revenue_frame.pack(pady=20)
+    revenue_frame.pack(pady=0)
     
     revenue_text = tk.Label(revenue_frame, text="TOTAL REVENUE:", **label_style)
     revenue_text.pack()
     
     total_revenue_label = tk.Label(revenue_frame, text="£0.00", **value_style)
-    total_revenue_label.pack(pady=10)
+    total_revenue_label.pack(pady=20)
     
     # Total Rentals Section
     rentals_frame = tk.Frame(stats_frame, bg="#152e41")
-    rentals_frame.pack(pady=20)
+    rentals_frame.pack(pady=10)
     
     rentals_text = tk.Label(rentals_frame, text="TOTAL RENTALS:", **label_style)
-    rentals_text.pack()
+    rentals_text.pack(pady=0)
     
     total_rentals_label = tk.Label(rentals_frame, text="0", **value_style)
     total_rentals_label.pack(pady=10)
@@ -176,25 +169,25 @@ def Revenue(parent_window=None):
     
     update_btn = tk.Button(update_frame, text="REFRESH",
                           font=("Helvetica", 11, "bold"),
-                          bg="#8A8A8A",
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
+                          activebackground="#7db6b6",
                           width=15,
                           height=1,
                           command=update_statistics)
     update_btn.pack()
     
     # Set hover colors
-    back_btn.normal_color = "#757575"
-    back_btn.hover_color = "#616161"
+    back_btn.normal_color = "#8acbcb"
+    back_btn.hover_color = "#7db6b6"
     
-    update_btn.normal_color = "#8A8A8A"
-    update_btn.hover_color = "#A3A3A3"
+    update_btn.normal_color = "#8acbcb"
+    update_btn.hover_color = "#7db6b6"
     
     # Setup hover effects
     setup_hover_effects()
-    update_btn.bind("<Enter>", lambda e: update_btn.config(bg="#A3A3A3"))
-    update_btn.bind("<Leave>", lambda e: update_btn.config(bg="#8A8A8A"))
+    update_btn.bind("<Enter>", lambda e: update_btn.config(bg="#7db6b6"))
+    update_btn.bind("<Leave>", lambda e: update_btn.config(bg="#8acbcb"))
     
     # Calculate and display initial statistics
     update_statistics()

@@ -280,9 +280,9 @@ def CustomerView(parent_window=None):
     # BACK Button in top right corner
     back_btn = tk.Button(top_frame, text="BACK", 
                         font=("Helvetica", 12, "bold"),
-                        bg="#757575",
+                        bg="#8acbcb",
                         fg="white",
-                        activebackground="#616161",
+                        activebackground="#7db6b6",
                         width=10,
                         height=1,
                         command=go_back)
@@ -302,10 +302,10 @@ def CustomerView(parent_window=None):
     # Search button
     search_btn = tk.Button(top_button_frame, text="SEARCH",
                           font=("Helvetica", 12, "bold"),
-                          bg="#8A8A8A",
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
-                          width=15,
+                          activebackground="#7db6b6",
+                          width=12,
                           height=2,
                           command=open_search_window)
     search_btn.pack(side="left", padx=5)
@@ -313,24 +313,24 @@ def CustomerView(parent_window=None):
     # View Selected button
     view_btn = tk.Button(top_button_frame, text="VIEW SELECTED",
                         font=("Helvetica", 11, "bold"),
-                        bg="#8A8A8A",
+                        bg="#8acbcb",
                         fg="white",
-                        activebackground="#A3A3A3",
-                        width=15,
+                        activebackground="#7db6b6",
+                        width=14,
                         height=2,
-                        state="disabled",
+                        
                         command=view_selected_customer)
     view_btn.pack(side="left", padx=5)
     
     # Delete Selected button
     delete_btn = tk.Button(top_button_frame, text="DELETE SELECTED",
                           font=("Helvetica", 11, "bold"),
-                          bg="#8A8A8A",
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
-                          width=15,
+                          activebackground="#7db6b6",
+                          width=16,
                           height=2,
-                          state="disabled",
+                          
                           command=delete_selected)
     delete_btn.pack(side="left", padx=5)
     
@@ -370,17 +370,17 @@ def CustomerView(parent_window=None):
     scrollbar.pack(side="right", fill="y")
     
     # Set hover colors
-    search_btn.normal_color = "#8A8A8A"
-    search_btn.hover_color = "#A3A3A3"
+    search_btn.normal_color = "#8acbcb"
+    search_btn.hover_color = "#7db6b6"
     
-    view_btn.normal_color = "#8A8A8A"
-    view_btn.hover_color = "#A3A3A3"
+    view_btn.normal_color = "#8acbcb"
+    view_btn.hover_color = "#7db6b6"
     
-    delete_btn.normal_color = "#8A8A8A"
-    delete_btn.hover_color = "#A3A3A3"
+    delete_btn.normal_color = "#8acbcb"
+    delete_btn.hover_color = "#7db6b6"
     
-    back_btn.normal_color = "#757575"
-    back_btn.hover_color = "#616161"
+    back_btn.normal_color = "#8acbcb"
+    back_btn.hover_color = "#7db6b6"
     
     # Setup hover effects
     setup_hover_effects()
@@ -457,9 +457,9 @@ def SearchWindow(parent_window, apply_callback):
     entry_style = {
         "font": ("Helvetica", 12),
         "width": 30,
-        "bd": 1,
+        "bg": "#dcffff",
         "relief": "solid",
-        "highlightthickness": 1
+        "highlightthickness": 0
     }
     
     # First Name
@@ -477,7 +477,7 @@ def SearchWindow(parent_window, apply_callback):
     surname_entry.grid(row=3, column=0, pady=(0, 20), ipady=5)
     
     # Phone (with +41 hint)
-    phone_label = tk.Label(criteria_frame, text="PHONE (+41)", **label_style)
+    phone_label = tk.Label(criteria_frame, text="PHONE", **label_style)
     phone_label.grid(row=4, column=0, sticky="w", pady=(0, 5))
     
     phone_entry = tk.Entry(criteria_frame, **entry_style)
@@ -489,9 +489,9 @@ def SearchWindow(parent_window, apply_callback):
     
     search_btn = tk.Button(button_frame, text="SEARCH",
                           font=("Helvetica", 14, "bold"),
-                          bg="#8A8A8A",
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
+                          activebackground="#7db6b6",
                           width=20,
                           height=2,
                           command=perform_search)
@@ -499,26 +499,26 @@ def SearchWindow(parent_window, apply_callback):
     
     clear_btn = tk.Button(button_frame, text="CLEAR",
                          font=("Helvetica", 14, "bold"),
-                         bg="#8A8A8A",
+                         bg="#8acbcb",
                          fg="white",
-                         activebackground="#A3A3A3",
+                         activebackground="#7db6b6",
                          width=20,
                          height=2,
                          command=clear_and_close)
     clear_btn.pack(pady=10)
     
     # Set hover colors
-    search_btn.normal_color = "#8A8A8A"
-    search_btn.hover_color = "#A3A3A3"
+    search_btn.normal_color = "#8acbcb"
+    search_btn.hover_color = "#7db6b6"
     
-    clear_btn.normal_color = "#8A8A8A"
-    clear_btn.hover_color = "#A3A3A3"
+    clear_btn.normal_color = "#8acbcb"
+    clear_btn.hover_color = "#7db6b6"
     
     # Setup hover effects
-    search_btn.bind("<Enter>", lambda e: search_btn.config(bg="#A3A3A3"))
-    search_btn.bind("<Leave>", lambda e: search_btn.config(bg="#8A8A8A"))
-    clear_btn.bind("<Enter>", lambda e: clear_btn.config(bg="#A3A3A3"))
-    clear_btn.bind("<Leave>", lambda e: clear_btn.config(bg="#8A8A8A"))
+    search_btn.bind("<Enter>", lambda e: search_btn.config(bg="#7db6b6"))
+    search_btn.bind("<Leave>", lambda e: search_btn.config(bg="#8acbcb"))
+    clear_btn.bind("<Enter>", lambda e: clear_btn.config(bg="#7db6b6"))
+    clear_btn.bind("<Leave>", lambda e: clear_btn.config(bg="#8acbcb"))
     
     # Bind Enter key to search
     firstname_entry.bind('<Return>', lambda e: perform_search())

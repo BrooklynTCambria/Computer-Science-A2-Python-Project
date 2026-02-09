@@ -13,10 +13,8 @@ def center_window(window, width=650, height=500):
     window.geometry(f"{width}x{height}+{x}+{y}")
 
 def StockView(parent_window=None):
-    """Main Stock View window"""
     
     def setup_hover_effects():
-        """Setup hover effects for buttons"""
         def on_enter(e):
             if hasattr(e.widget, 'hover_color'):
                 e.widget.config(bg=e.widget.hover_color)
@@ -31,7 +29,6 @@ def StockView(parent_window=None):
             btn.bind("<Leave>", on_leave)
     
     def load_stock_data():
-        """Load stock data from database"""
         # Clear existing data
         for item in tree.get_children():
             tree.delete(item)
@@ -50,7 +47,6 @@ def StockView(parent_window=None):
                        tags=(str(item.item_id),))
     
     def on_item_select(event):
-        """Handle item selection"""
         selected = tree.selection()
         if selected:
             delete_btn.config(state="normal")
@@ -61,7 +57,6 @@ def StockView(parent_window=None):
             count_label.config(text="0 SELECTED")
     
     def delete_selected():
-        """Delete selected stock item"""
         selected = tree.selection()
         if not selected:
             messagebox.showwarning("No Selection", "Please select a stock item to delete.")
@@ -110,11 +105,9 @@ def StockView(parent_window=None):
             count_label.config(text="0 SELECTED")
     
     def open_search_window():
-        """Open Search window"""
         SearchWindow(root, apply_search_filter)
     
     def apply_search_filter(name_filter, type_filter, price_min_filter, price_max_filter):
-        """Apply search filter to the treeview"""
         # Clear current selection
         tree.selection_remove(tree.selection())
         
@@ -198,7 +191,6 @@ def StockView(parent_window=None):
         tree.heading(col, command=lambda: sort_treeview(col, not reverse))
     
     def go_back():
-        """Go back to previous window"""
         root.destroy()
         if parent_window:
             parent_window.deiconify()
@@ -230,9 +222,9 @@ def StockView(parent_window=None):
     # BACK Button in top right corner
     back_btn = tk.Button(top_frame, text="BACK", 
                         font=("Helvetica", 12, "bold"),
-                        bg="#757575",
+                        bg="#8acbcb",
                         fg="white",
-                        activebackground="#616161",
+                        activebackground="#7db6b6",
                         width=10,
                         height=1,
                         command=go_back)
@@ -252,10 +244,10 @@ def StockView(parent_window=None):
     # Search button
     search_btn = tk.Button(top_button_frame, text="SEARCH",
                           font=("Helvetica", 12, "bold"),
-                          bg="#8A8A8A",
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
-                          width=15,
+                          activebackground="#7db6b6",
+                          width=14,
                           height=2,
                           command=open_search_window)
     search_btn.pack(side="left", padx=5)
@@ -263,12 +255,12 @@ def StockView(parent_window=None):
     # Delete Selected button
     delete_btn = tk.Button(top_button_frame, text="DELETE SELECTED",
                           font=("Helvetica", 11, "bold"),
-                          bg="#8A8A8A",
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
-                          width=15,
+                          activebackground="#7db6b6",
+                          width=16,
                           height=2,
-                          state="disabled",
+                          
                           command=delete_selected)
     delete_btn.pack(side="left", padx=5)
     
@@ -311,14 +303,14 @@ def StockView(parent_window=None):
     scrollbar.pack(side="right", fill="y")
     
     # Set hover colors
-    search_btn.normal_color = "#8A8A8A"
-    search_btn.hover_color = "#A3A3A3"
+    search_btn.normal_color = "#8acbcb"
+    search_btn.hover_color = "#7db6b6"
     
-    delete_btn.normal_color = "#8A8A8A"
-    delete_btn.hover_color = "#A3A3A3"
+    delete_btn.normal_color = "#8acbcb"
+    delete_btn.hover_color = "#7db6b6"
     
-    back_btn.normal_color = "#757575"
-    back_btn.hover_color = "#616161"
+    back_btn.normal_color = "#8acbcb"
+    back_btn.hover_color = "#7db6b6"
     
     # Setup hover effects
     setup_hover_effects()
@@ -364,7 +356,6 @@ def SearchWindow(parent_window, apply_callback):
         search_root.destroy()
     
     def clear_and_close():
-        """Clear search and close window"""
         apply_callback("", "", "", "")  # Clear filter
         search_root.destroy()
     
@@ -402,8 +393,8 @@ def SearchWindow(parent_window, apply_callback):
     # Style for labels
     label_style = {
         "font": ("Helvetica", 12),
-        "bg": "#f0f0f0",
-        "fg": "black",
+        "bg": "#152e41",
+        "fg": "white",
         "anchor": "w"
     }
     
@@ -411,9 +402,9 @@ def SearchWindow(parent_window, apply_callback):
     entry_style = {
         "font": ("Helvetica", 12),
         "width": 30,
-        "bd": 1,
+        "bg": "#dcffff",
         "relief": "solid",
-        "highlightthickness": 1
+        "highlightthickness": 0
     }
     
     # Item Name
@@ -443,28 +434,32 @@ def SearchWindow(parent_window, apply_callback):
     
     price_min_label = tk.Label(price_inputs_frame, text="Min:", 
                               font=("Helvetica", 11),
-                              bg="#152e41")
+                              bg="#152e41",
+                              fg="white")
     price_min_label.pack(side="left", padx=(0, 5))
     
     price_min_entry = tk.Entry(price_inputs_frame, 
                               font=("Helvetica", 12),
                               width=12,
-                              bd=1,
+                              bd=0,
+                              bg="#dcffff",
                               relief="solid",
-                              highlightthickness=1)
+                              highlightthickness=0)
     price_min_entry.pack(side="left", padx=(0, 15), ipady=5)
     
     price_max_label = tk.Label(price_inputs_frame, text="Max:", 
                               font=("Helvetica", 11),
-                              bg="#152e41")
+                              bg="#152e41",
+                              fg="white")
     price_max_label.pack(side="left", padx=(0, 5))
     
     price_max_entry = tk.Entry(price_inputs_frame, 
                               font=("Helvetica", 12),
                               width=12,
-                              bd=1,
+                              bd=0,
+                              bg="#dcffff",
                               relief="solid",
-                              highlightthickness=1)
+                              highlightthickness=0)
     price_max_entry.pack(side="left", ipady=5)
     
     # Button frame
@@ -473,9 +468,9 @@ def SearchWindow(parent_window, apply_callback):
     
     search_btn = tk.Button(button_frame, text="SEARCH",
                           font=("Helvetica", 14, "bold"),
-                          bg="#8A8A8A",
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
+                          activebackground="#7db6b6",
                           width=20,
                           height=2,
                           command=perform_search)
@@ -483,26 +478,26 @@ def SearchWindow(parent_window, apply_callback):
     
     clear_btn = tk.Button(button_frame, text="CLEAR",
                          font=("Helvetica", 14, "bold"),
-                         bg="#8A8A8A",
+                         bg="#8acbcb",
                          fg="white",
-                         activebackground="#A3A3A3",
+                         activebackground="#7db6b6",
                          width=20,
                          height=2,
                          command=clear_and_close)
     clear_btn.pack(pady=10)
     
     # Set hover colors
-    search_btn.normal_color = "#8A8A8A"
-    search_btn.hover_color = "#A3A3A3"
+    search_btn.normal_color = "#8acbcb"
+    search_btn.hover_color = "#7db6b6"
     
-    clear_btn.normal_color = "#8A8A8A"
-    clear_btn.hover_color = "#A3A3A3"
+    clear_btn.normal_color = "#8acbcb"
+    clear_btn.hover_color = "#7db6b6"
     
     # Setup hover effects
-    search_btn.bind("<Enter>", lambda e: search_btn.config(bg="#A3A3A3"))
-    search_btn.bind("<Leave>", lambda e: search_btn.config(bg="#8A8A8A"))
-    clear_btn.bind("<Enter>", lambda e: clear_btn.config(bg="#A3A3A3"))
-    clear_btn.bind("<Leave>", lambda e: clear_btn.config(bg="#8A8A8A"))
+    search_btn.bind("<Enter>", lambda e: search_btn.config(bg="#7db6b6"))
+    search_btn.bind("<Leave>", lambda e: search_btn.config(bg="#8acbcb"))
+    clear_btn.bind("<Enter>", lambda e: clear_btn.config(bg="#7db6b6"))
+    clear_btn.bind("<Leave>", lambda e: clear_btn.config(bg="#8acbcb"))
     
     # Bind Enter key to search
     name_entry.bind('<Return>', lambda e: perform_search())

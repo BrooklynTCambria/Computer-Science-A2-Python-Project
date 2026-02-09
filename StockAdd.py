@@ -21,7 +21,6 @@ class StockAdd:
         self.create_window()
     
     def create_window(self):
-        """Create the Stock Add window"""
         # Create the window
         self.root = tk.Toplevel() if self.parent_window else tk.Tk()
         self.root.title("SPOTLIGHT AGENCY - Stock Add")
@@ -71,9 +70,9 @@ class StockAdd:
         # BACK Button in top right corner
         self.back_btn = tk.Button(top_frame, text="BACK", 
                                 font=("Helvetica", 12, "bold"),
-                                bg="#757575",
+                                bg="#8acbcb",
                                 fg="white",
-                                activebackground="#616161",
+                                activebackground="#7db6b6",
                                 width=10,
                                 height=1,
                                 command=self.go_back)
@@ -109,6 +108,7 @@ class StockAdd:
                                          values=item_names,
                                          state="readonly",
                                          width=40,
+                                         background="#dcffff",
                                          font=("Helvetica", 12))
         self.item_dropdown.pack(pady=(0, 5))
         
@@ -133,17 +133,18 @@ class StockAdd:
                                     textvariable=self.amount_var,
                                     width=10,
                                     justify="center",
-                                    bd=1,
+                                    bg="#dcffff",
+                                    bd=0,
                                     relief="solid",
-                                    highlightthickness=1)
+                                    highlightthickness=0)
         self.amount_entry.pack(pady=(0, 5), ipady=5)
         
         # RESTOCK Button
         self.restock_btn = tk.Button(amount_frame, text="RESTOCK",
                                     font=("Helvetica", 14, "bold"),
-                                    bg="#8A8A8A",
+                                    bg="#8acbcb",
                                     fg="white",
-                                    activebackground="#A3A3A3",
+                                    activebackground="#7db6b6",
                                     width=20,
                                     height=2,
                                     command=self.restock_item)
@@ -156,9 +157,9 @@ class StockAdd:
         # DELETE ITEM button (left side)
         self.delete_btn = tk.Button(bottom_frame, text="DELETE ITEM",
                                    font=("Helvetica", 12, "bold"),
-                                   bg="#8A8A8A",
+                                   bg="#8acbcb",
                                    fg="white",
-                                   activebackground="#A3A3A3",
+                                   activebackground="#7db6b6",
                                    width=15,
                                    height=2,
                                    command=self.delete_item)
@@ -167,26 +168,26 @@ class StockAdd:
         # ADD NEW ITEM button (right side)
         self.add_item_btn = tk.Button(bottom_frame, text="ADD NEW ITEM",
                                      font=("Helvetica", 12, "bold"),
-                                     bg="#8A8A8A",
+                                     bg="#8acbcb",
                                      fg="white",
-                                     activebackground="#A3A3A3",
+                                     activebackground="#7db6b6",
                                      width=15,
                                      height=2,
                                      command=self.open_add_item_window)
         self.add_item_btn.pack(side="right", padx=(10, 0))
         
         # Set hover colors
-        self.back_btn.normal_color = "#757575"
-        self.back_btn.hover_color = "#616161"
+        self.back_btn.normal_color = "#8acbcb"
+        self.back_btn.hover_color = "#7db6b6"
         
-        self.restock_btn.normal_color = "#8A8A8A"
-        self.restock_btn.hover_color = "#A3A3A3"
+        self.restock_btn.normal_color = "#8acbcb"
+        self.restock_btn.hover_color = "#7db6b6"
         
-        self.delete_btn.normal_color = "#8A8A8A"
-        self.delete_btn.hover_color = "#A3A3A3"
+        self.delete_btn.normal_color = "#8acbcb"
+        self.delete_btn.hover_color = "#7db6b6"
         
-        self.add_item_btn.normal_color = "#8A8A8A"
-        self.add_item_btn.hover_color = "#A3A3A3"
+        self.add_item_btn.normal_color = "#8acbcb"
+        self.add_item_btn.hover_color = "#7db6b6"
         
         # Setup hover effects
         self.setup_hover_effects()
@@ -318,7 +319,6 @@ class StockAdd:
             messagebox.showinfo("Success", f"'{selected_item.name}' has been deleted.")
     
     def open_add_item_window(self):
-        """Open window to add new item"""
         AddItemWindow(self.root, self.on_new_item_added)
     
     def on_new_item_added(self, new_item):
@@ -350,7 +350,6 @@ class StockAdd:
             self.parent_window.deiconify()
 
 class AddItemWindow:
-    """Window for adding a new item"""
     def __init__(self, parent, callback):
         self.parent = parent
         self.callback = callback
@@ -372,7 +371,6 @@ class AddItemWindow:
         self.setup_ui()
     
     def setup_ui(self):
-        """Setup the user interface"""
         # Main container frame
         main_frame = tk.Frame(self.window, bg="#152e41")
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
@@ -390,9 +388,9 @@ class AddItemWindow:
         
         # Style for labels
         label_style = {
-            "font": ("Helvetica", 14, "bold"),
-            "bg": "#f0f0f0",
-            "fg": "black",
+            "font": ("Helvetica", 12),
+            "bg": "#152e41",
+            "fg": "white",
             "anchor": "w"
         }
         
@@ -400,9 +398,9 @@ class AddItemWindow:
         entry_style = {
             "font": ("Helvetica", 12),
             "width": 30,
-            "bd": 1,
+            "bg": "#dcffff",
             "relief": "solid",
-            "highlightthickness": 1
+            "highlightthickness": 0
         }
         
         # ITEM NAME
@@ -437,9 +435,10 @@ class AddItemWindow:
         self.type_entry = tk.Entry(form_frame, 
                                   font=("Helvetica", 12),
                                   width=30,
-                                  bd=1,
+                                  bd=0,
+                                  bg="#dcffff",
                                   relief="solid",
-                                  highlightthickness=1)
+                                  highlightthickness=0)
         self.type_entry.grid(row=7, column=0, pady=(0, 30), ipady=5)
         
         # Button frame
@@ -449,9 +448,9 @@ class AddItemWindow:
         # ADD button
         add_btn = tk.Button(button_frame, text="ADD",
                            font=("Helvetica", 14, "bold"),
-                           bg="#8A8A8A",
+                           bg="#8acbcb",
                            fg="white",
-                           activebackground="#A3A3A3",
+                           activebackground="#7db6b6",
                            width=20,
                            height=2,
                            command=self.add_item)
@@ -460,26 +459,26 @@ class AddItemWindow:
         # BACK button
         back_btn = tk.Button(button_frame, text="BACK",
                             font=("Helvetica", 14, "bold"),
-                            bg="#8A8A8A",
+                            bg="#8acbcb",
                             fg="white",
-                            activebackground="#A3A3A3",
+                            activebackground="#7db6b6",
                             width=20,
                             height=2,
                             command=self.window.destroy)
-        back_btn.pack(side="left", padx=10)
+        back_btn.pack(side="right", padx=10)
         
         # Set hover colors
-        add_btn.normal_color = "#8A8A8A"
-        add_btn.hover_color = "#A3A3A3"
+        add_btn.normal_color = "#8acbcb"
+        add_btn.hover_color = "#7db6b6"
         
-        back_btn.normal_color = "#8A8A8A"
-        back_btn.hover_color = "#A3A3A3"
+        back_btn.normal_color = "#8acbcb"
+        back_btn.hover_color = "#7db6b6"
         
         # Setup hover effects
-        add_btn.bind("<Enter>", lambda e: add_btn.config(bg="#A3A3A3"))
-        add_btn.bind("<Leave>", lambda e: add_btn.config(bg="#8A8A8A"))
-        back_btn.bind("<Enter>", lambda e: back_btn.config(bg="#A3A3A3"))
-        back_btn.bind("<Leave>", lambda e: back_btn.config(bg="#8A8A8A"))
+        add_btn.bind("<Enter>", lambda e: add_btn.config(bg="#7db6b6"))
+        add_btn.bind("<Leave>", lambda e: add_btn.config(bg="#8acbcb"))
+        back_btn.bind("<Enter>", lambda e: back_btn.config(bg="#7db6b6"))
+        back_btn.bind("<Leave>", lambda e: back_btn.config(bg="#8acbcb"))
         
         # Bind Enter key to add item
         self.item_name_entry.bind('<Return>', lambda e: self.add_item())
@@ -496,7 +495,6 @@ class AddItemWindow:
         self.item_name_entry.focus_set()
     
     def add_item(self):
-        """Add new item to database"""
         # Get values
         item_name = self.item_name_entry.get().strip()
         price_str = self.price_entry.get().strip()
@@ -574,6 +572,7 @@ class AddItemWindow:
                           f"Type: {item_type if item_type else 'Not specified'}\n"
                           f"Price: £{price:.2f}\n"
                           f"Quantity: {amount}")
+        
         
         # Callback to parent window
         self.callback(new_item)

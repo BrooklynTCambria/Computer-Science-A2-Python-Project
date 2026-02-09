@@ -68,16 +68,16 @@ def EmployeeAdd(parent_window=None):
                 e.widget.config(bg=e.widget.normal_color)
         
         # Set hover colors for ADD button
-        add_button.normal_color = "#8A8A8A"
-        add_button.hover_color = "#A3A3A3"
+        add_button.normal_color = "#8acbcb"
+        add_button.hover_color = "#7db6b6"
         
         # Bind events for ADD button
         add_button.bind("<Enter>", on_enter)
         add_button.bind("<Leave>", on_leave)
         
         # Set hover colors for BACK button
-        back_btn.normal_color = "#757575"
-        back_btn.hover_color = "#616161"
+        back_btn.normal_color = "#8acbcb"
+        back_btn.hover_color = "#7db6b6"
         back_btn.bind("<Enter>", on_enter)
         back_btn.bind("<Leave>", on_leave)
     
@@ -152,14 +152,14 @@ def EmployeeAdd(parent_window=None):
         name_label.pack(pady=5)
         
         # Generated credentials
-        cred_frame = tk.Frame(info_frame, bg="#152e41", highlightbackground="#8A8A8A", 
-                             highlightthickness=2, highlightcolor="#8A8A8A")
+        cred_frame = tk.Frame(info_frame, bg="#152e41", highlightbackground="#8acbcb", 
+                             highlightthickness=2, highlightcolor="#8acbcb")
         cred_frame.pack(pady=20, padx=10, fill="both")
         
         # Username
         username_label = tk.Label(cred_frame, text="Username:", 
                                  font=("Helvetica", 12),
-                                 bg="#152e41", fg="#333333")
+                                 bg="#152e41", fg="white")
         username_label.pack(pady=(15, 5))
         
         username_value = tk.Label(cred_frame, text=username,
@@ -170,7 +170,7 @@ def EmployeeAdd(parent_window=None):
         # Password
         password_label = tk.Label(cred_frame, text="Password:", 
                                  font=("Helvetica", 12),
-                                 bg="#152e41", fg="#333333")
+                                 bg="#152e41", fg="white")
         password_label.pack(pady=(5, 5))
         
         password_value = tk.Label(cred_frame, text=password,
@@ -200,7 +200,7 @@ def EmployeeAdd(parent_window=None):
         
         ok_button = tk.Button(popup, text="OK", 
                              font=("Helvetica", 12, "bold"),
-                             bg="#8A8A8A",
+                             bg="#8acbcb",
                              fg="white",
                              width=10,
                              height=1,
@@ -216,10 +216,10 @@ def EmployeeAdd(parent_window=None):
         popup.bind('<Return>', lambda e: save_and_close())
         
         # Set hover for OK button
-        ok_button.normal_color = "#8A8A8A"
-        ok_button.hover_color = "#A3A3A3"
-        ok_button.bind("<Enter>", lambda e: e.widget.config(bg="#A3A3A3"))
-        ok_button.bind("<Leave>", lambda e: e.widget.config(bg="#8A8A8A"))
+        ok_button.normal_color = "#8acbcb"
+        ok_button.hover_color = "#7db6b6"
+        ok_button.bind("<Enter>", lambda e: e.widget.config(bg="#7db6b6"))
+        ok_button.bind("<Leave>", lambda e: e.widget.config(bg="#8acbcb"))
     
     def go_back():
         """Go back to previous window"""
@@ -255,9 +255,9 @@ def EmployeeAdd(parent_window=None):
     # BACK Button in top right corner
     back_btn = tk.Button(top_frame, text="BACK", 
                         font=("Helvetica", 12, "bold"),
-                        bg="#757575",
+                        bg="#8acbcb",
                         fg="white",
-                        activebackground="#616161",
+                        activebackground="#7db6b6",
                         width=10,
                         height=1,
                         command=go_back)
@@ -286,9 +286,9 @@ def EmployeeAdd(parent_window=None):
     entry_style = {
         "font": ("Helvetica", 12),
         "width": 30,
-        "bd": 1,
+        "bg": "#dcffff",
         "relief": "solid",
-        "highlightthickness": 1
+        "highlightthickness": 0
     }
     
     # First Name
@@ -312,9 +312,9 @@ def EmployeeAdd(parent_window=None):
     # Add Button
     add_button = tk.Button(button_frame, text="ADD", 
                           font=("Helvetica", 14, "bold"),
-                          bg="#8A8A8A",
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
+                          activebackground="#7db6b6",
                           width=15,
                           height=2,
                           command=add_employee)

@@ -132,11 +132,9 @@ def EmployeeView(parent_window=None):
                 credentials_btn.config(state="disabled")
     
     def open_search_window():
-        """Open Search window as popup"""
         SearchWindow(root, apply_search_filter)
     
     def open_change_credentials():
-        """Open Change Credentials window as popup"""
         selected = tree.selection()
         if not selected:
             messagebox.showwarning("No Selection", "Please select an employee to change credentials.")
@@ -151,7 +149,6 @@ def EmployeeView(parent_window=None):
         ChangeCredentialsWindow(root, username, firstname, surname, load_employee_data)
     
     def apply_search_filter(firstname_filter, surname_filter, username_filter):
-        """Apply search filter to the treeview"""
         # Clear current selection
         tree.selection_remove(tree.selection())
         
@@ -184,17 +181,14 @@ def EmployeeView(parent_window=None):
                 tree.detach(child)
     
     def go_back():
-        """Go back to previous window"""
         root.destroy()
         if parent_window:
             parent_window.deiconify()
     
     def sort_changed(*args):
-        """Handle sort dropdown change"""
         load_employee_data()
     
     def toggle_sort_order():
-        """Toggle sort order between ascending and descending"""
         sort_order.set(not sort_order.get())
         load_employee_data()
         # Update button text
@@ -230,9 +224,9 @@ def EmployeeView(parent_window=None):
     # BACK Button in top right corner
     back_btn = tk.Button(top_frame, text="BACK", 
                         font=("Helvetica", 12, "bold"),
-                        bg="#757575",
+                        bg="#8acbcb",
                         fg="white",
-                        activebackground="#616161",
+                        activebackground="#7db6b6",
                         width=10,
                         height=1,
                         command=go_back)
@@ -252,9 +246,9 @@ def EmployeeView(parent_window=None):
     # Search button
     search_btn = tk.Button(top_button_frame, text="SEARCH",
                           font=("Helvetica", 12, "bold"),
-                          bg="#8A8A8A",
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
+                          activebackground="#7db6b6",
                           width=15,
                           height=2,
                           command=open_search_window)
@@ -262,25 +256,25 @@ def EmployeeView(parent_window=None):
     
     # Delete Selected button
     delete_btn = tk.Button(top_button_frame, text="DELETE SELECTED",
-                          font=("Helvetica", 11, "bold"),
-                          bg="#8A8A8A",
+                          font=("Helvetica", 12, "bold"),
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
-                          width=15,
+                          activebackground="#7db6b6",
+                          width=16,
                           height=2,
-                          state="disabled",
+                          
                           command=delete_selected)
     delete_btn.pack(side="left", padx=5)
     
     # Change Credentials button
     credentials_btn = tk.Button(top_button_frame, text="CHANGE CREDENTIALS",
-                               font=("Helvetica", 10, "bold"),
-                               bg="#8A8A8A",
+                               font=("Helvetica", 12, "bold"),
+                               bg="#8acbcb",
                                fg="white",
-                               activebackground="#A3A3A3",
-                               width=15,
+                               activebackground="#7db6b6",
+                               width=20,
                                height=2,
-                               state="disabled",
+                               
                                command=open_change_credentials)
     credentials_btn.pack(side="left", padx=5)
     
@@ -290,7 +284,8 @@ def EmployeeView(parent_window=None):
     
     sort_label = tk.Label(sort_frame, text="Sort by:",
                          font=("Helvetica", 12),
-                         bg="#152e41")
+                         bg="#152e41"
+                         , fg="white")
     sort_label.pack(side="left", padx=(0, 10))
     
     sort_dropdown = ttk.Combobox(sort_frame, 
@@ -305,7 +300,7 @@ def EmployeeView(parent_window=None):
     # Sort order toggle button
     sort_order_btn = tk.Button(sort_frame, text="▼",
                               font=("Helvetica", 10, "bold"),
-                              bg="#8A8A8A",
+                              bg="#8acbcb",
                               fg="white",
                               width=3,
                               command=toggle_sort_order)
@@ -332,25 +327,25 @@ def EmployeeView(parent_window=None):
     scrollbar.pack(side="right", fill="y")
     
     # Set hover colors
-    search_btn.normal_color = "#8A8A8A"
-    search_btn.hover_color = "#A3A3A3"
+    search_btn.normal_color = "#8acbcb"
+    search_btn.hover_color = "#7db6b6"
     
-    delete_btn.normal_color = "#8A8A8A"
-    delete_btn.hover_color = "#A3A3A3"
+    delete_btn.normal_color = "#8acbcb"
+    delete_btn.hover_color = "#7db6b6"
     
-    credentials_btn.normal_color = "#8A8A8A"
-    credentials_btn.hover_color = "#A3A3A3"
+    credentials_btn.normal_color = "#8acbcb"
+    credentials_btn.hover_color = "#7db6b6"
     
-    back_btn.normal_color = "#757575"
-    back_btn.hover_color = "#616161"
+    back_btn.normal_color = "#8acbcb"
+    back_btn.hover_color = "#7db6b6"
     
-    sort_order_btn.normal_color = "#8A8A8A"
-    sort_order_btn.hover_color = "#A3A3A3"
+    sort_order_btn.normal_color = "#8acbcb"
+    sort_order_btn.hover_color = "#7db6b6"
     
     # Setup hover effects
     setup_hover_effects()
-    sort_order_btn.bind("<Enter>", lambda e: sort_order_btn.config(bg="#A3A3A3"))
-    sort_order_btn.bind("<Leave>", lambda e: sort_order_btn.config(bg="#8A8A8A"))
+    sort_order_btn.bind("<Enter>", lambda e: sort_order_btn.config(bg="#7db6b6"))
+    sort_order_btn.bind("<Leave>", lambda e: sort_order_btn.config(bg="#8acbcb"))
     
     # Bind selection event
     tree.bind("<<TreeviewSelect>>", on_item_select)
@@ -361,9 +356,6 @@ def EmployeeView(parent_window=None):
     if not parent_window:
         root.mainloop()
 
-# ============================================================================
-# Search Window
-# ============================================================================
 def SearchWindow(parent_window, apply_callback):
     """Popup Search window - 650x500"""
     
@@ -433,8 +425,8 @@ def SearchWindow(parent_window, apply_callback):
     # Style for labels
     label_style = {
         "font": ("Helvetica", 12),
-        "bg": "#f0f0f0",
-        "fg": "black",
+        "bg": "#152e41",
+        "fg": "white",
         "anchor": "w"
     }
     
@@ -442,9 +434,9 @@ def SearchWindow(parent_window, apply_callback):
     entry_style = {
         "font": ("Helvetica", 12),
         "width": 30,
-        "bd": 1,
+        "bg": "#dcffff",
         "relief": "solid",
-        "highlightthickness": 1
+        "highlightthickness": 0
     }
     
     # First Name
@@ -474,9 +466,9 @@ def SearchWindow(parent_window, apply_callback):
     
     search_btn = tk.Button(button_frame, text="SEARCH",
                           font=("Helvetica", 14, "bold"),
-                          bg="#8A8A8A",
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
+                          activebackground="#7db6b6",
                           width=20,
                           height=2,
                           command=perform_search)
@@ -484,20 +476,20 @@ def SearchWindow(parent_window, apply_callback):
     
     clear_btn = tk.Button(button_frame, text="CLEAR",
                          font=("Helvetica", 14, "bold"),
-                         bg="#8A8A8A",
+                         bg="#8acbcb",
                          fg="white",
-                         activebackground="#A3A3A3",
+                         activebackground="#7db6b6",
                          width=20,
                          height=2,
                          command=clear_and_close)
     clear_btn.pack(pady=10)
     
     # Set hover colors
-    search_btn.normal_color = "#8A8A8A"
-    search_btn.hover_color = "#A3A3A3"
+    search_btn.normal_color = "#8acbcb"
+    search_btn.hover_color = "#7db6b6"
     
-    clear_btn.normal_color = "#8A8A8A"
-    clear_btn.hover_color = "#A3A3A3"
+    clear_btn.normal_color = "#8acbcb"
+    clear_btn.hover_color = "#7db6b6"
     
     # Setup hover effects
     setup_hover_effects()
@@ -515,9 +507,6 @@ def SearchWindow(parent_window, apply_callback):
     # Focus on first entry
     firstname_entry.focus_set()
 
-# ============================================================================
-# Change Credentials Window
-# ============================================================================
 def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_callback):
     """Popup Change Credentials window - 650x500"""
     
@@ -673,7 +662,7 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
                          text=f"Employee: {firstname} {surname}\nUsername: {username_container['value']}",
                          font=("Helvetica", 14, "bold"),
                          bg="#152e41",
-                         fg="#333333")
+                         fg="white")
     info_label.pack(pady=(0, 30))
     
     # Two-column layout for username and password changes
@@ -683,8 +672,8 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
     # Style for labels
     label_style = {
         "font": ("Helvetica", 12),
-        "bg": "#f0f0f0",
-        "fg": "black",
+        "bg": "#152e41",
+        "fg": "white",
         "anchor": "w"
     }
     
@@ -692,9 +681,9 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
     entry_style = {
         "font": ("Helvetica", 12),
         "width": 22,
-        "bd": 1,
+        "bg": "#dcffff",
         "relief": "solid",
-        "highlightthickness": 1
+        "highlightthickness": 0
     }
     
     # Left column - Username change
@@ -704,7 +693,7 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
     user_title = tk.Label(left_frame, text="Change Username",
                          font=("Helvetica", 14, "bold"),
                          bg="#152e41",
-                         fg="#333333")
+                         fg="white")
     user_title.pack(pady=(0, 20))
     
     user_label1 = tk.Label(left_frame, text="New Username:", **label_style)
@@ -721,9 +710,9 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
     
     change_user_btn = tk.Button(left_frame, text="CHANGE USERNAME",
                                font=("Helvetica", 12, "bold"),
-                               bg="#8A8A8A",
+                               bg="#8acbcb",
                                fg="white",
-                               activebackground="#A3A3A3",
+                               activebackground="#7db6b6",
                                width=20,
                                height=2,
                                command=change_username)
@@ -736,7 +725,7 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
     pass_title = tk.Label(right_frame, text="Change Password",
                          font=("Helvetica", 14, "bold"),
                          bg="#152e41",
-                         fg="#333333")
+                         fg="white")
     pass_title.pack(pady=(0, 20))
     
     pass_label1 = tk.Label(right_frame, text="New Password:", **label_style)
@@ -753,20 +742,20 @@ def ChangeCredentialsWindow(parent_window, username, firstname, surname, reload_
     
     change_pass_btn = tk.Button(right_frame, text="CHANGE PASSWORD",
                                font=("Helvetica", 12, "bold"),
-                               bg="#8A8A8A",
+                               bg="#8acbcb",
                                fg="white",
-                               activebackground="#A3A3A3",
+                               activebackground="#7db6b6",
                                width=20,
                                height=2,
                                command=change_password)
     change_pass_btn.pack(pady=10)
     
     # Set hover colors
-    change_user_btn.normal_color = "#8A8A8A"
-    change_user_btn.hover_color = "#A3A3A3"
+    change_user_btn.normal_color = "#8acbcb"
+    change_user_btn.hover_color = "#7db6b6"
     
-    change_pass_btn.normal_color = "#8A8A8A"
-    change_pass_btn.hover_color = "#A3A3A3"
+    change_pass_btn.normal_color = "#8acbcb"
+    change_pass_btn.hover_color = "#7db6b6"
     
     # Setup hover effects
     setup_hover_effects()

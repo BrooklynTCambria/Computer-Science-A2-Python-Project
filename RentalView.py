@@ -16,7 +16,6 @@ def center_window(window, width=650, height=500):
     window.geometry(f"{width}x{height}+{x}+{y}")
 
 def RentalView(parent_window=None):
-    """Main Rental View window"""
     
     def setup_hover_effects():
         """Setup hover effects for buttons"""
@@ -62,7 +61,6 @@ def RentalView(parent_window=None):
                        tags=(str(rental.rental_id),))
     
     def on_item_select(event):
-        """Handle item selection"""
         selected = tree.selection()
         if selected:
             delete_btn.config(state="normal")
@@ -77,10 +75,9 @@ def RentalView(parent_window=None):
             count_label.config(text="0 SELECTED")
     
     def delete_selected():
-        """Delete selected reservation"""
         selected = tree.selection()
         if not selected:
-            messagebox.showwarning("No Selection", "Please select a reservation to delete.")
+            messagebox.showwarning("No Selection", "Please select a rental to delete.")
             return
         
         item = tree.item(selected[0])
@@ -91,12 +88,12 @@ def RentalView(parent_window=None):
             return
             
         rental_id = int(item['tags'][0])
-        reservation_info = item['values'][0]
+        rental_info = item['values'][0]
         customer_name = item['values'][1]
         
         confirm = messagebox.askyesno(
             "Confirm Delete",
-            f"Are you sure you want to delete reservation:\n\n{customer_name}\n{reservation_info}"
+            f"Are you sure you want to delete rental:\n\n{customer_name}\n{rental_info}"
         )
         
         if confirm:
@@ -107,17 +104,17 @@ def RentalView(parent_window=None):
             
             # Update treeview
             tree.delete(selected[0])
-            messagebox.showinfo("Success", "Reservation deleted successfully.")
+            messagebox.showinfo("Success", "rental deleted successfully.")
             delete_btn.config(state="disabled")
             view_btn.config(state="disabled")
             edit_btn.config(state="disabled")
             count_label.config(text="0 SELECTED")
     
     def edit_selected():
-        """Edit selected reservation"""
+        """Edit selected rental"""
         selected = tree.selection()
         if not selected:
-            messagebox.showwarning("No Selection", "Please select a reservation to edit.")
+            messagebox.showwarning("No Selection", "Please select a rental to edit.")
             return
         
         item = tree.item(selected[0])
@@ -141,7 +138,7 @@ def RentalView(parent_window=None):
                 break
         
         if not rental:
-            messagebox.showerror("Error", "Reservation not found!")
+            messagebox.showerror("Error", "rental not found!")
             return
         
         # Find customer
@@ -160,14 +157,12 @@ def RentalView(parent_window=None):
         edit_window = EditRentalWindow(root, rental, customer, items_db)
     
     def open_search_window():
-        """Open Search window"""
         SearchWindow(root, apply_search_filter)
     
     def view_selected_list():
-        """View details of selected reservation"""
         selected = tree.selection()
         if not selected:
-            messagebox.showwarning("No Selection", "Please select a reservation to view.")
+            messagebox.showwarning("No Selection", "Please select a rental to view.")
             return
         
         item = tree.item(selected[0])
@@ -191,7 +186,7 @@ def RentalView(parent_window=None):
                 break
         
         if not rental:
-            messagebox.showerror("Error", "Reservation not found!")
+            messagebox.showerror("Error", "rental not found!")
             return
         
         # Find customer
@@ -202,8 +197,8 @@ def RentalView(parent_window=None):
                 break
         
         # Build details string
-        details = f"RESERVATION DETAILS\n\n"
-        details += f"Reservation ID: {rental.rental_id}\n"
+        details = f"RENTAL DETAILS\n\n"
+        details += f"rental ID: {rental.rental_id}\n"
         if customer:
             details += f"Customer: {customer.firstname} {customer.surname}\n"
             details += f"Phone: {customer.phone}\n"
@@ -238,10 +233,9 @@ def RentalView(parent_window=None):
         else:
             details += "- No items found for this rental\n"
         
-        messagebox.showinfo("Reservation Details", details)
+        messagebox.showinfo("rental Details", details)
     
     def apply_search_filter(firstname_filter, lastname_filter, date_filter, employee_filter):
-        """Apply search filter to the treeview"""
         # Clear current selection
         tree.selection_remove(tree.selection())
         
@@ -302,14 +296,13 @@ def RentalView(parent_window=None):
                 tree.detach(child)
     
     def go_back():
-        """Go back to previous window"""
         root.destroy()
         if parent_window:
             parent_window.deiconify()
     
     # Create the main window
     root = tk.Toplevel() if parent_window else tk.Tk()
-    root.title("SPOTLIGHT AGENCY - Reservation Search")
+    root.title("SPOTLIGHT AGENCY - Rental Search")
     root.geometry("800x500")  # Wider for more columns
     root.resizable(False, False)
     center_window(root, 800, 550)  # Slightly taller for additional button
@@ -334,16 +327,16 @@ def RentalView(parent_window=None):
     # BACK Button in top right corner
     back_btn = tk.Button(top_frame, text="BACK", 
                         font=("Helvetica", 12, "bold"),
-                        bg="#757575",
+                        bg="#8acbcb",
                         fg="white",
-                        activebackground="#616161",
+                        activebackground="#7db6b6",
                         width=10,
                         height=1,
                         command=go_back)
     back_btn.pack(side="right", padx=5, pady=5)
     
     # Title
-    title_label = tk.Label(main_frame, text="RESERVATION SEARCH", 
+    title_label = tk.Label(main_frame, text="RENTAL SEARCH", 
                           font=("Helvetica", 20, "bold"),
                           fg="white",
                           bg="#152e41")
@@ -356,10 +349,10 @@ def RentalView(parent_window=None):
     # Search button
     search_btn = tk.Button(top_button_frame, text="SEARCH",
                           font=("Helvetica", 11, "bold"),
-                          bg="#8A8A8A",
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
-                          width=15,
+                          activebackground="#7db6b6",
+                          width=8,
                           height=2,
                           command=open_search_window)
     search_btn.pack(side="left", padx=5)
@@ -367,36 +360,36 @@ def RentalView(parent_window=None):
     # View Selected List button
     view_btn = tk.Button(top_button_frame, text="VIEW SELECTED LIST",
                         font=("Helvetica", 11, "bold"),
-                        bg="#8A8A8A",
+                        bg="#8acbcb",
                         fg="white",
-                        activebackground="#A3A3A3",
-                        width=15,
+                        activebackground="#7db6b6",
+                        width=18,
                         height=2,
-                        state="disabled",
+                        
                         command=view_selected_list)
     view_btn.pack(side="left", padx=5)
     
     # Edit Selected button
     edit_btn = tk.Button(top_button_frame, text="EDIT SELECTED",
                         font=("Helvetica", 11, "bold"),
-                        bg="#8A8A8A",
+                        bg="#8acbcb",
                         fg="white",
-                        activebackground="#A3A3A3",
-                        width=15,
+                        activebackground="#7db6b6",
+                        width=14,
                         height=2,
-                        state="disabled",
+                        
                         command=edit_selected)
     edit_btn.pack(side="left", padx=5)
     
     # Delete Selected button
     delete_btn = tk.Button(top_button_frame, text="DELETE SELECTED",
                           font=("Helvetica", 11, "bold"),
-                          bg="#8A8A8A",
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
-                          width=15,
+                          activebackground="#7db6b6",
+                          width=16,
                           height=2,
-                          state="disabled",
+                          
                           command=delete_selected)
     delete_btn.pack(side="left", padx=5)
     
@@ -435,20 +428,20 @@ def RentalView(parent_window=None):
     scrollbar.pack(side="right", fill="y")
     
     # Set hover colors
-    search_btn.normal_color = "#8A8A8A"
-    search_btn.hover_color = "#A3A3A3"
+    search_btn.normal_color = "#8acbcb"
+    search_btn.hover_color = "#7db6b6"
     
-    view_btn.normal_color = "#8A8A8A"
-    view_btn.hover_color = "#A3A3A3"
+    view_btn.normal_color = "#8acbcb"
+    view_btn.hover_color = "#7db6b6"
     
-    edit_btn.normal_color = "#8A8A8A"
-    edit_btn.hover_color = "#A3A3A3"
+    edit_btn.normal_color = "#8acbcb"
+    edit_btn.hover_color = "#7db6b6"
     
-    delete_btn.normal_color = "#8A8A8A"
-    delete_btn.hover_color = "#A3A3A3"
+    delete_btn.normal_color = "#8acbcb"
+    delete_btn.hover_color = "#7db6b6"
     
-    back_btn.normal_color = "#757575"
-    back_btn.hover_color = "#616161"
+    back_btn.normal_color = "#8acbcb"
+    back_btn.hover_color = "#7db6b6"
     
     # Setup hover effects
     setup_hover_effects()
@@ -463,10 +456,8 @@ def RentalView(parent_window=None):
         root.mainloop()
 
 def SearchWindow(parent_window, apply_callback):
-    """Popup Search window - 650x500 with BACK button"""
     
     def perform_search():
-        """Perform search and close window"""
         firstname = firstname_entry.get().strip()
         lastname = lastname_entry.get().strip()
         date = date_entry.get().strip()
@@ -479,12 +470,10 @@ def SearchWindow(parent_window, apply_callback):
         search_root.destroy()
     
     def clear_and_close():
-        """Clear search and close window"""
         apply_callback("", "", "", "")  # Clear filter
         search_root.destroy()
     
     def go_back():
-        """Go back to main window"""
         search_root.destroy()
     
     # Create search window
@@ -514,9 +503,9 @@ def SearchWindow(parent_window, apply_callback):
     # BACK Button in top right corner
     back_btn = tk.Button(top_frame, text="BACK", 
                         font=("Helvetica", 12, "bold"),
-                        bg="#757575",
+                        bg="#8acbcb",
                         fg="white",
-                        activebackground="#616161",
+                        activebackground="#7db6b6",
                         width=10,
                         height=1,
                         command=go_back)
@@ -536,8 +525,8 @@ def SearchWindow(parent_window, apply_callback):
     # Style for labels
     label_style = {
         "font": ("Helvetica", 12),
-        "bg": "#f0f0f0",
-        "fg": "black",
+        "bg": "#152e41",
+        "fg": "white",
         "anchor": "w"
     }
     
@@ -545,9 +534,10 @@ def SearchWindow(parent_window, apply_callback):
     entry_style = {
         "font": ("Helvetica", 12),
         "width": 30,
-        "bd": 1,
+        "bd": 0,
+        "bg": "#dcffff",
         "relief": "solid",
-        "highlightthickness": 1
+        "highlightthickness": 0
     }
     
     # First Name
@@ -584,9 +574,9 @@ def SearchWindow(parent_window, apply_callback):
     
     search_btn = tk.Button(button_frame, text="SEARCH",
                           font=("Helvetica", 14, "bold"),
-                          bg="#8A8A8A",
+                          bg="#8acbcb",
                           fg="white",
-                          activebackground="#A3A3A3",
+                          activebackground="#7db6b6",
                           width=20,
                           height=2,
                           command=perform_search)
@@ -594,31 +584,31 @@ def SearchWindow(parent_window, apply_callback):
     
     clear_btn = tk.Button(button_frame, text="CLEAR",
                          font=("Helvetica", 14, "bold"),
-                         bg="#8A8A8A",
+                         bg="#8acbcb",
                          fg="white",
-                         activebackground="#A3A3A3",
+                         activebackground="#7db6b6",
                          width=20,
                          height=2,
                          command=clear_and_close)
     clear_btn.pack(pady=10)
     
     # Set hover colors
-    search_btn.normal_color = "#8A8A8A"
-    search_btn.hover_color = "#A3A3A3"
+    search_btn.normal_color = "#8acbcb"
+    search_btn.hover_color = "#7db6b6"
     
-    clear_btn.normal_color = "#8A8A8A"
-    clear_btn.hover_color = "#A3A3A3"
+    clear_btn.normal_color = "#8acbcb"
+    clear_btn.hover_color = "#7db6b6"
     
-    back_btn.normal_color = "#757575"
-    back_btn.hover_color = "#616161"
+    back_btn.normal_color = "#8acbcb"
+    back_btn.hover_color = "#7db6b6"
     
     # Setup hover effects
-    search_btn.bind("<Enter>", lambda e: search_btn.config(bg="#A3A3A3"))
-    search_btn.bind("<Leave>", lambda e: search_btn.config(bg="#8A8A8A"))
-    clear_btn.bind("<Enter>", lambda e: clear_btn.config(bg="#A3A3A3"))
-    clear_btn.bind("<Leave>", lambda e: clear_btn.config(bg="#8A8A8A"))
-    back_btn.bind("<Enter>", lambda e: back_btn.config(bg="#616161"))
-    back_btn.bind("<Leave>", lambda e: back_btn.config(bg="#757575"))
+    search_btn.bind("<Enter>", lambda e: search_btn.config(bg="#7db6b6"))
+    search_btn.bind("<Leave>", lambda e: search_btn.config(bg="#8acbcb"))
+    clear_btn.bind("<Enter>", lambda e: clear_btn.config(bg="#7db6b6"))
+    clear_btn.bind("<Leave>", lambda e: clear_btn.config(bg="#8acbcb"))
+    back_btn.bind("<Enter>", lambda e: back_btn.config(bg="#7db6b6"))
+    back_btn.bind("<Leave>", lambda e: back_btn.config(bg="#8acbcb"))
     
     # Bind Enter key to search
     firstname_entry.bind('<Return>', lambda e: perform_search())
@@ -635,7 +625,6 @@ def SearchWindow(parent_window, apply_callback):
     firstname_entry.focus_set()
 
 class EditRentalWindow:
-    """Window for editing an existing reservation"""
     def __init__(self, parent_window, rental, customer, all_items):
         self.parent_window = parent_window
         self.rental = rental
@@ -647,10 +636,9 @@ class EditRentalWindow:
         self.create_window()
     
     def create_window(self):
-        """Create the Edit Rental window"""
         # Create the window
         self.root = tk.Toplevel(self.parent_window)
-        self.root.title("SPOTLIGHT AGENCY - Edit Reservation")
+        self.root.title("SPOTLIGHT AGENCY - Edit rental")
         self.root.geometry("650x500")
         self.root.resizable(False, False)
         center_window(self.root, 650, 500)
@@ -667,7 +655,6 @@ class EditRentalWindow:
         self.setup_ui()
     
     def setup_hover_effects(self):
-        """Setup hover effects for buttons"""
         def on_enter(e):
             if hasattr(e.widget, 'hover_color'):
                 e.widget.config(bg=e.widget.hover_color)
@@ -682,7 +669,6 @@ class EditRentalWindow:
             btn.bind("<Leave>", on_leave)
     
     def setup_ui(self):
-        """Setup the user interface"""
         # Main container frame
         main_frame = tk.Frame(self.root, bg="#152e41")
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
@@ -694,16 +680,16 @@ class EditRentalWindow:
         # BACK Button in top right corner
         self.back_btn = tk.Button(top_frame, text="BACK", 
                                 font=("Helvetica", 12, "bold"),
-                                bg="#757575",
+                                bg="#8acbcb",
                                 fg="white",
-                                activebackground="#616161",
+                                activebackground="#7db6b6",
                                 width=10,
                                 height=1,
                                 command=self.go_back)
         self.back_btn.pack(side="right", padx=5, pady=5)
         
         # Title
-        title_label = tk.Label(main_frame, text="EDIT RESERVATION", 
+        title_label = tk.Label(main_frame, text="EDIT RENTAL", 
                               font=("Helvetica", 18, "bold"),
                               fg="white",
                               bg="#152e41")
@@ -748,31 +734,31 @@ class EditRentalWindow:
         # Update button
         self.update_btn = tk.Button(bottom_frame, text="UPDATE",
                                    font=("Helvetica", 12, "bold"),
-                                   bg="#8A8A8A",
+                                   bg="#8acbcb",
                                    fg="white",
-                                   activebackground="#A3A3A3",
+                                   activebackground="#7db6b6",
                                    width=15,
                                    height=2,
                                    command=self.update_rental)
         self.update_btn.pack(side="right")
         
         # Set hover colors
-        self.back_btn.normal_color = "#757575"
-        self.back_btn.hover_color = "#616161"
+        self.back_btn.normal_color = "#8acbcb"
+        self.back_btn.hover_color = "#7db6b6"
         
-        self.add_btn.normal_color = "#8A8A8A"
-        self.add_btn.hover_color = "#A3A3A3"
+        self.add_btn.normal_color = "#8acbcb"
+        self.add_btn.hover_color = "#7db6b6"
         
-        self.remove_btn.normal_color = "#8A8A8A"
-        self.remove_btn.hover_color = "#A3A3A3"
+        self.remove_btn.normal_color = "#8acbcb"
+        self.remove_btn.hover_color = "#7db6b6"
         
-        self.update_btn.normal_color = "#8A8A8A"
-        self.update_btn.hover_color = "#A3A3A3"
+        self.update_btn.normal_color = "#8acbcb"
+        self.update_btn.hover_color = "#7db6b6"
         
         # Setup hover effects
         self.setup_hover_effects()
         
-        # Bind Enter key to update reservation
+        # Bind Enter key to update rental
         self.root.bind('<Return>', lambda e: self.update_rental())
         
         # Update total initially
@@ -782,22 +768,22 @@ class EditRentalWindow:
         self.firstname_entry.focus_set()
     
     def setup_customer_column(self, parent_frame):
-        """Setup customer details column"""
         # Style for labels
         label_style = {
-            "font": ("Helvetica", 11),
-            "bg": "#f0f0f0",
-            "fg": "black",
+            "font": ("Helvetica", 12),
+            "bg": "#152e41",
+            "fg": "white",
             "anchor": "w"
         }
-        
+            
         # Style for entries
         entry_style = {
             "font": ("Helvetica", 11),
             "width": 25,
-            "bd": 1,
+            "bd": 0,
+            "bg": "#dcffff",
             "relief": "solid",
-            "highlightthickness": 1
+            "highlightthickness": 0
         }
         
         # First Name
@@ -827,12 +813,11 @@ class EditRentalWindow:
         # Note: Auto fill button not needed for edit
     
     def setup_items_column(self, parent_frame):
-        """Setup items and dates column"""
         # Style for labels
         label_style = {
-            "font": ("Helvetica", 11),
-            "bg": "#f0f0f0",
-            "fg": "black",
+            "font": ("Helvetica", 12),
+            "bg": "#152e41",
+            "fg": "white",
             "anchor": "w"
         }
         
@@ -851,7 +836,8 @@ class EditRentalWindow:
         # Start Date
         start_label = tk.Label(dates_frame, text="From:",
                               font=("Helvetica", 10),
-                              bg="#152e41")
+                              bg="#152e41",
+                              fg="white")
         start_label.pack(side="left", padx=(0, 5))
         
         # Create start date picker
@@ -871,7 +857,8 @@ class EditRentalWindow:
         # End Date
         end_label = tk.Label(dates_frame, text="To:",
                             font=("Helvetica", 10),
-                            bg="#152e41")
+                            bg="#152e41",
+                              fg="white")
         end_label.pack(side="left", padx=(0, 5))
         
         # Create end date picker
@@ -933,7 +920,7 @@ class EditRentalWindow:
         # Add button
         self.add_btn = tk.Button(item_frame, text="ADD",
                                 font=("Helvetica", 10, "bold"),
-                                bg="#8A8A8A",
+                                bg="#8acbcb",
                                 fg="white",
                                 width=8,
                                 command=self.add_item)
@@ -945,7 +932,8 @@ class EditRentalWindow:
         
         selected_label = tk.Label(selected_frame, text="Selected Items:",
                                  font=("Helvetica", 10),
-                                 bg="#152e41")
+                                 bg="#152e41",
+                                 fg="white")
         selected_label.pack(anchor="w")
         
         # Selected items listbox
@@ -973,14 +961,13 @@ class EditRentalWindow:
         # Remove button
         self.remove_btn = tk.Button(parent_frame, text="REMOVE SELECTED",
                                    font=("Helvetica", 10, "bold"),
-                                   bg="#8A8A8A",
+                                   bg="#8acbcb",
                                    fg="white",
                                    width=20,
                                    command=self.remove_item)
         self.remove_btn.pack()
     
     def on_start_date_selected(self, event=None):
-        """When start date is selected, update end date picker"""
         try:
             start_date = self.start_date_entry.get_date()
             self.end_date_entry.config(mindate=start_date)
@@ -989,7 +976,6 @@ class EditRentalWindow:
             print(f"Error setting end date: {e}")
     
     def validate_end_date(self, event=None):
-        """Validate that end date is not before start date"""
         try:
             start_date = self.start_date_entry.get_date()
             end_date = self.end_date_entry.get_date()
@@ -1003,7 +989,6 @@ class EditRentalWindow:
             print(f"Error validating end date: {e}")
     
     def add_item(self):
-        """Add selected item to cart"""
         selected_index = self.item_dropdown.current()
         if selected_index == -1:
             messagebox.showwarning("No Selection", "Please select an item from the dropdown.")
@@ -1049,7 +1034,6 @@ class EditRentalWindow:
         self.quantity_var.set("1")
     
     def remove_item(self):
-        """Remove selected item from cart"""
         selection = self.selected_listbox.curselection()
         if not selection:
             messagebox.showwarning("No Selection", "Please select an item to remove.")
@@ -1069,7 +1053,6 @@ class EditRentalWindow:
         self.update_total()
     
     def update_total(self):
-        """Update the total price"""
         total = 0.0
         
         for item_id, quantity in self.selected_items.items():
@@ -1092,7 +1075,6 @@ class EditRentalWindow:
         self.total_label.config(text=f"TOTAL: £{total:.2f}")
     
     def update_rental(self):
-        """Update the rental in database"""
         # Get customer details
         firstname = self.firstname_entry.get().strip()
         lastname = self.lastname_entry.get().strip()
@@ -1183,7 +1165,7 @@ class EditRentalWindow:
         db.save_items(self.all_items)
         db.save_rentals(rentals)
         
-        messagebox.showinfo("Success", "Reservation updated successfully!")
+        messagebox.showinfo("Success", "Rental updated successfully!")
         self.root.destroy()
         
         # Refresh the main view if needed
@@ -1191,7 +1173,6 @@ class EditRentalWindow:
             self.parent_window.load_rental_data()
     
     def go_back(self):
-        """Go back to main window"""
         self.root.destroy()
 
 # For DateEntry import

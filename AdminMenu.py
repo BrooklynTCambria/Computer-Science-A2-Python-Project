@@ -79,8 +79,6 @@ def AdminMenu():
     root.geometry("650x500")
     root.resizable(False, False)
     center_window(root, 650, 500)
-    
-    # Set background color
     root.configure(bg="#152e41")
     
     # Try to set icon
@@ -100,9 +98,9 @@ def AdminMenu():
     # BACK Button in top right corner
     back_btn = tk.Button(top_frame, text="BACK", 
                         font=("Helvetica", 12, "bold"),
-                        bg="#757575",
+                        bg="#8acbcb",
                         fg="white",
-                        activebackground="#616161",
+                        activebackground="#8acbcb",
                         width=10,
                         height=1,
                         command=lambda: [root.destroy(), open_login_window()])
@@ -139,9 +137,9 @@ def AdminMenu():
     for text, command, row, col in button_configs:
         btn = tk.Button(grid_frame, text=text,
                        font=("Helvetica", 13, "bold"),  # Slightly smaller font for better fit
-                       bg="#8A8A8A",
+                       bg="#8acbcb",
                        fg="white",
-                       activebackground="#A3A3A3",
+                       activebackground="#8acbcb",
                        width=18,  # Slightly smaller width
                        height=2,
                        command=command)
@@ -165,14 +163,14 @@ def AdminMenu():
     
     # Set hover colors for all grid buttons
     for btn in all_buttons:
-        btn.normal_color = "#8A8A8A"
-        btn.hover_color = "#A3A3A3"
+        btn.normal_color = "#8acbcb"
+        btn.hover_color = "#7db6b6"
         btn.bind("<Enter>", on_enter)
         btn.bind("<Leave>", on_leave)
     
     # Set hover colors for BACK button
-    back_btn.normal_color = "#757575"
-    back_btn.hover_color = "#616161"
+    back_btn.normal_color = "#8acbcb"
+    back_btn.hover_color = "#7db6b6"
     back_btn.bind("<Enter>", on_enter)
     back_btn.bind("<Leave>", on_leave)
     
