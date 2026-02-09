@@ -142,34 +142,35 @@ def EmployeeAdd(parent_window=None):
         name_label = tk.Label(info_frame, 
                              text=f"{firstname} {surname}",
                              font=("Helvetica", 14, "bold"),
-                             bg="#152e41")
+                             bg="#152e41",
+                             fg="white")
         name_label.pack(pady=5)
         
         # Generated credentials
-        cred_frame = tk.Frame(info_frame, bg="#152e41", highlightbackground="#8acbcb", 
+        cred_frame = tk.Frame(info_frame, bg="#dcffff", highlightbackground="#152e41", 
                              highlightthickness=2, highlightcolor="#8acbcb")
         cred_frame.pack(pady=20, padx=10, fill="both")
         
         # Username
         username_label = tk.Label(cred_frame, text="Username:", 
                                  font=("Helvetica", 12),
-                                 bg="#152e41", fg="white")
+                                 bg="#dcffff", fg="black")
         username_label.pack(pady=(15, 5))
         
         username_value = tk.Label(cred_frame, text=username,
                                  font=("Helvetica", 12, "bold"),
-                                 bg="#152e41", fg="white")
+                                 bg="#dcffff", fg="black")
         username_value.pack(pady=(0, 10))
         
         # Password
         password_label = tk.Label(cred_frame, text="Password:", 
                                  font=("Helvetica", 12),
-                                 bg="#152e41", fg="white")
+                                 bg="#dcffff", fg="black")
         password_label.pack(pady=(5, 5))
         
         password_value = tk.Label(cred_frame, text=password,
                                  font=("Helvetica", 12, "bold"),
-                                 bg="#152e41", fg="white")
+                                 bg="#dcffff", fg="black")
         password_value.pack(pady=(0, 15))
         
         # OK Button
