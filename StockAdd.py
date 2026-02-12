@@ -217,8 +217,8 @@ class StockAdd:
         
         try:
             amount = int(amount_str)
-            if amount <= 0:
-                self.show_error("Amount must be a positive number!")
+            if amount == 0:
+                self.show_error("Amount cannot be zero!")
                 self.amount_entry.focus_set()
                 return
         except ValueError:
@@ -230,7 +230,13 @@ class StockAdd:
         for item in self.items:
             if item.item_id == self.current_item_id:
                 old_quantity = item.quantity
-                item.quantity += amount
+                
+                # Calculate new quantity, but don't go below zero
+                new_quantity = old_quantity + amount
+                if new_quantity < 0:
+                    new_quantity = 0
+                
+                item.quantity = new_quantity
                 
                 # Save to database
                 db.save_items(self.items)
@@ -247,8 +253,13 @@ class StockAdd:
                     self.item_var.set(new_display)
                 
                 # Show success message
+                if amount > 0:
+                    action = "Added"
+                else:
+                    action = "Removed"
+                
                 messagebox.showinfo("Success", 
-                                  f"Added {amount} to {item.name}\n"
+                                  f"{action} {abs(amount)} to/from {item.name}\n"
                                   f"Old quantity: {old_quantity}\n"
                                   f"New quantity: {item.quantity}")
                 
@@ -415,6 +426,7 @@ class AddItemWindow:
         
         self.amount_entry = tk.Entry(form_frame, **entry_style)
         self.amount_entry.grid(row=5, column=0, pady=(0, 30), ipady=5)
+        self.amount_entry.insert(0, "1")
         
         # ITEM TYPE (Optional but good to have)
         type_label = tk.Label(form_frame, text="ITEM TYPE", 
@@ -499,6 +511,12 @@ class AddItemWindow:
             self.item_name_entry.focus_set()
             return
         
+        # Check name length - NEW VALIDATION
+        if len(item_name) > 50:
+            self.show_error("Item name cannot be longer than 50 characters!")
+            self.item_name_entry.focus_set()
+            return
+        
         if not price_str:
             self.show_error("Rent price is required!")
             self.price_entry.focus_set()
@@ -523,7 +541,11 @@ class AddItemWindow:
         try:
             amount = int(amount_str)
             if amount < 0:
-                self.show_error("Amount cannot be negative!")
+                self.show_error("Amount cannot be negative when adding a new item!")
+                self.amount_entry.focus_set()
+                return
+            if amount == 0:
+                self.show_error("Amount must be greater than zero!")
                 self.amount_entry.focus_set()
                 return
         except ValueError:
@@ -564,7 +586,6 @@ class AddItemWindow:
                           f"Type: {item_type if item_type else 'Not specified'}\n"
                           f"Price: £{price:.2f}\n"
                           f"Quantity: {amount}")
-        
         
         # Callback to parent window
         self.callback(new_item)

@@ -35,7 +35,7 @@ def center_window(window, width=650, height=500):
 def EmployeeView(parent_window=None):
     
     # Variables for sorting
-    sort_by_options = ["First Name", "Surname", "Username", "Password"]
+    sort_by_options = ["First Name", "Surname", "Username"]
     current_sort = tk.StringVar(value="First Name")
     sort_order = tk.BooleanVar(value=False)  # False = ascending, True = descending
     
