@@ -36,7 +36,8 @@ class AutofillWindow:
         # Title
         title_label = tk.Label(self.window, text="Select Customer",
                               font=("Helvetica", 14, "bold"),
-                              bg="#152e41")
+                              bg="#152e41",
+                              fg="white")
         title_label.pack(pady=10)
         
         # Listbox for customers

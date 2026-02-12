@@ -110,11 +110,10 @@ def StockView(parent_window=None):
         # Clear current selection
         tree.selection_remove(tree.selection())
         
-        # Show all items first by reattaching all
-        for child in tree.get_children():
-            tree.reattach(child, '', 'end')
+        # CRITICAL: RELOAD ALL DATA FIRST
+        load_stock_data()
         
-        # If no search criteria, show all
+        # If no search criteria, show ALL items
         if not name_filter and not type_filter and not price_min_filter and not price_max_filter:
             return
         
@@ -162,7 +161,6 @@ def StockView(parent_window=None):
                     except ValueError:
                         pass
             except ValueError:
-                # If price can't be parsed, show item anyway
                 pass
             
             if not match:
@@ -324,7 +322,7 @@ def StockView(parent_window=None):
 
 def SearchWindow(parent_window, apply_callback):
     
-    def perform_search():
+    def perform_search(event=None):
         name = name_entry.get().strip()
         item_type = type_entry.get().strip()
         price_min = price_min_entry.get().strip()
@@ -345,14 +343,10 @@ def SearchWindow(parent_window, apply_callback):
                 messagebox.showerror("Invalid Input", "Maximum price must be a number.")
                 return
         
-        # Apply search to main window
         apply_callback(name, item_type, price_min, price_max)
-        
-        # Close search window
         search_root.destroy()
     
-    def clear_and_close():
-        apply_callback("", "", "", "")  # Clear filter
+    def go_back():
         search_root.destroy()
     
     # Create search window
@@ -362,25 +356,39 @@ def SearchWindow(parent_window, apply_callback):
     search_root.resizable(False, False)
     center_window(search_root, 650, 500)
     
-    # Set icon
     try:
         search_root.iconphoto(False, tk.PhotoImage(file="icon.png"))
     except:
         pass
     
-    # Set background color
     search_root.configure(bg="#152e41")
     
     # Main container frame
     main_frame = tk.Frame(search_root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
+    # TOP FRAME for BACK button
+    top_frame = tk.Frame(main_frame, bg="#152e41", height=40)
+    top_frame.pack(fill="x", pady=(0, 10))
+    top_frame.pack_propagate(False)
+    
+    # BACK Button
+    back_btn = tk.Button(top_frame, text="BACK", 
+                        font=("Helvetica", 12, "bold"),
+                        bg="#8acbcb",
+                        fg="white",
+                        activebackground="#7db6b6",
+                        width=10,
+                        height=1,
+                        command=go_back)
+    back_btn.pack(side="right", padx=5, pady=5)
+    
     # Title
     title_label = tk.Label(main_frame, text="STOCK SEARCH", 
                           font=("Helvetica", 24, "bold"),
                           fg="white",
                           bg="#152e41")
-    title_label.pack(pady=(0, 30))
+    title_label.pack(pady=(0, 20))
     
     # Search criteria frame
     criteria_frame = tk.Frame(main_frame, bg="#152e41")
@@ -402,7 +410,7 @@ def SearchWindow(parent_window, apply_callback):
         "relief": "solid",
         "highlightthickness": 0
     }
-    
+
     # Item Name
     name_label = tk.Label(criteria_frame, text="ITEM NAME", **label_style)
     name_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
@@ -417,16 +425,13 @@ def SearchWindow(parent_window, apply_callback):
     type_entry = tk.Entry(criteria_frame, **entry_style)
     type_entry.grid(row=3, column=0, pady=(0, 20), ipady=5)
     
-    # Price Range Frame
-    price_frame = tk.Frame(criteria_frame, bg="#152e41")
-    price_frame.grid(row=4, column=0, sticky="w", pady=(0, 5))
-    
-    price_label = tk.Label(price_frame, text="PRICE RANGE", **label_style)
-    price_label.pack(anchor="w")
+    # Price Range
+    price_label = tk.Label(criteria_frame, text="PRICE RANGE", **label_style)
+    price_label.grid(row=4, column=0, sticky="w", pady=(0, 5))
     
     # Price inputs in one line
     price_inputs_frame = tk.Frame(criteria_frame, bg="#152e41")
-    price_inputs_frame.grid(row=5, column=0, sticky="w", pady=(0, 20))
+    price_inputs_frame.grid(row=5, column=0, sticky="w", pady=(0, 30))
     
     price_min_label = tk.Label(price_inputs_frame, text="Min:", 
                               font=("Helvetica", 11),
@@ -458,10 +463,12 @@ def SearchWindow(parent_window, apply_callback):
                               highlightthickness=0)
     price_max_entry.pack(side="left", ipady=5)
     
-    # Button frame
-    button_frame = tk.Frame(main_frame, bg="#152e41")
-    button_frame.pack(pady=20)
+    # Button frame at BOTTOM
+    button_frame = tk.Frame(main_frame, bg="#152e41", height=80)
+    button_frame.pack(fill="x", side="bottom", pady=10)
+    button_frame.pack_propagate(False)
     
+    # SEARCH button
     search_btn = tk.Button(button_frame, text="SEARCH",
                           font=("Helvetica", 14, "bold"),
                           bg="#8acbcb",
@@ -470,36 +477,25 @@ def SearchWindow(parent_window, apply_callback):
                           width=20,
                           height=2,
                           command=perform_search)
-    search_btn.pack(pady=10)
-    
-    clear_btn = tk.Button(button_frame, text="CLEAR",
-                         font=("Helvetica", 14, "bold"),
-                         bg="#8acbcb",
-                         fg="white",
-                         activebackground="#7db6b6",
-                         width=20,
-                         height=2,
-                         command=clear_and_close)
-    clear_btn.pack(pady=10)
+    search_btn.pack(expand=True)
     
     # Set hover colors
+    back_btn.normal_color = "#8acbcb"
+    back_btn.hover_color = "#7db6b6"
     search_btn.normal_color = "#8acbcb"
     search_btn.hover_color = "#7db6b6"
     
-    clear_btn.normal_color = "#8acbcb"
-    clear_btn.hover_color = "#7db6b6"
-    
     # Setup hover effects
+    back_btn.bind("<Enter>", lambda e: back_btn.config(bg="#7db6b6"))
+    back_btn.bind("<Leave>", lambda e: back_btn.config(bg="#8acbcb"))
     search_btn.bind("<Enter>", lambda e: search_btn.config(bg="#7db6b6"))
     search_btn.bind("<Leave>", lambda e: search_btn.config(bg="#8acbcb"))
-    clear_btn.bind("<Enter>", lambda e: clear_btn.config(bg="#7db6b6"))
-    clear_btn.bind("<Leave>", lambda e: clear_btn.config(bg="#8acbcb"))
     
-    # Bind Enter key to search
-    name_entry.bind('<Return>', lambda e: perform_search())
-    type_entry.bind('<Return>', lambda e: perform_search())
-    price_min_entry.bind('<Return>', lambda e: perform_search())
-    price_max_entry.bind('<Return>', lambda e: perform_search())
+    # Bind Enter key
+    name_entry.bind('<Return>', perform_search)
+    type_entry.bind('<Return>', perform_search)
+    price_min_entry.bind('<Return>', perform_search)
+    price_max_entry.bind('<Return>', perform_search)
     
     # Make window modal
     search_root.transient(parent_window)

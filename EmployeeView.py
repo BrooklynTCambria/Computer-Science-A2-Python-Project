@@ -150,13 +150,11 @@ def EmployeeView(parent_window=None):
         # Clear current selection
         tree.selection_remove(tree.selection())
         
-        # Show all items first
-        for child in tree.get_children():
-            tree.item(child, tags=())
+        # CRITICAL: RELOAD ALL DATA FIRST
+        load_employee_data()
         
-        # If no search criteria, show all
+        # If no search criteria, show ALL items
         if not firstname_filter and not surname_filter and not username_filter:
-            load_employee_data()
             return
         
         # Hide non-matching items
@@ -353,41 +351,22 @@ def EmployeeView(parent_window=None):
     
     if not parent_window:
         root.mainloop()
-
+   
 def SearchWindow(parent_window, apply_callback):
-
     
-    def perform_search():
-
+    def perform_search(event=None):  # Add event parameter for Enter key
         firstname = firstname_entry.get().strip()
         surname = surname_entry.get().strip()
         username = username_entry.get().strip()
         
-        # Apply search to main window
+        # Apply search to main window - empty strings will show all results
         apply_callback(firstname, surname, username)
         
         # Close search window
         search_root.destroy()
     
-    def clear_and_close():
-
-        apply_callback("", "", "")  # Clear filter
+    def go_back():
         search_root.destroy()
-    
-    def setup_hover_effects():
-
-        def on_enter(e):
-            if hasattr(e.widget, 'hover_color'):
-                e.widget.config(bg=e.widget.hover_color)
-        
-        def on_leave(e):
-            if hasattr(e.widget, 'normal_color'):
-                e.widget.config(bg=e.widget.normal_color)
-        
-        buttons = [search_btn, clear_btn]
-        for btn in buttons:
-            btn.bind("<Enter>", on_enter)
-            btn.bind("<Leave>", on_leave)
     
     # Create search window
     search_root = tk.Toplevel(parent_window)
@@ -405,16 +384,32 @@ def SearchWindow(parent_window, apply_callback):
     # Set background color
     search_root.configure(bg="#152e41")
     
-    # Main container frame
+    # Main container frame - use grid for better control
     main_frame = tk.Frame(search_root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+    
+    # TOP FRAME for BACK button (top right)
+    top_frame = tk.Frame(main_frame, bg="#152e41", height=40)
+    top_frame.pack(fill="x", pady=(0, 10))
+    top_frame.pack_propagate(False)  # Prevent frame from shrinking
+    
+    # BACK Button in top right corner
+    back_btn = tk.Button(top_frame, text="BACK", 
+                        font=("Helvetica", 12, "bold"),
+                        bg="#8acbcb",
+                        fg="white",
+                        activebackground="#7db6b6",
+                        width=10,
+                        height=1,
+                        command=go_back)
+    back_btn.pack(side="right", padx=5, pady=5)
     
     # Title
     title_label = tk.Label(main_frame, text="EMPLOYEE SEARCH", 
                           font=("Helvetica", 24, "bold"),
                           fg="white",
                           bg="#152e41")
-    title_label.pack(pady=(0, 30))
+    title_label.pack(pady=(0, 20))
     
     # Search criteria frame
     criteria_frame = tk.Frame(main_frame, bg="#152e41")
@@ -436,32 +431,34 @@ def SearchWindow(parent_window, apply_callback):
         "relief": "solid",
         "highlightthickness": 0
     }
-    
+
     # First Name
-    firstname_label = tk.Label(criteria_frame, text="First Name:", **label_style)
+    firstname_label = tk.Label(criteria_frame, text="FIRST NAME", **label_style)
     firstname_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
     
     firstname_entry = tk.Entry(criteria_frame, **entry_style)
     firstname_entry.grid(row=1, column=0, pady=(0, 20), ipady=5)
     
     # Surname
-    surname_label = tk.Label(criteria_frame, text="Surname:", **label_style)
+    surname_label = tk.Label(criteria_frame, text="SURNAME", **label_style)
     surname_label.grid(row=2, column=0, sticky="w", pady=(0, 5))
     
     surname_entry = tk.Entry(criteria_frame, **entry_style)
     surname_entry.grid(row=3, column=0, pady=(0, 20), ipady=5)
     
     # Username
-    username_label = tk.Label(criteria_frame, text="Username:", **label_style)
+    username_label = tk.Label(criteria_frame, text="USERNAME", **label_style)
     username_label.grid(row=4, column=0, sticky="w", pady=(0, 5))
     
     username_entry = tk.Entry(criteria_frame, **entry_style)
     username_entry.grid(row=5, column=0, pady=(0, 30), ipady=5)
     
-    # Button frame
-    button_frame = tk.Frame(main_frame, bg="#152e41")
-    button_frame.pack(pady=20)
+    # Button frame at BOTTOM - separate frame that stays at bottom
+    button_frame = tk.Frame(main_frame, bg="#152e41", height=80)
+    button_frame.pack(fill="x", side="bottom", pady=10)
+    button_frame.pack_propagate(False)  # Prevent frame from shrinking
     
+    # SEARCH button
     search_btn = tk.Button(button_frame, text="SEARCH",
                           font=("Helvetica", 14, "bold"),
                           bg="#8acbcb",
@@ -470,32 +467,24 @@ def SearchWindow(parent_window, apply_callback):
                           width=20,
                           height=2,
                           command=perform_search)
-    search_btn.pack(pady=10)
-    
-    clear_btn = tk.Button(button_frame, text="CLEAR",
-                         font=("Helvetica", 14, "bold"),
-                         bg="#8acbcb",
-                         fg="white",
-                         activebackground="#7db6b6",
-                         width=20,
-                         height=2,
-                         command=clear_and_close)
-    clear_btn.pack(pady=10)
+    search_btn.pack(expand=True)  # Center the button
     
     # Set hover colors
+    back_btn.normal_color = "#8acbcb"
+    back_btn.hover_color = "#7db6b6"
     search_btn.normal_color = "#8acbcb"
     search_btn.hover_color = "#7db6b6"
     
-    clear_btn.normal_color = "#8acbcb"
-    clear_btn.hover_color = "#7db6b6"
-    
     # Setup hover effects
-    setup_hover_effects()
+    back_btn.bind("<Enter>", lambda e: back_btn.config(bg="#7db6b6"))
+    back_btn.bind("<Leave>", lambda e: back_btn.config(bg="#8acbcb"))
+    search_btn.bind("<Enter>", lambda e: search_btn.config(bg="#7db6b6"))
+    search_btn.bind("<Leave>", lambda e: search_btn.config(bg="#8acbcb"))
     
     # Bind Enter key to search
-    firstname_entry.bind('<Return>', lambda e: perform_search())
-    surname_entry.bind('<Return>', lambda e: perform_search())
-    username_entry.bind('<Return>', lambda e: perform_search())
+    firstname_entry.bind('<Return>', perform_search)
+    surname_entry.bind('<Return>', perform_search)
+    username_entry.bind('<Return>', perform_search)
     
     # Make window modal
     search_root.transient(parent_window)

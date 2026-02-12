@@ -234,11 +234,10 @@ def RentalView(parent_window=None):
         # Clear current selection
         tree.selection_remove(tree.selection())
         
-        # Show all items first by reattaching all
-        for child in tree.get_children():
-            tree.reattach(child, '', 'end')
+        # CRITICAL: RELOAD ALL DATA FIRST to reset the view
+        load_rental_data()
         
-        # If no search criteria, show all
+        # If no search criteria, show ALL items (already loaded)
         if not firstname_filter and not lastname_filter and not date_filter and not employee_filter:
             return
         
@@ -452,20 +451,13 @@ def RentalView(parent_window=None):
 
 def SearchWindow(parent_window, apply_callback):
     
-    def perform_search():
+    def perform_search(event=None):
         firstname = firstname_entry.get().strip()
         lastname = lastname_entry.get().strip()
         date = date_entry.get().strip()
         employee = employee_entry.get().strip()
         
-        # Apply search to main window
         apply_callback(firstname, lastname, date, employee)
-        
-        # Close search window
-        search_root.destroy()
-    
-    def clear_and_close():
-        apply_callback("", "", "", "")  # Clear filter
         search_root.destroy()
     
     def go_back():
@@ -473,53 +465,52 @@ def SearchWindow(parent_window, apply_callback):
     
     # Create search window
     search_root = tk.Toplevel(parent_window)
-    search_root.title("SPOTLIGHT AGENCY - Search")
+    search_root.title("SPOTLIGHT AGENCY - Rental Search")
     search_root.geometry("650x500")
     search_root.resizable(False, False)
     center_window(search_root, 650, 500)
     
-    # Set icon
     try:
         search_root.iconphoto(False, tk.PhotoImage(file="icon.png"))
     except:
         pass
     
-    # Set background color
     search_root.configure(bg="#152e41")
     
     # Main container frame
     main_frame = tk.Frame(search_root, bg="#152e41")
-    main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+    main_frame.pack(fill="both", expand=True, padx=20, pady=10)
     
-    # TOP FRAME for BACK button (top right)
-    top_frame = tk.Frame(main_frame, bg="#152e41")
-    top_frame.pack(fill="x", pady=(0, 10))
+    # TOP FRAME for BACK button
+    top_frame = tk.Frame(main_frame, bg="#152e41", height=30)
+    top_frame.pack(fill="x", pady=(0, 5))
+    top_frame.pack_propagate(False)
     
-    # BACK Button in top right corner
+    # BACK Button
     back_btn = tk.Button(top_frame, text="BACK", 
-                        font=("Helvetica", 12, "bold"),
+                        font=("Helvetica", 11, "bold"),
                         bg="#8acbcb",
                         fg="white",
                         activebackground="#7db6b6",
-                        width=10,
+                        width=8,
                         height=1,
                         command=go_back)
-    back_btn.pack(side="right", padx=5, pady=5)
+    back_btn.pack(side="right", padx=5, pady=2)
     
     # Title
-    title_label = tk.Label(main_frame, text="SEARCH", 
-                          font=("Helvetica", 24, "bold"),
+    title_label = tk.Label(main_frame, text="RENTAL SEARCH", 
+                          font=("Helvetica", 20, "bold"),
                           fg="white",
                           bg="#152e41")
-    title_label.pack(pady=(0, 8))
+    title_label.pack(pady=(0, 5))
     
     # Search criteria frame
     criteria_frame = tk.Frame(main_frame, bg="#152e41")
-    criteria_frame.pack(pady=20)
+    criteria_frame.pack(pady=5)
     
     # Style for labels
     label_style = {
-        "font": ("Helvetica", 12),
+        "font": ("Helvetica", 11),
         "bg": "#152e41",
         "fg": "white",
         "anchor": "w"
@@ -527,89 +518,75 @@ def SearchWindow(parent_window, apply_callback):
     
     # Style for entries
     entry_style = {
-        "font": ("Helvetica", 12),
+        "font": ("Helvetica", 11),
         "width": 30,
         "bd": 0,
         "bg": "#dcffff",
         "relief": "solid",
         "highlightthickness": 0
     }
-    
+
     # First Name
     firstname_label = tk.Label(criteria_frame, text="FIRST NAME", **label_style)
-    firstname_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
+    firstname_label.grid(row=0, column=0, sticky="w", pady=(0, 2))
     
     firstname_entry = tk.Entry(criteria_frame, **entry_style)
-    firstname_entry.grid(row=1, column=0, pady=(0, 20), ipady=5)
+    firstname_entry.grid(row=1, column=0, pady=(0, 10), ipady=4)
     
     # Last Name
     lastname_label = tk.Label(criteria_frame, text="LAST NAME", **label_style)
-    lastname_label.grid(row=2, column=0, sticky="w", pady=(0, 5))
+    lastname_label.grid(row=2, column=0, sticky="w", pady=(0, 2))
     
     lastname_entry = tk.Entry(criteria_frame, **entry_style)
-    lastname_entry.grid(row=3, column=0, pady=(0, 20), ipady=5)
+    lastname_entry.grid(row=3, column=0, pady=(0, 10), ipady=4)
     
-    # Date (format hint)
+    # Date
     date_label = tk.Label(criteria_frame, text="DATE (dd/mm/yy)", **label_style)
-    date_label.grid(row=4, column=0, sticky="w", pady=(0, 5))
+    date_label.grid(row=4, column=0, sticky="w", pady=(0, 2))
     
     date_entry = tk.Entry(criteria_frame, **entry_style)
-    date_entry.grid(row=5, column=0, pady=(0, 20), ipady=5)
+    date_entry.grid(row=5, column=0, pady=(0, 10), ipady=4)
     
     # Employee
     employee_label = tk.Label(criteria_frame, text="EMPLOYEE", **label_style)
-    employee_label.grid(row=6, column=0, sticky="w", pady=(0, 5))
+    employee_label.grid(row=6, column=0, sticky="w", pady=(0, 2))
     
     employee_entry = tk.Entry(criteria_frame, **entry_style)
-    employee_entry.grid(row=7, column=0, pady=(0, 30), ipady=5)
+    employee_entry.grid(row=7, column=0, pady=(0, 15), ipady=4)
     
-    # Button frame
-    button_frame = tk.Frame(main_frame, bg="#152e41")
-    button_frame.pack(pady=20)
+    # Button frame at BOTTOM
+    button_frame = tk.Frame(main_frame, bg="#152e41", height=60)
+    button_frame.pack(fill="x", side="bottom", pady=5)
+    button_frame.pack_propagate(False)
     
+    # SEARCH button
     search_btn = tk.Button(button_frame, text="SEARCH",
-                          font=("Helvetica", 14, "bold"),
+                          font=("Helvetica", 13, "bold"),
                           bg="#8acbcb",
                           fg="white",
                           activebackground="#7db6b6",
-                          width=20,
-                          height=2,
+                          width=18,
+                          height=1,
                           command=perform_search)
-    search_btn.pack(pady=10)
-    
-    clear_btn = tk.Button(button_frame, text="CLEAR",
-                         font=("Helvetica", 14, "bold"),
-                         bg="#8acbcb",
-                         fg="white",
-                         activebackground="#7db6b6",
-                         width=20,
-                         height=2,
-                         command=clear_and_close)
-    clear_btn.pack(pady=10)
+    search_btn.pack(expand=True)
     
     # Set hover colors
+    back_btn.normal_color = "#8acbcb"
+    back_btn.hover_color = "#7db6b6"
     search_btn.normal_color = "#8acbcb"
     search_btn.hover_color = "#7db6b6"
     
-    clear_btn.normal_color = "#8acbcb"
-    clear_btn.hover_color = "#7db6b6"
-    
-    back_btn.normal_color = "#8acbcb"
-    back_btn.hover_color = "#7db6b6"
-    
     # Setup hover effects
-    search_btn.bind("<Enter>", lambda e: search_btn.config(bg="#7db6b6"))
-    search_btn.bind("<Leave>", lambda e: search_btn.config(bg="#8acbcb"))
-    clear_btn.bind("<Enter>", lambda e: clear_btn.config(bg="#7db6b6"))
-    clear_btn.bind("<Leave>", lambda e: clear_btn.config(bg="#8acbcb"))
     back_btn.bind("<Enter>", lambda e: back_btn.config(bg="#7db6b6"))
     back_btn.bind("<Leave>", lambda e: back_btn.config(bg="#8acbcb"))
+    search_btn.bind("<Enter>", lambda e: search_btn.config(bg="#7db6b6"))
+    search_btn.bind("<Leave>", lambda e: search_btn.config(bg="#8acbcb"))
     
-    # Bind Enter key to search
-    firstname_entry.bind('<Return>', lambda e: perform_search())
-    lastname_entry.bind('<Return>', lambda e: perform_search())
-    date_entry.bind('<Return>', lambda e: perform_search())
-    employee_entry.bind('<Return>', lambda e: perform_search())
+    # Bind Enter key
+    firstname_entry.bind('<Return>', perform_search)
+    lastname_entry.bind('<Return>', perform_search)
+    date_entry.bind('<Return>', perform_search)
+    employee_entry.bind('<Return>', perform_search)
     
     # Make window modal
     search_root.transient(parent_window)
@@ -618,7 +595,7 @@ def SearchWindow(parent_window, apply_callback):
     
     # Focus on first entry
     firstname_entry.focus_set()
-
+    
 class EditRentalWindow:
     def __init__(self, parent_window, rental, customer, all_items):
         self.parent_window = parent_window

@@ -183,11 +183,10 @@ def CustomerView(parent_window=None):
         # Clear current selection
         tree.selection_remove(tree.selection())
         
-        # Show all items first by reattaching all
-        for child in tree.get_children():
-            tree.reattach(child, '', 'end')
+        # CRITICAL: RELOAD ALL DATA FIRST
+        load_customer_data()
         
-        # If no search criteria, show all
+        # If no search criteria, show ALL items
         if not firstname_filter and not surname_filter and not phone_filter:
             return
         
@@ -215,7 +214,7 @@ def CustomerView(parent_window=None):
             if surname_filter and surname_filter.lower() not in customer_surname:
                 match = False
             
-            # Check phone (remove +41 prefix for search if provided)
+            # Check phone
             if phone_filter:
                 search_phone = phone_filter.lower().replace('+41', '').replace(' ', '')
                 actual_phone = customer_phone.replace('+41', '').replace(' ', '')
@@ -223,7 +222,7 @@ def CustomerView(parent_window=None):
                     match = False
             
             if not match:
-                tree.detach(child)
+                tree.detach(child) 
     
     def sort_treeview(col, reverse):
         data = [(tree.set(child, col), child) for child in tree.get_children()]
@@ -385,19 +384,15 @@ def CustomerView(parent_window=None):
 
 def SearchWindow(parent_window, apply_callback):
     
-    def perform_search():
+    def perform_search(event=None):
         firstname = firstname_entry.get().strip()
         surname = surname_entry.get().strip()
         phone = phone_entry.get().strip()
         
-        # Apply search to main window
         apply_callback(firstname, surname, phone)
-        
-        # Close search window
         search_root.destroy()
     
-    def clear_and_close():
-        apply_callback("", "", "")  # Clear filter
+    def go_back():
         search_root.destroy()
     
     # Create search window
@@ -407,25 +402,39 @@ def SearchWindow(parent_window, apply_callback):
     search_root.resizable(False, False)
     center_window(search_root, 650, 500)
     
-    # Set icon
     try:
         search_root.iconphoto(False, tk.PhotoImage(file="icon.png"))
     except:
         pass
     
-    # Set background color
     search_root.configure(bg="#152e41")
     
     # Main container frame
     main_frame = tk.Frame(search_root, bg="#152e41")
     main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
+    # TOP FRAME for BACK button
+    top_frame = tk.Frame(main_frame, bg="#152e41", height=40)
+    top_frame.pack(fill="x", pady=(0, 10))
+    top_frame.pack_propagate(False)
+    
+    # BACK Button
+    back_btn = tk.Button(top_frame, text="BACK", 
+                        font=("Helvetica", 12, "bold"),
+                        bg="#8acbcb",
+                        fg="white",
+                        activebackground="#7db6b6",
+                        width=10,
+                        height=1,
+                        command=go_back)
+    back_btn.pack(side="right", padx=5, pady=5)
+    
     # Title
     title_label = tk.Label(main_frame, text="CUSTOMER SEARCH", 
                           font=("Helvetica", 24, "bold"),
                           fg="white",
                           bg="#152e41")
-    title_label.pack(pady=(0, 30))
+    title_label.pack(pady=(0, 20))
     
     # Search criteria frame
     criteria_frame = tk.Frame(main_frame, bg="#152e41")
@@ -433,7 +442,7 @@ def SearchWindow(parent_window, apply_callback):
     
     # Style for labels
     label_style = {
-        "font": ("Helvetica", 11),
+        "font": ("Helvetica", 12),
         "bg": "#152e41",
         "fg": "white",
         "anchor": "w"
@@ -447,7 +456,7 @@ def SearchWindow(parent_window, apply_callback):
         "relief": "solid",
         "highlightthickness": 0
     }
-    
+
     # First Name
     firstname_label = tk.Label(criteria_frame, text="FIRST NAME", **label_style)
     firstname_label.grid(row=0, column=0, sticky="w", pady=(0, 5))
@@ -462,17 +471,19 @@ def SearchWindow(parent_window, apply_callback):
     surname_entry = tk.Entry(criteria_frame, **entry_style)
     surname_entry.grid(row=3, column=0, pady=(0, 20), ipady=5)
     
-    # Phone (with +41 hint)
+    # Phone
     phone_label = tk.Label(criteria_frame, text="PHONE", **label_style)
     phone_label.grid(row=4, column=0, sticky="w", pady=(0, 5))
     
     phone_entry = tk.Entry(criteria_frame, **entry_style)
     phone_entry.grid(row=5, column=0, pady=(0, 30), ipady=5)
     
-    # Button frame
-    button_frame = tk.Frame(main_frame, bg="#152e41")
-    button_frame.pack(pady=20)
+    # Button frame at BOTTOM
+    button_frame = tk.Frame(main_frame, bg="#152e41", height=80)
+    button_frame.pack(fill="x", side="bottom", pady=10)
+    button_frame.pack_propagate(False)
     
+    # SEARCH button
     search_btn = tk.Button(button_frame, text="SEARCH",
                           font=("Helvetica", 14, "bold"),
                           bg="#8acbcb",
@@ -481,35 +492,24 @@ def SearchWindow(parent_window, apply_callback):
                           width=20,
                           height=2,
                           command=perform_search)
-    search_btn.pack(pady=10)
-    
-    clear_btn = tk.Button(button_frame, text="CLEAR",
-                         font=("Helvetica", 14, "bold"),
-                         bg="#8acbcb",
-                         fg="white",
-                         activebackground="#7db6b6",
-                         width=20,
-                         height=2,
-                         command=clear_and_close)
-    clear_btn.pack(pady=10)
+    search_btn.pack(expand=True)
     
     # Set hover colors
+    back_btn.normal_color = "#8acbcb"
+    back_btn.hover_color = "#7db6b6"
     search_btn.normal_color = "#8acbcb"
     search_btn.hover_color = "#7db6b6"
     
-    clear_btn.normal_color = "#8acbcb"
-    clear_btn.hover_color = "#7db6b6"
-    
     # Setup hover effects
+    back_btn.bind("<Enter>", lambda e: back_btn.config(bg="#7db6b6"))
+    back_btn.bind("<Leave>", lambda e: back_btn.config(bg="#8acbcb"))
     search_btn.bind("<Enter>", lambda e: search_btn.config(bg="#7db6b6"))
     search_btn.bind("<Leave>", lambda e: search_btn.config(bg="#8acbcb"))
-    clear_btn.bind("<Enter>", lambda e: clear_btn.config(bg="#7db6b6"))
-    clear_btn.bind("<Leave>", lambda e: clear_btn.config(bg="#8acbcb"))
     
-    # Bind Enter key to search
-    firstname_entry.bind('<Return>', lambda e: perform_search())
-    surname_entry.bind('<Return>', lambda e: perform_search())
-    phone_entry.bind('<Return>', lambda e: perform_search())
+    # Bind Enter key
+    firstname_entry.bind('<Return>', perform_search)
+    surname_entry.bind('<Return>', perform_search)
+    phone_entry.bind('<Return>', perform_search)
     
     # Make window modal
     search_root.transient(parent_window)
@@ -518,7 +518,7 @@ def SearchWindow(parent_window, apply_callback):
     
     # Focus on first entry
     firstname_entry.focus_set()
-
+    
 # For testing directly
 if __name__ == "__main__":
     CustomerView()
