@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime, date
-import Database_schema as db
+import database_schema as db
 
 def center_window(window, width=650, height=500):
     screen_width = window.winfo_screenwidth()

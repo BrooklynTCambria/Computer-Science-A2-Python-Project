@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
-import Database_schema as db
+import database_schema as db
 import RentalCreate
 
 def center_window(window, width=650, height=500):
