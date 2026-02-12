@@ -36,15 +36,19 @@ def Revenue(parent_window=None):
         today_rentals = 0
         
         for rental in rentals:
+            # Get creation date (with fallback for old records)
+            if hasattr(rental, 'creation_date') and rental.creation_date:
+                creation_date = rental.creation_date
+            else:
+                # Fallback: use start_date for old records
+                creation_date = rental.start_date
+            
             # Handle both datetime and date objects
-            rental_date = rental.start_date
+            if hasattr(creation_date, 'date'):
+                creation_date = creation_date.date()
             
-            # If it's a datetime object, extract the date
-            if hasattr(rental_date, 'date'):
-                rental_date = rental_date.date()
-            
-            # Check if rental is from today
-            if rental_date == today:
+            # Check if rental was created today
+            if creation_date == today:
                 today_revenue += rental.total_price
                 today_rentals += 1
         

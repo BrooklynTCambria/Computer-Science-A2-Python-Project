@@ -762,11 +762,12 @@ class RentalCreate:
         
         # Save updated items
         db.save_items(self.items)
-        
-        # Create rental
+
+        # Create rental with creation date
         rental_id = db.get_next_rental_id()
         rental = db.Rental(rental_id, customer_id, self.employee, 
-                          start_date, end_date, self.selected_items, total)
+                        start_date, end_date, self.selected_items, total,
+                        datetime.now())  # Add creation date
         
         # Save rental
         rentals = db.load_rentals()

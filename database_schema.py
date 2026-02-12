@@ -51,7 +51,7 @@ class Item:
         return cls(data['item_id'], data['name'], data['type'], data['quantity'], data['price'])
 
 class Rental:
-    def __init__(self, rental_id, customer_id, employee, start_date, end_date, items, total_price):
+    def __init__(self, rental_id, customer_id, employee, start_date, end_date, items, total_price, creation_date=None):
         self.rental_id = rental_id
         self.customer_id = customer_id
         self.employee = employee
@@ -59,6 +59,8 @@ class Rental:
         self.end_date = end_date
         self.items = items  # List of item IDs with quantities
         self.total_price = total_price
+        # If creation_date not provided, use current datetime
+        self.creation_date = creation_date if creation_date else datetime.now()
     
     def to_dict(self):
         return {
@@ -68,13 +70,22 @@ class Rental:
             'start_date': self.start_date,
             'end_date': self.end_date,
             'items': self.items,
-            'total_price': self.total_price
+            'total_price': self.total_price,
+            'creation_date': self.creation_date
         }
     
     @classmethod
     def from_dict(cls, data):
-        return cls(data['rental_id'], data['customer_id'], data['employee'], 
-                  data['start_date'], data['end_date'], data['items'], data['total_price'])
+        return cls(
+            data['rental_id'], 
+            data['customer_id'], 
+            data['employee'], 
+            data['start_date'], 
+            data['end_date'], 
+            data['items'], 
+            data['total_price'],
+            data.get('creation_date', data['start_date'])  # Fallback for old records
+        )
 
 # Database functions
 def load_customers():
