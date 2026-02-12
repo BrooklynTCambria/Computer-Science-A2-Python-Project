@@ -1,9 +1,7 @@
-# RentalView.py - Updated with Edit button and Search Back button
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
-import database_schema as db
-# Import RentalCreate to use for editing
+import Database_schema as db
 import RentalCreate
 
 def center_window(window, width=650, height=500):

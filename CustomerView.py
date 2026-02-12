@@ -1,7 +1,6 @@
-# CustomerView.py
 import tkinter as tk
 from tkinter import ttk, messagebox
-import database_schema as db
+import Database_schema as db
 
 def center_window(window, width=650, height=500):
     screen_width = window.winfo_screenwidth()
